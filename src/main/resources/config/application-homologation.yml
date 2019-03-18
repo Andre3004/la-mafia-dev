@@ -1,0 +1,39 @@
+#GENERAL
+spring:
+  main:
+    banner-mode: console
+
+#DATA SOURCE
+  datasource:
+    url: jdbc:postgresql://devdb.prognus.com.br:5434/boot-homologation
+    username: boot
+    password: boot
+    hikari.maximum-pool-size: 3
+
+#JPA
+  jpa:
+    hibernate.ddl-auto: validate
+    show-sql: true
+    
+#STATIC RESOURCES
+  resources.chain:
+    cache: true
+    
+#THYMELEAF
+  thymeleaf:
+    cache: true
+    
+#MAIL
+  mail:
+    host: expressodev.prognus.com.br
+    port: 25
+    username: no-reply
+    password: soAsx2gGX6Rbhk
+    from: no-reply@prognus.org
+    properties:
+      mail.smtp.starttls.enable: false
+      mail.smtp.starttls.required: false
+      mail.smtp.ssl.enable: false
+      mail.smtps.debug: true
+      mail.smtp.debug: true
+      mail.debug: true

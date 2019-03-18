@@ -1,0 +1,87 @@
+# SETTINGS
+app:
+  external-url: http://localhost:8080
+  mail-from: noreply@boot
+  password-token-expiration-hours: 2
+
+#GENERAL
+spring:
+  application.name: boot
+  jmx.enabled: false
+
+#DATA SOURCE
+  datasource:
+    hikari.pool-name: ${spring.application.name}
+    hikari.maximum-pool-size: 3
+    url: jdbc:postgresql://127.0.0.1:5432/${spring.application.name}
+    username: ${spring.application.name}
+    password: ${spring.application.name}
+
+#JPA
+  jpa:
+    hibernate.ddl-auto: validate
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate.dialect: br.com.eits.common.infrastructure.hibernate.dialect.PostgreSQLDialect
+      hibernate.default_schema: public
+      org.hibernate.envers.audit_table_suffix: _audited
+      org.hibernate.envers.revision_field_name: revision
+      org.hibernate.envers.revision_type_field_name: revision_type
+      org.hibernate.envers.default_schema: auditing
+
+#STATIC RESOURCES
+  resources.static-locations: classpath:/META-INF/resources/
+  resources.chain:
+    cache: false
+    strategy.content.enabled: true
+    strategy.content.paths: /**
+      
+#THYMELEAF
+  thymeleaf:
+    mode: HTML
+    cache: false
+    prefix: classpath:/META-INF/resources/
+    suffix: .html
+    
+#MAIL
+  mail:
+    host: expressodev.prognus.com.br
+    port: 25
+    username: no-reply
+    password: soAsx2gGX6Rbhk
+    properties:
+      mail.smtp.starttls.enable: false
+      mail.smtp.starttls.required: false
+      mail.smtp.ssl.enable: false
+      mail.smtps.debug: true
+      mail.smtp.debug: true
+      mail.debug: true
+
+#FLYWAY
+spring.flyway:
+  enabled: true
+  check-location: true
+  schemas: public
+  locations: classpath:db/migration
+  baseline-on-migrate: true
+  sql-migration-prefix:
+
+  
+#DWR
+dwr:
+  debug: true
+  script-compressed: false
+
+#WEB CONTAINER
+server:
+  servlet:
+    context-path:
+    session.persistent: true
+  compression.enabled: true
+
+
+logging:
+  level:
+    br.com.eits.common.application.dwr.DwrAnnotationPostProcessor: FATAL
+    org.hibernate.engine.jdbc.env.internal.LobCreatorBuilderImpl: WARN
