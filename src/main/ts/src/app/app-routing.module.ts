@@ -1,10 +1,24 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { AppComponent } from './app.component';
+import { NgModule, ModuleWithProviders } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+ 
+const routes: Routes = [
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: 'dashboard', component: AppComponent },
+];
 
-const routes: Routes = [];
+export const routing: ModuleWithProviders = RouterModule.forRoot(routes, { useHash: true });
 
+/**
+ *
+ */
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  imports: [ routing ],
+  exports: [ RouterModule ]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule
+{
+
+}
+
+export const appRoutingProviders: any[] = [];

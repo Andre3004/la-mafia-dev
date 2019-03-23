@@ -11,11 +11,30 @@
     <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
   </li>
   <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
+    <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
   </li>
   <li>
     <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
   </li>
+
+  <form>
+    <label>Nome: </label>
+    <input name="nome" [(ngModel)]="usuario.nome">
+
+    <form>
+      <mat-form-field >
+        <input matInput placeholder="Favorite food" >
+      </mat-form-field>
+    
+      <mat-form-field class="example-full-width">
+        <textarea matInput placeholder="Leave a comment"></textarea>
+      </mat-form-field>
+    </form>
+
+    <button (click)="onSaveUsuario()">save</button>
+    <button (click)="onUpdateUsuario()">update</button>
+    <button (click)="onDeleteUsuario()">delete</button>
+    <button (click)="onFindUsuarioById()">find</button>
+  </form>
 </ul>
 
-<router-outlet></router-outlet>

@@ -1,0 +1,19 @@
+/*CSS para estilização de progressbar do .DWR*/
+#nprogress .bar {
+  background: rgba(244, 67, 54, 0.8);
+}
+
+/* Fancy blur effect */
+#nprogress .peg {
+  box-shadow: 0 0 10px rgba(244, 67, 54, 0.8);, 0 0 5px rgba(244, 67, 54, 0.8);
+}
+
+#nprogress .spinner-icon {
+  border-top-color: rgba(244, 67, 54, 0.8);
+  border-left-color: rgba(244, 67, 54, 0.8);
+}
+
+/*Removendo spinner*/
+#nprogress .spinner-icon {
+  display: none;
+}

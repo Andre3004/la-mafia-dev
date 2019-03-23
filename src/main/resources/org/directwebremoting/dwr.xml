@@ -41,9 +41,7 @@
     
     <!-- customs -->
     <converter id="bean" class="br.com.eits.common.application.dwr.converter.HibernateBeanConverter"/>
-    <converter id="optional" class="br.com.eits.common.application.dwr.converter.OptionalConverter"/>
-    <converter id="localDateTime" class="br.com.eits.common.application.dwr.converter.LocalDateTimeConverter"/>
-    <converter id="offsetDateTime" class="br.com.eits.common.application.dwr.converter.OffsetDateTimeConverter"/>
+    <converter id="localDateTime" class="br.com.projeto.portal.infrastructure.dwr.converter.LocalDateTimeConverter"/>
   </init>
 
   <allow>
@@ -167,17 +165,21 @@
 	<convert converter="enum" match="org.springframework.data.domain.Sort$Direction"/>
 	<convert converter="enum" match="org.springframework.data.domain.Sort$NullHandling"/>
 	
+	<!-- Moip Parcelamento -->
+	<convert converter="bean" match="br.com.moip.client.query.ParcelValue">
+		<param name="force" value="true"/>
+     	<param name="constructor" value="String total, String interest, String value, String parcel"/>
+    </convert>
+	
 	<!-- Exceptions -->
 	<convert converter="exception" match="java.lang.Exception"/>
 	<convert converter="bean" match="java.lang.StackTraceElement"/>
 	
-	<!-- Java 8 -->
-	<convert converter="optional" match="java.util.Optional"/>
+	<!-- Java 8 Time -->
 	<convert converter="enum" match="java.time.temporal.ChronoUnit"/>
 	<convert converter="localDateTime" match="java.time.LocalDate"/>
 	<convert converter="localDateTime" match="java.time.LocalDateTime"/>
 	<convert converter="localDateTime" match="java.time.LocalTime"/>
-    <convert converter="offsetDateTime" match="java.time.OffsetDateTime" />
 	
 	<!-- Others -->
 	<convert converter="enum" match="com.netflix.hystrix.exception.HystrixRuntimeException$FailureType"/>

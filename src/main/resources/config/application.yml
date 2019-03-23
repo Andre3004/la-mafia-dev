@@ -1,34 +1,27 @@
-# SETTINGS
-app:
-  external-url: http://localhost:8080
-  mail-from: noreply@boot
-  password-token-expiration-hours: 2
-
-#GENERAL
 spring:
-  application.name: boot
+  application.name: projeto
   jmx.enabled: false
 
 #DATA SOURCE
   datasource:
     hikari.pool-name: ${spring.application.name}
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
     hikari.maximum-pool-size: 3
-    url: jdbc:postgresql://127.0.0.1:5432/${spring.application.name}
-    username: ${spring.application.name}
-    password: ${spring.application.name}
+    url: jdbc:postgresql://127.0.0.1:5432/projeto
+    username: projeto
+    password: projeto
 
 #JPA
   jpa:
-    hibernate.ddl-auto: validate
+    hibernate.ddl-auto: update
     show-sql: true
     open-in-view: false
     properties:
       hibernate.dialect: br.com.eits.common.infrastructure.hibernate.dialect.PostgreSQLDialect
+      hibernate.id.new_generator_mappings: true
+      hibernate.cache.use_second_level_cache: true
       hibernate.default_schema: public
-      org.hibernate.envers.audit_table_suffix: _audited
-      org.hibernate.envers.revision_field_name: revision
-      org.hibernate.envers.revision_type_field_name: revision_type
-      org.hibernate.envers.default_schema: auditing
 
 #STATIC RESOURCES
   resources.static-locations: classpath:/META-INF/resources/
@@ -50,6 +43,7 @@ spring:
     port: 25
     username: no-reply
     password: soAsx2gGX6Rbhk
+    from: no-reply@prognus.org
     properties:
       mail.smtp.starttls.enable: false
       mail.smtp.starttls.required: false
@@ -57,16 +51,23 @@ spring:
       mail.smtps.debug: true
       mail.smtp.debug: true
       mail.debug: true
+      
+#LOGGING
+logging.level:
+  org.hibernate: INFO
+  org.directwebremoting: INFO
+  org.springframework.web: INFO
+  org.springframework.context.support: INFO
+  org.springframework.security: INFO
 
 #FLYWAY
-spring.flyway:
+flyway:
   enabled: true
   check-location: true
   schemas: public
   locations: classpath:db/migration
   baseline-on-migrate: true
-  sql-migration-prefix:
-
+  sql-migration-prefix: v
   
 #DWR
 dwr:
@@ -75,13 +76,57 @@ dwr:
 
 #WEB CONTAINER
 server:
-  servlet:
-    context-path:
-    session.persistent: true
+  context-path:
   compression.enabled: true
+  session.persistent: true
+  session.timeout: 999999999
+  
+#GATEWAY PAYMENT
+gateway-payment:
+ checkout-boleto-uri: https://checkout-sandbox.moip.com.br/boleto/
+ environment: SANDBOX
+ expiration-days: 1
+ gateway-uri: https://sandbox.moip.com.br/
+ app-id: APP-BCORU3T3SUWI
+ access-token: 0edc004fa4a04022b52130ccd1f3c5a2_v2
+ token: N2BXNR2V2ERVCX1U3UOZHRVY4O8DQPIB
+ key: PTKCZHMADT0PWSOLISMOY81XGHMJIAWCNQVJXD6T
+ public-key: -----BEGIN PUBLIC KEY-----
+             MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmcCRJdL4dfba6kma+qsS
+             nyTCzOUBINQiHxx7lJDdLIuoV+pzvckZarGwGLge+aKviZwfW1WUaWdDg0MZiynr
+             xCAjN1LHDEP1hm5Ik9U3qfmgABPHQ4xW3h2KJROuRLXTSAS8+yd26yx5n0Iy80Ad
+             Ez07vKYtmY7MVNTHGtUFaOoNtjtWicLu5tc3QanV+EL6FYD4Db2Ep2JWRxT4PMcG
+             qG3eGke7mMfRGKEiCibx7AuM0g1G8l5Bfird/3YVdnAYUJvgr/hj0p1g3B+0yHo4
+             8DTeXdgvNHiKyBca/747ADN6DlMIIDSyEcUg92cjTjtuGtpuy0F+N60JrR9fdjS9
+             JQIDAQAB
+             -----END PUBLIC KEY-----
+ login: gabriel.putrick@eits.com.br
+ 
+#INTERNATIONAL GATEWAY PAYMENT
+international-gateway-payment: 
+ client-id: Aei27hU1a3h5CO1gFj4TITns8RAt_0fSdLlJzHTMH3mVqhcee6tF68NBy316dL6jQKKbyNnPM2tNy_TT
+ client-secret: EBhWsySpIHnPOlebsgYNJPXL5FQNjd3kUyJHESmmY0rZGsXXwXZefNrPnTZPa
+ environment: sandbox
+ 
+
+#CONFIGURAÇÕES DE E-MAIL
+mail:
+  sac: wagner.mattei@gmail.com
+  
+#ALUNO
+aluno:
+  password: no-password
+
+endpoints:
+  enabled: false
+  sensitive: true
+  health:
+    enabled: true
+    sensitive: false
 
 
-logging:
-  level:
-    br.com.eits.common.application.dwr.DwrAnnotationPostProcessor: FATAL
-    org.hibernate.engine.jdbc.env.internal.LobCreatorBuilderImpl: WARN
+google:
+  recaptcha:
+    secret-key: 6LfZETEUAAAAACdmJHjzWM3Tk0rXxmisJJgHXeMD
+    site-key: 6LfZETEUAAAAAM1kpkVCvxOeTXkytSG5n-VFG61V
+    urltoverify: https://www.google.com/recaptcha/api/siteverify
