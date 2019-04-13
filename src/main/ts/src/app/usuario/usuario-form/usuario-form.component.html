@@ -1,0 +1,57 @@
+ <mat-dialog-title>
+  <h2>{{title}}</h2>
+</mat-dialog-title>
+
+<mat-dialog-content>
+
+  <form #qualificadorForm="ngForm"  fxLayout="column">
+    <div fxLayout="row">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Nome</mat-label>
+        <input required [(ngModel)]="usuario.nome" name="nome" matInput
+          placeholder="Digite seu nome">
+      </mat-form-field>
+
+      <mat-form-field class="push-left-md" fxFlex appearance="outline">
+        <mat-label>Telefone</mat-label>
+        <input required [(ngModel)]="usuario.telefone" name="telefone" matInput
+          placeholder="Digite seu telefone">
+      </mat-form-field>
+
+    </div>
+
+    <mat-form-field fxFlex appearance="outline">
+      <mat-label>E-mail</mat-label>
+      <input required matInput type="email" [(ngModel)]="usuario.email" name="email"
+        placeholder="Digite seu E-mail">
+    </mat-form-field>
+
+    <div fxLayout="row">
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Senha</mat-label>
+        <input matInput type="password" [(ngModel)]="usuario.senha"
+          name="senha"
+          placeholder="Digite sua senha">
+      </mat-form-field>
+
+      <mat-form-field fxFlex class="push-left-md" appearance="outline">
+        <mat-label>Confirmação da senha</mat-label>
+        <input matInput type="password" placeholder="Digite sua confirmação da senha">
+      </mat-form-field>
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="end">
+  <button [disabled]="qualificadorForm.invalid" (click)="onCloseClick()" mat-raised-button class="white-btn"
+    color="primary">
+    SALVAR
+  </button>
+  <button mat-dialog-close mat-raised-button class="white-btn
+    push-left-md bgc-grey-800">
+    CANCELAR
+  </button>
+</mat-dialog-actions>

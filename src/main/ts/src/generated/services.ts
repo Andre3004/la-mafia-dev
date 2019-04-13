@@ -16,12 +16,12 @@ export class UsuarioService {
         return dwrWrapper(this.brokerConfiguration, 'usuarioService', 'deleteUsuario', arg0) as Observable<void>;
     }
 
-    public findUsuarioById(arg0?: number): Observable<Usuario> {
-        return dwrWrapper(this.brokerConfiguration, 'usuarioService', 'findUsuarioById', arg0) as Observable<Usuario>;
-    }
-
     public updateUsuario(arg0?: Usuario): Observable<Usuario> {
         return dwrWrapper(this.brokerConfiguration, 'usuarioService', 'updateUsuario', arg0) as Observable<Usuario>;
+    }
+
+    public findUsuarioById(arg0?: number): Observable<Usuario> {
+        return dwrWrapper(this.brokerConfiguration, 'usuarioService', 'findUsuarioById', arg0) as Observable<Usuario>;
     }
 
 

@@ -8,7 +8,7 @@ $typography: mat-typography-config(
 
 @include mat-core($typography); // $typography is an **optional** argument for the mat-core
 
-$primary: mat-palette($mat-orange, 800, 100, 900);
+$primary: mat-palette($mat-red, 900, 100, 900);
 $accent:  mat-palette($mat-light-blue, 600, 100, 900);
 
 $warn:    mat-palette($mat-red, 600, 100, 900);
@@ -17,3 +17,58 @@ $theme: mat-light-theme($primary, $accent, $warn);
 
 @include angular-material-theme($theme);
 @include covalent-theme($theme, $typography); // $typography is an **optional** argument for the covalent-theme
+
+mat-toolbar .mat-form-field
+{
+  zoom: 75%;
+}
+
+mat-toolbar.toolbar-default
+{
+  padding-top: 20px;
+}
+
+.white-btn
+{
+  color: white !important;
+}
+
+.default-toolbar
+{
+  height: 80px;
+}
+
+ .delete-button-hover:hover
+ {
+   color: red !important;
+ }
+
+ .edit-button-hover:hover
+ {
+   color: #009688 !important;
+ }
+
+ .active-button-hover:hover
+ {
+    color: green !important;
+ }
+
+ td-dialog-actions
+{
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+td-dialog-actions .mat-button
+{
+  background-color: #424242;
+  color: white;
+  font-weight: bold;
+}
+
+td-dialog-actions .mat-button.mat-accent
+{
+  font-weight: bold;
+  color: white;
+  background-color: #b71c1c;
+}

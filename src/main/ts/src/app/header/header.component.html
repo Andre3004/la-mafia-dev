@@ -1,0 +1,34 @@
+<mat-sidenav-container class="header-container" autosize>
+
+    <mat-sidenav #sidenav mode="over">
+
+        <h3 class="push-left-md push-bottom-md">MENU</h3>
+        <p *ngFor="let menu of menus">
+            <button (click)="sidenav.toggle()" routerLink="{{menu.router}}" fxLayoutAlign="start center" style="width: 100%;" mat-button>
+                <mat-icon>{{menu.icon}}</mat-icon>
+                <label class="push-left-md">{{menu.title}}</label>
+            </button>
+        </p>
+    </mat-sidenav>
+
+    <td-layout-nav class="header-toolbar">
+        <div td-toolbar-content fxLayout="row" fxLayoutAlign="start center"
+            fxFlex>
+            <button mat-icon-button (click)="sidenav.toggle()">
+                <mat-icon>menu</mat-icon>
+            </button>
+            <h3 class="push-left-md">PROJETO</h3>
+            <!-- <breadcrumb [allowBootstrap]="true"></breadcrumb> -->
+
+
+            <button mat-button class="push-left-md" [matMenuTriggerFor]="menu">
+            </button>
+            <mat-menu #menu="matMenu" [overlapTrigger]="false">
+                <button (click)="logout()" class="pad-left-lg" mat-menu-item>
+                    <span class="tc-grey-800 mat-body-1">Sair</span>
+                </button>
+            </mat-menu>
+        </div>
+        <router-outlet></router-outlet>
+    </td-layout-nav>
+</mat-sidenav-container>

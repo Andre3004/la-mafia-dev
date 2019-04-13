@@ -1,0 +1,4 @@
+[
+    {"id":1, "nome": "André Damasceno", "email": "andre.damasceno@gmail.com", "situacao": "Ativo", "telefone": "(45) 9 9999-9999"},
+    {"id":2, "nome": "Carlos kaneko", "email": "kaneko@gmail.com", "situacao": "Ativo", "telefone": "(45) 9 9999-9999"}
+]

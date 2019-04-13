@@ -34,16 +34,16 @@ export interface IntlString {
     };
 }
 
-export interface Lancamento {
-    valor?: number,
+export interface Usuario {
+    nome?: string,
     id?: number,
     created?: Date,
     updated?: Date
 }
 
 
-export interface Usuario {
-    nome?: string,
+export interface Lancamento {
+    valor?: number,
     id?: number,
     created?: Date,
     updated?: Date
