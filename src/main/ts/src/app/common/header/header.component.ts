@@ -16,8 +16,7 @@ export class HeaderComponent implements OnInit
   *-------------------------------------------------------------------*/
  
   public menus : any[] = [
-    {title: "Dashboard", icon: 'dashboard', router: 'dashboard'},
-    {title: "Usuários", icon: 'account_circle', router: 'usuario'},
+    {title: "Usuários", icon: 'account_circle', router: 'usuario'}
   ]
 
   /*-------------------------------------------------------------------

@@ -3,7 +3,6 @@ package br.com.projeto.portal.application.aspect;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
-import org.hibernate.exception.ConstraintViolationException;
 import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -74,7 +73,7 @@ public class ExceptionHandlerAspect
 			String annotationType = constraint.getConstraintDescriptor().getAnnotation().annotationType().getName();
 
 			//Verifica o tipo da exceção
-			if ( annotationType.equals( "javax.validation.constraints.NotNull" ) || annotationType.equals( "org.hibernate.validator.constraints.NotEmpty" ) )
+			if ( annotationType.equals( "javax.validation.constraints.NotNull" ))
 			{
 				message.append( "\nO campo " + constraint.getPropertyPath() + " deve ser setado." );
 			}
@@ -113,45 +112,45 @@ public class ExceptionHandlerAspect
 			return;
 		}
 
-		if ( exception.getCause() instanceof ConstraintViolationException )
-		{
-			final ConstraintViolationException cause = (ConstraintViolationException) exception.getCause();
-			final PSQLException sqlException = (PSQLException) cause.getSQLException();
+//		if ( exception.getCause() instanceof ConstraintViolationException )
+//		{
+//			final ConstraintViolationException cause = (ConstraintViolationException) exception.getCause();
+//			final PSQLException sqlException = (PSQLException) cause.getSQLException();
+//
+//			final String message = sqlException.getServerErrorMessage().getDetail();
+//
+//			String key;
+//			//Verifica o código do erro gerado pelo PostgreSQL
+//			switch ( cause.getSQLState() )
+//			{
+//				case "23503": // foreign_key_violation
+//				{
+//					key = message.substring( message.indexOf( '"' ) + 1, message.indexOf( '.' ) - 1 );
+//					throw new DataIntegrityViolationException( this.messageSource.getMessage( "repository.foreignKeyViolation", new String[]{key}, LocaleContextHolder.getLocale() ) );
+//				}
+//				case "23505": // unique_violation
+//				{
+//					key = message.substring( message.indexOf( '(' ) + 1, message.indexOf( ')' ) );
+//					if ( key.startsWith( "lower(" ) )
+//					{
+//						key = key.replace( "lower(", "" );
+//						key = key.replace( "::text", "" );
+//					}
+//					throw new DataIntegrityViolationException( this.messageSource.getMessage( "repository.uniqueViolation", new String[]{key}, LocaleContextHolder.getLocale() ) );
+//				}
+//				case "23502": // not_null_violation
+//				{
+//					LOG.info( message );
+//					LOG.info( "Not null violation." );
+//				}
+//				default:
+//				{
+//					throw new DataIntegrityViolationException( this.messageSource.getMessage( "repository.uniqueViolation", new String[]{cause.getSQLState()}, LocaleContextHolder.getLocale() ) );
+//				}
+//			}
+//		}
 
-			final String message = sqlException.getServerErrorMessage().getDetail();
-
-			String key;
-			//Verifica o código do erro gerado pelo PostgreSQL
-			switch ( cause.getSQLState() )
-			{
-				case "23503": // foreign_key_violation
-				{
-					key = message.substring( message.indexOf( '"' ) + 1, message.indexOf( '.' ) - 1 );
-					throw new DataIntegrityViolationException( this.messageSource.getMessage( "repository.foreignKeyViolation", new String[]{key}, LocaleContextHolder.getLocale() ) );
-				}
-				case "23505": // unique_violation
-				{
-					key = message.substring( message.indexOf( '(' ) + 1, message.indexOf( ')' ) );
-					if ( key.startsWith( "lower(" ) )
-					{
-						key = key.replace( "lower(", "" );
-						key = key.replace( "::text", "" );
-					}
-					throw new DataIntegrityViolationException( this.messageSource.getMessage( "repository.uniqueViolation", new String[]{key}, LocaleContextHolder.getLocale() ) );
-				}
-				case "23502": // not_null_violation
-				{
-					LOG.info( message );
-					LOG.info( "Not null violation." );
-				}
-				default:
-				{
-					throw new DataIntegrityViolationException( this.messageSource.getMessage( "repository.uniqueViolation", new String[]{cause.getSQLState()}, LocaleContextHolder.getLocale() ) );
-				}
-			}
-		}
-
-		throw new DataIntegrityViolationException( this.messageSource.getMessage( "repository.dataIntegrityViolation", null, LocaleContextHolder.getLocale() ) );
+//		throw new DataIntegrityViolationException( this.messageSource.getMessage( "repository.dataIntegrityViolation", null, LocaleContextHolder.getLocale() ) );
 	}
 
 	//---------

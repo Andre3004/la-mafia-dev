@@ -1,0 +1,69 @@
+<!-- <mat-dialog-title>
+  <h2>{{title}}</h2>
+</mat-dialog-title> -->
+
+<mat-dialog-content>
+
+  <form #qualificadorForm="ngForm" fxLayout="column">
+
+    <div fxLayout="row">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Nome</mat-label>
+        <input required [(ngModel)]="usuario.nome" name="nome" matInput maxlength="144" placeholder="Digite seu nome">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>CPF</mat-label>
+        <input required [textMask]="{mask: maskCpf, guide: false}" [(ngModel)]="usuario.cpf" name="cpf" matInput maxlength="144" placeholder="Digite seu cpf">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Telefone</mat-label>
+        <input maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput name="telefone" [(ngModel)]="usuario.telefone" placeholder="Digite seu telefone">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>E-mail</mat-label>
+        <input required [(ngModel)]="usuario.email" email="true" name="email" type="email" matInput maxlength="144"
+          placeholder="Digite seu e-mail">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Senha</mat-label>
+        <input matInput type="password" [(ngModel)]="usuario.senha" maxlength="144" name="senha"
+        [required]="!usuario.id"
+          placeholder="Digite sua senha">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Confirmação da senha</mat-label>
+        <input matInput type="password" maxlength="144" [(ngModel)]="confSenha" name="confSenha" placeholder="Digite sua confirmação da senha">
+      </mat-form-field>
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="end">
+  <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+    color="primary">
+    SALVAR
+  </button>
+  <button mat-dialog-close mat-raised-button class="white-btn
+    push-left-md bgc-grey-800">
+    CANCELAR
+  </button>
+</mat-dialog-actions>

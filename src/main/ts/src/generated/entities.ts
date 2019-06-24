@@ -34,17 +34,35 @@ export interface IntlString {
     };
 }
 
-export interface Usuario {
-    nome?: string,
+export let PerfilUsuarioValues: string[] = ['ADMINISTRADOR', 'USUARIO'];
+export type PerfilUsuario = 'ADMINISTRADOR' | 'USUARIO';
+
+
+export interface Arquivo {
+    uuid?: string,
+    nomeOriginal?: string,
+    fileTransfer?: HTMLInputElement,
+    rootPath?: string,
+    mimeType?: string,
     id?: number,
     created?: Date,
     updated?: Date
 }
 
 
-export interface Lancamento {
-    valor?: number,
+export interface Usuario {
     id?: number,
+    nome?: string,
+    email?: string,
+    senha?: string,
+    telefone?: string,
+    cpf?: string,
+    perfilUsuario?: PerfilUsuario,
+    situacao?: Boolean,
+    anexoUuid?: string,
+    nomeArquivo?: string,
+    anexoByte?: number,
+    anexo?: HTMLInputElement,
     created?: Date,
     updated?: Date
 }

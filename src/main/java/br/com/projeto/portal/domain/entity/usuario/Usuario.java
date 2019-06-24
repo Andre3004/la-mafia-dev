@@ -1,63 +1,84 @@
 package br.com.projeto.portal.domain.entity.usuario;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
+import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
 import org.directwebremoting.annotations.DataTransferObject;
-import org.directwebremoting.annotations.Param;
 
-import br.com.eits.common.domain.entity.AbstractEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.directwebremoting.io.FileTransfer;
 
 /**
  * 
  */
 @Data
-@Entity
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode
 @DataTransferObject(javascript = "Usuario")
-public class Usuario extends AbstractEntity implements Serializable
+public class Usuario extends AbstractEntity
 {
 
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	
-	
 	/*-------------------------------------------------------------------
 	 *				 		     ATTRIBUTES
 	 *-------------------------------------------------------------------*/
 
+	private Long id;
+
 	private String nome;
+
+	private String email;
+
+	private String senha;
+
+	private String telefone;
+
+	private String cpf;
+
+	private PerfilUsuario perfilUsuario;
+
+	private Boolean situacao;
+
+	private String anexoUuid;
+
+	private String nomeArquivo;
+
+	//@Transient
+	private byte[] anexoByte;
+
+	//@Transient
+	private FileTransfer anexo;
+
 	/*-------------------------------------------------------------------
 	 * 		 					CONSTRUCTORS
 	 *-------------------------------------------------------------------*/
 
+	public Usuario(){}
 	
 
 	/*-------------------------------------------------------------------
 	 *							BEHAVIORS
 	 *-------------------------------------------------------------------*/
 
-	
-	
-	/*-------------------------------------------------------------------
-	 *						EXCEPTIONS
-	 *-------------------------------------------------------------------*/
-
-
-	
-	/*-------------------------------------------------------------------
-	 *						GETTERS AND SETTERS
-	 *-------------------------------------------------------------------*/
-	
-
+	@Override
+	public String toString()
+	{
+		return "Usuario{" +
+				"id=" + id +
+				", nome='" + nome + '\'' +
+				", email='" + email + '\'' +
+				", senha='" + senha + '\'' +
+				", telefone='" + telefone + '\'' +
+				", cpf='" + cpf + '\'' +
+				", perfilUsuario=" + perfilUsuario +
+				", situacao=" + situacao +
+				", anexoUuid='" + anexoUuid + '\'' +
+				", nomeArquivo='" + nomeArquivo + '\'' +
+				", anexoByte=" + Arrays.toString( anexoByte ) +
+				", anexo=" + anexo +
+				", created=" + created +
+				", updated=" + updated +
+				'}';
+	}
 }

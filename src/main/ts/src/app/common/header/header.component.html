@@ -5,8 +5,8 @@
         <h3 class="push-left-md push-bottom-md">MENU</h3>
         <p *ngFor="let menu of menus">
             <button (click)="sidenav.toggle()" routerLink="{{menu.router}}" fxLayoutAlign="start center" style="width: 100%;" mat-button>
-                <mat-icon>{{menu.icon}}</mat-icon>
-                <label class="push-left-md">{{menu.title}}</label>
+                <mat-icon style="font-size: 20px !important;">{{menu.icon}}</mat-icon>
+                <label class="push-left-md" style="font-size: 20px !important;">{{menu.title}}</label>
             </button>
         </p>
     </mat-sidenav>

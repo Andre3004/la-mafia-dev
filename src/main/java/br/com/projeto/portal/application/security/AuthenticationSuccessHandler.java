@@ -1,7 +1,7 @@
 package br.com.projeto.portal.application.security;
 
 import br.com.projeto.portal.domain.entity.usuario.Usuario;
-import br.com.projeto.portal.domain.repository.IUsuarioRepository;
+//import br.com.projeto.portal.domain.repository.IUsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -29,8 +29,8 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
 	/**
 	 *
 	 */
-	@Autowired
-	private IUsuarioRepository userRepository;
+	//@Autowired
+	//private IUsuarioRepository userRepository;
 
 	/*-------------------------------------------------------------------
 	 * 		 					BEHAVIORS
@@ -44,14 +44,14 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
 	{
 		try
 		{
-			final Usuario usuario = this.userRepository.findOne( ContextHolder.getAuthenticatedUser().getId() );
+			//final Usuario usuario = this.userRepository.findOne( ContextHolder.getAuthenticatedUser().getId() );
 		//	usuario.setLastLogin( Calendar.getInstance() );
-			this.userRepository.save( usuario );
+			//this.userRepository.save( usuario );
 
 			//add the usuario in the response
 			//usuario.setPassword( null );
 			//usuario.setEndereco( null );
-			response.getWriter().write( new ObjectMapper().writeValueAsString( usuario ) );
+			//response.getWriter().write( new ObjectMapper().writeValueAsString( usuario ) );
 		}
 		catch ( Exception e )
 		{
