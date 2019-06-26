@@ -1,4 +1,4 @@
-package br.com.projeto.portal.domain.dao.usuario;
+package br.com.projeto.portal.domain.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

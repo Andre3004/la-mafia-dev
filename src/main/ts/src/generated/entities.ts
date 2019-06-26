@@ -34,10 +34,6 @@ export interface IntlString {
     };
 }
 
-export let PerfilUsuarioValues: string[] = ['ADMINISTRADOR', 'USUARIO'];
-export type PerfilUsuario = 'ADMINISTRADOR' | 'USUARIO';
-
-
 export interface Arquivo {
     uuid?: string,
     nomeOriginal?: string,
@@ -59,6 +55,25 @@ export interface Usuario {
     cpf?: string,
     perfilUsuario?: PerfilUsuario,
     situacao?: Boolean,
+    anexoUuid?: string,
+    nomeArquivo?: string,
+    anexoByte?: number,
+    anexo?: HTMLInputElement,
+    created?: Date,
+    updated?: Date
+}
+
+
+export let PerfilUsuarioValues: string[] = ['ADMINISTRADOR', 'USUARIO'];
+export type PerfilUsuario = 'ADMINISTRADOR' | 'USUARIO';
+
+
+export interface Franquia {
+    id?: number,
+    nome?: string,
+    cnpj?: string,
+    endereco?: string,
+    cidade?: string,
     anexoUuid?: string,
     nomeArquivo?: string,
     anexoByte?: number,

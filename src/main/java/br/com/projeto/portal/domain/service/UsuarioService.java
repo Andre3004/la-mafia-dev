@@ -4,10 +4,9 @@
 package br.com.projeto.portal.domain.service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 //import br.com.projeto.portal.domain.repository.usuario.UsuarioDao;
-import br.com.projeto.portal.domain.dao.usuario.UsuarioDAO;
+import br.com.projeto.portal.domain.dao.UsuarioDAO;
 import br.com.projeto.portal.domain.entity.usuario.PerfilUsuario;
 import br.com.projeto.portal.domain.repository.IUsuarioRepository;
 import br.com.projeto.portal.infrastructure.arquivo.Arquivo;
@@ -17,7 +16,6 @@ import org.directwebremoting.annotations.RemoteProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,7 +75,6 @@ public class UsuarioService implements IUsuarioRepository
 		usuario.setSituacao( true );
 
 		usuario.setPerfilUsuario( PerfilUsuario.USUARIO ); //FIXME deixa no front-end;
-		usuario.setSituacao( true );
 
 		this.usuarioDao.insertUsuario( usuario );
 	}

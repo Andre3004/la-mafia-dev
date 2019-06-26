@@ -1,0 +1,77 @@
+<mat-dialog-content>
+  <form #qualificadorForm="ngForm" fxLayout="column">
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Código</mat-label>
+        <input [(ngModel)]="franquia.codigo" name="codigo" matInput maxlength="50" placeholder="Digite seu código">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Nome</mat-label>
+        <input required [(ngModel)]="franquia.nome" name="nome" matInput maxlength="144" placeholder="Digite seu nome">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>CNPJ</mat-label>
+        <input required [textMask]="{mask: maskCnpj, guide: false}" [(ngModel)]="franquia.cnpj" name="cnpj" matInput
+          maxlength="144" placeholder="Digite seu cnpj">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Cidade</mat-label>
+        <input required [(ngModel)]="franquia.cidade" name="cidade" type="cidade" matInput maxlength="144"
+          placeholder="Digite sua cidade">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Endereço</mat-label>
+        <input required maxlength="144" matInput name="endereco" [(ngModel)]="franquia.endereco"
+          placeholder="Digite seu endereco">
+      </mat-form-field>
+
+    </div>
+
+    <div>
+      <div fxLayout="column" class="push-left">
+        <span class="tc-grey-500 mat-caption" *ngIf="!fotoImage">ADICIONAR ANEXO</span>
+        <span class="tc-grey-500 mat-caption" *ngIf="franquia?.nomeArquivo">{{franquia?.nomeArquivo}}</span>
+        <button type="button" (click)="fotoInput.click()" style="color: whitesmoke; background: #001f3f" mat-button
+          class="push-bottom">
+          <span matTooltip="Selecionar Anexo" *ngIf="!fotoImage">SELECIONAR ANEXO</span>
+          <span matTooltip="Alterar abexi" *ngIf="fotoImage">ALTERAR ANEXO</span>
+        </button>
+        <button type="button" matTooltip="Remover anexo" *ngIf="fotoImage || franquia?.anexoUuid"
+          (click)="removeAnexo()" mat-button style="color: whitesmoke; background: #FF4136" class="push-bottom  ">
+          REMOVER
+        </button>
+        <input hidden type="file" #fotoInput (change)="setFranquiaAnexo($event)">
+        <button mat-button (click)="downloadFile()" *ngIf="franquia.anexoUuid"
+          style="color: whitesmoke; background: #3D9970" class="push-bottom  ">DOWNLOAD</button>
+
+      </div>
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="end">
+  <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+    color="primary">
+    SALVAR
+  </button>
+  <button mat-dialog-close mat-raised-button class="white-btn
+    push-left-md bgc-grey-800">
+    CANCELAR
+  </button>
+</mat-dialog-actions>

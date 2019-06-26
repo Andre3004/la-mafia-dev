@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule, appRoutingProviders } from './app-routing.module';
 import { SharedCommonModule } from './common/shared-common.module';
-import { BrowserModule } from '@angular/platform-browser';
 import { UsuarioModule } from './modules/usuario/usuario.module';
+import { FranquiaModule } from './modules/franquia/franquia.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -11,11 +12,13 @@ import { UsuarioModule } from './modules/usuario/usuario.module';
   ],
   imports: [
     SharedCommonModule,
-    UsuarioModule,
-    BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    
+    UsuarioModule
   ],
   providers: [   
+    appRoutingProviders
   ],
   bootstrap: [AppComponent]
 })

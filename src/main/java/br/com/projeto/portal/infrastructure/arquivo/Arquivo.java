@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 
+import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -13,13 +14,11 @@ import lombok.Setter;
 import org.directwebremoting.annotations.DataTransferObject;
 import org.directwebremoting.io.FileTransfer;
 
-import br.com.eits.common.domain.entity.AbstractEntity;
 import br.com.eits.common.infrastructure.file.MimeType;
 
 
 @Data
-@NoArgsConstructor
-@EqualsAndHashCode( callSuper = true )
+@EqualsAndHashCode
 @DataTransferObject(javascript = "Arquivo")
 public class Arquivo extends AbstractEntity
 {
@@ -27,10 +26,10 @@ public class Arquivo extends AbstractEntity
 	/*-------------------------------------------------------------------
 	 *				 		     ATTRIBUTES
 	 *-------------------------------------------------------------------*/
-
 	/**
 	 *
 	 */
+	private Long id;
 	private String uuid;
 	private String nomeOriginal;
 
@@ -66,5 +65,20 @@ public class Arquivo extends AbstractEntity
 			throw new IllegalStateException("O arquivo \"" + nomeOriginal
 					+ "\" requisitado não existe no sistema de arquivos.", e );
 		}
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Arquivo{" +
+				"uuid='" + uuid + '\'' +
+				", nomeOriginal='" + nomeOriginal + '\'' +
+				", fileTransfer=" + fileTransfer +
+				", rootPath='" + rootPath + '\'' +
+				", mimeType='" + mimeType + '\'' +
+				", id=" + id +
+				", created=" + created +
+				", updated=" + updated +
+				'}';
 	}
 }

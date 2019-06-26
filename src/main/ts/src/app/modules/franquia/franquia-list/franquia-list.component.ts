@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { UsuarioFormComponent } from '../usuario-form/usuario-form.component';
+import { FranquiaFormComponent } from '../franquia-form/franquia-form.component';
 import { MatDialog } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { TdDialogService, ITdDataTableColumn, IPageChangeEvent } from '@covalent/core';
 import { PaginationService } from 'src/app/common/pagination/pagination.service';
-import { UsuarioService } from 'src/generated/services';
+import { FranquiaService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
 
 
 @Component({
-    selector: 'app-usuario-list',
-    templateUrl: './usuario-list.component.html',
-    styleUrls: ['./usuario-list.component.scss']
+    selector: 'app-franquia-list',
+    templateUrl: './franquia-list.component.html',
+    styleUrls: ['./franquia-list.component.scss']
 })
-export class UsuarioListComponent implements OnInit
+export class FranquiaListComponent implements OnInit
 {
 
     /*-------------------------------------------------------------------
@@ -24,16 +24,19 @@ export class UsuarioListComponent implements OnInit
 
     public filters = {
         nome: '',
-        situacao: null,
-        email: ''
+        cnpj: '',
+        cidade: ''
     }
+
+    public maskCnpj = [/\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/];
 
     /**
        * Colunas da Grid
        */
     public tableColumns: ITdDataTableColumn[] = [
         { name: 'nome', label: 'NOME', sortable: false },
-        { name: 'email', label: 'E-MAIL', sortable: false },
+        { name: 'cnpj', label: 'CNPJ', sortable: false },
+        { name: 'cidade', label: 'CIDADE', sortable: false },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
         { name: 'opcoes', label: 'OPÇÕES', tooltip: 'Opções', sortable: false, width: 150 }
     ];
@@ -44,20 +47,20 @@ export class UsuarioListComponent implements OnInit
      * @param _dialogService 
      * @param paginationService 
      * @param openSnackBarService 
-     * @param usuarioService 
+     * @param franquiaService 
      */
     constructor(public dialog: MatDialog,
         private _dialogService: TdDialogService,
         private paginationService: PaginationService,
         private openSnackBarService: OpenSnackBarService,
-        private usuarioService: UsuarioService) 
+        private franquiaService: FranquiaService) 
     {
-        this.pageRequest = paginationService.pageRequest('nome', 'ASC', 5);
+        this.pageRequest = paginationService.pageRequest('nome', 'ASC', 10);
     }
 
     ngOnInit()
     {
-        this.onListUsuarios();
+        this.onListFranquias();
     }
 
     /*-------------------------------------------------------------------
@@ -65,19 +68,19 @@ export class UsuarioListComponent implements OnInit
     *-------------------------------------------------------------------*/
 
     /**
-     * Método responsável pela listagem dos avisos utilizando os filtros informados pelo usuário
+     * Método responsável pela listagem dos avisos utilizando os filtros informados pelo franquia
      */
-    public onListUsuarios(filters: Boolean = true): void
+    public onListFranquias(filters: Boolean = true): void
     {
         if (filters)
         {
             this.pageRequest.pageable.page = 0;
         }
 
-        this.usuarioService.listUsuariosByFilters(
+        this.franquiaService.listFranquiasByFilters(
             this.filters.nome,
-            this.filters.situacao,
-            this.filters.email,
+            this.filters.cnpj,
+            this.filters.cidade,
             this.pageRequest.pageable
         ).subscribe((result) =>
         {
@@ -89,34 +92,34 @@ export class UsuarioListComponent implements OnInit
     {
         this.filters = {
             nome: '',
-            situacao: null,
-            email: ''
+            cnpj: '',
+            cidade: ''
         }
         
-        this.onListUsuarios();
+        this.onListFranquias();
     }
 
 
-    public openForm(usuario)
+    public openForm(franquia)
     {
-        const dialogRef = this.dialog.open(UsuarioFormComponent, {
+        const dialogRef = this.dialog.open(FranquiaFormComponent, {
             width: '600px',
             height: 'auto',
-            data: { usuarioId: usuario ? usuario.id : null }
+            data: { franquiaId: franquia ? franquia.id : null }
         });
 
-        dialogRef.afterClosed().subscribe(usuarioSaved =>
+        dialogRef.afterClosed().subscribe(franquiaSaved =>
         {
-            if(usuarioSaved) this.onListUsuarios();
+            if(franquiaSaved) this.onListFranquias();
         });
     }
 
 
-    public atualizarSituacaoUsuario(usuario)
+    public atualizarSituacaoFranquia(franquia)
     {
         this._dialogService.openConfirm({
-            message: !usuario.situacao  ? "Tem certeza que deseja ativar este usuário ? " : "Tem certeza que deseja desativar este usuário ? ",
-            title: !usuario.situacao  ? "Ativar usuário" : "Desativar usuário",
+            message: !franquia.situacao  ? "Tem certeza que deseja ativar esta franquia ? " : "Tem certeza que deseja desativar esta franquia ? ",
+            title: !franquia.situacao  ? "Ativar franquia" : "Desativar franquia",
             cancelButton: 'CANCELAR',
             acceptButton: 'CONFIRMAR',
             width: '500px'
@@ -124,9 +127,9 @@ export class UsuarioListComponent implements OnInit
         {
             if (accept)
             {
-                this.usuarioService.updateSituacaoUsuario(usuario.id, !usuario.situacao).subscribe( result => {
-                    this.openSnackBarService.openSuccess(usuario.situacao ? 'Usuário desativado com sucesso.' : 'Usuário ativado com sucesso.');
-                    this.onListUsuarios();
+                this.franquiaService.updateSituacaoFranquia(franquia.id, !franquia.situacao).subscribe( result => {
+                    this.openSnackBarService.openSuccess(franquia.situacao ? 'franquia desativada com sucesso.' : 'franquia ativada com sucesso.');
+                    this.onListFranquias();
                 }, err => this.openSnackBarService.openError(err.message))
             }
         });
@@ -137,6 +140,6 @@ export class UsuarioListComponent implements OnInit
         this.pageRequest.pageable.page = pagingEvent.page - 1;
         this.pageRequest.pageable.size = pagingEvent.pageSize;
 
-        this.onListUsuarios(false);
+        this.onListFranquias();
     }
 }
