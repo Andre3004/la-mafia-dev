@@ -97,13 +97,7 @@ public class AmbienteService implements IAmbienteRepository
 
 		if(ambiente.getAmbienteImagems() != null && ambiente.getAmbienteImagems().size() > 0)
 		{
-			List<AmbienteImagem> ambienteImagemsToUpdate = ambiente.getAmbienteImagems().stream().filter( ambienteImagem -> ambienteImagem.getAnexo() != null ).collect( Collectors.toList() );
 			List<AmbienteImagem> ambienteImagemsToInsert = ambiente.getAmbienteImagems().stream().filter( ambienteImagem -> ambienteImagem.getId() == null ).collect( Collectors.toList() );
-
-			ambienteImagemsToUpdate.forEach( ambienteImagem -> {
-				ambienteImagem.setAmbiente( ambiente );
-				ambienteDao.updateAmbienteImagem( ambienteImagem );
-			});
 
 			ambienteImagemsToInsert.forEach( ambienteImagem -> {
 				ambienteImagem.setAmbiente( ambiente );

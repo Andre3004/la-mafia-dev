@@ -4,7 +4,6 @@ import { AmbienteRouting } from './ambiente.routing';
 import { AmbienteFormComponent } from './ambiente-form/ambiente-form.component';
 import { SharedCommonModule } from 'src/app/common/shared-common.module';
 
-
 @NgModule({
   declarations: [
     AmbienteListComponent,

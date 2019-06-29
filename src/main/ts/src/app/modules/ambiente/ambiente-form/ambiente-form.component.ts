@@ -1,9 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { AmbienteService, ArquivoService, FranquiaService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
-import { Ambiente, Franquia } from 'src/generated/entities';
+import { Ambiente, Franquia, AmbienteImagem } from 'src/generated/entities';
 import { TextMasks } from 'src/app/common/mask/text-masks';
+import { DragScrollComponent } from 'ngx-drag-scroll';
 
 @Component({
   selector: 'app-ambiente-form',
@@ -18,13 +19,22 @@ export class AmbienteFormComponent implements OnInit
 
   public title = "";
 
-  public ambiente: Ambiente = { franquia: {} };
+  public ambiente: Ambiente = { franquia: {}, ambienteImagems: [] };
 
-  // public fotoImage: any;
+  public fotoImage: any[] = [];
 
   public franquias: Franquia[];
 
   public textMasks = TextMasks;
+
+  public imagemsRemoved = [];
+  
+  public images = [
+    "https://dqqzjdqmiszdy.cloudfront.net/sites/default/files/html5_assets/frames_minions_char_3_mob.png",
+    "http://i2.wp.com/farm1.staticflickr.com/502/19162022903_f8cd8501af.jpg?resize=500%2C271&ssl=1",
+    "https://i.pinimg.com/736x/78/1d/29/781d2914510339a762267ed4913cb62b.jpg",
+    "https://www.losminionsaldia.com/images/mas-minions/minion.png"
+  ];
   
   constructor(
     private ambienteService: AmbienteService,
@@ -32,6 +42,7 @@ export class AmbienteFormComponent implements OnInit
     private openSnackBarService: OpenSnackBarService,
     public dialogRef: MatDialogRef<AmbienteFormComponent>,
     private arquivoService: ArquivoService,
+    private changeDetectionRef: ChangeDetectorRef,
     @Inject(MAT_DIALOG_DATA) public data: any
   )
   {
@@ -60,6 +71,11 @@ export class AmbienteFormComponent implements OnInit
     this.ambienteService.findAmbienteById(ambienteId).subscribe(ambiente =>
     {
       this.ambiente = ambiente;
+
+      if(ambiente.ambienteImagems != null && ambiente.ambienteImagems.length > 0)
+      {
+        ambiente.ambienteImagems.forEach( ambienteImagem => this.fotoImage.push({base64: null}));
+      }
     }, err => this.openSnackBarService.openError(err.message))
 
   }
@@ -75,11 +91,8 @@ export class AmbienteFormComponent implements OnInit
       return;
     }
 
-    // if(this.ambiente.anexo && typeof(this.ambiente.anexo) == 'string')
-    // {
-    //   anexoOld = this.ambiente.anexo;
-    //   this.ambiente.anexo = null;
-    // }
+    if( this.ambiente.ambienteImagems && this.ambiente.ambienteImagems.length > 0)
+      this.ambiente.ambienteImagems = this.ambiente.ambienteImagems.filter(ambienteImagem => ambienteImagem.anexo)
 
     if (!this.ambiente.id)
     {
@@ -87,22 +100,24 @@ export class AmbienteFormComponent implements OnInit
       {
         this.openSnackBarService.openSuccess("Ambiente salvo com sucesso.");
         this.dialogRef.close(this.ambiente);
+        this.changeDetectionRef.detectChanges();
       }, err => {
         
-        // if(anexoOld) this.ambiente.anexo = anexoOld;
-
+        this.changeDetectionRef.detectChanges();
         this.openSnackBarService.openError(err.message)
 
       })
     }
     else
     {
-      this.ambienteService.updateAmbiente(this.ambiente).subscribe(ambiente =>
+      this.ambienteService.updateAmbiente(this.ambiente, this.imagemsRemoved).subscribe(ambiente =>
       {
         this.openSnackBarService.openSuccess("Ambiente atualizado com sucesso.");
         this.dialogRef.close(this.ambiente);
+        this.changeDetectionRef.detectChanges();
       }, err => {
         // if(anexoOld) this.ambiente.anexo = anexoOld;
+        this.changeDetectionRef.detectChanges();
         this.openSnackBarService.openError(err.message)
       })
     }
@@ -123,53 +138,64 @@ export class AmbienteFormComponent implements OnInit
   /*-------------------------------------------------------------------
   *                           FOTO
   *-------------------------------------------------------------------*/
+ 
+  public addImagemButton()
+  {
+    this.ambiente.ambienteImagems.push({});
+    this.fotoImage.push({base64:null});
+  }
 
+  public removeAnexo(index)
+  {
+    if(this.ambiente.ambienteImagems[index].anexoUuid)
+        this.imagemsRemoved.push(this.ambiente.ambienteImagems[index].id)
 
+    this.ambiente.ambienteImagems.splice(index, 1);
+    this.fotoImage.splice(index, 1);
 
-  // public removeAnexo()
-  // {
-  //   this.ambiente.anexo = null;
-  //   this.ambiente.anexoUuid = null;
-  //   this.fotoImage = null;
-  //   this.ambiente.nomeArquivo = null;
-  // }
+  }
 
-  // public downloadFile()
-  // {
-  //   this.arquivoService.downloadArquivoByUuid(this.ambiente.anexoUuid).subscribe(result =>
-  //   {
-  //     window.location.href = result;
-  //   }, (exception) => this.openSnackBarService.openError(exception.message))
-  // }
+  public downloadFile(index)
+  {
+    this.arquivoService.downloadArquivoByUuid(this.ambiente.ambienteImagems[index].anexoUuid).subscribe(result =>
+    {
+      window.location.href = result;
+    }, (exception) => this.openSnackBarService.openError(exception.message))
+  }
 
-  // public setAmbienteAnexo(event)
-  // {
-  //   if (event.target.files[0])
-  //   {
-  //     if (event.target.files[0].size <= 10000000) //10MB
-  //     {
-  //       this.ambiente.anexo = event.target;
+  public setAmbienteImagemAnexo(event, index)
+  {
+    let ambienteImagem : AmbienteImagem = {};
 
-  //       this.ambiente.nomeArquivo = event.target.files[0].name;
+    if (event.target.files[0])
+    {
+      if (event.target.files[0].size <= 10000000) //10MB
+      {
+        ambienteImagem.anexo = event.target;
 
-  //       let reader = new FileReader();
+        ambienteImagem.nomeArquivo = event.target.files[0].name;
 
-  //       reader.onload = (event: any) =>
-  //       {
-  //         this.fotoImage = event.target.result;
-  //       };
-  //       this.ambiente.anexoUuid = null;
-  //       reader.readAsDataURL(event.target.files[0]);
-  //     }
-  //     else
-  //     {
-  //       this.openSnackBarService.openSuccess("O tamanho da foto não pode ser maior que 10MB");
-  //     }
-  //   }
-  //   else
-  //   {
-  //     this.ambiente.anexo = null;
-  //   }
-  // }
+        let reader = new FileReader();
+
+        reader.onload = (event: any) =>
+        {
+          this.fotoImage[index].base64 = event.target.result;
+        };
+        ambienteImagem.anexoUuid = null;
+        reader.readAsDataURL(event.target.files[0]);
+
+        this.ambiente.ambienteImagems[index] = ambienteImagem;
+      }
+      else
+      {
+        this.openSnackBarService.openSuccess("O tamanho da foto não pode ser maior que 10MB");
+      }
+    }
+    else
+    { 
+      this.ambiente.ambienteImagems[index].anexo = null;
+    }
+
+  }
 
 }

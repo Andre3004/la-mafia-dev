@@ -154,10 +154,6 @@ public class AmbienteDAO implements IAmbienteRepository
 
 		List<AmbienteImagem> ambienteImagens = jdbcTemplate.query(querySql, new BeanPropertyRowMapper(AmbienteImagem.class));
 
-		ambienteImagens.forEach( ambienteImagem -> {
-			ambienteImagem.setAmbiente(findAmbienteById( ambienteId ));
-		});
-
 		return ambienteImagens;
 	}
 

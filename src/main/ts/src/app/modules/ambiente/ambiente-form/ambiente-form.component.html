@@ -2,86 +2,108 @@
 
 
 <mat-dialog-content>
-    <form #qualificadorForm="ngForm" fxLayout="column">
 
-        <div fxLayout="row" fxLayoutGap="30px">
+    <mat-tab-group>
+        <mat-tab label="Informações">
+            <form #qualificadorForm="ngForm" fxLayout="column" class="push-top-md">
 
-            <mat-form-field fxFlex appearance="outline">
-                <mat-label>Nome</mat-label>
-                <input required [(ngModel)]="ambiente.nome" name="nome" matInput maxlength="144"
-                    placeholder="Digite o nome do ambiente">
-            </mat-form-field>
+                <div fxLayout="row" fxLayoutGap="30px">
 
-            <mat-form-field fxFlex appearance="outline">
-                <mat-label>Capacidade de mesas</mat-label>
-                <input required [(ngModel)]="ambiente.capacidadeMesas" 
-                    [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}"
-                    name="nome" matInput
-                    placeholder="Digite a capacidade de mesas">
-            </mat-form-field>
+                    <mat-form-field fxFlex appearance="outline">
+                        <mat-label>Nome</mat-label>
+                        <input required [(ngModel)]="ambiente.nome" name="nome" matInput maxlength="144"
+                            placeholder="Digite o nome do ambiente">
+                    </mat-form-field>
 
-        </div>
-        
+                    <mat-form-field fxFlex appearance="outline">
+                        <mat-label>Capacidade de mesas</mat-label>
+                        <input required [(ngModel)]="ambiente.capacidadeMesas"
+                            [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}" name="nome" matInput
+                            placeholder="Digite a capacidade de mesas">
+                    </mat-form-field>
 
-        <div fxLayout="row" fxLayoutAlign=" center">
-
-            <mat-form-field fxFlex appearance="outline">
-                <mat-label>Franquia</mat-label>
-                <input type="text" matInput [matAutocomplete]="auto" #inputFilter [(ngModel)]="ambiente.franquia" name="franquia"
-                    (ngModelChange)="onListFranquias(inputFilter.value);">
-            </mat-form-field>
-
-            <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete" (optionSelected)="ambiente.franquia = $event.option.value; onListFranquias();" >
-                <mat-option [value]="null">Nenhum</mat-option>
-                <mat-option *ngFor="let franquia of franquias" [value]="franquia">{{franquia.nome}}</mat-option>
-            </mat-autocomplete>
+                </div>
 
 
-        </div>
+                <div fxLayout="row" fxLayoutAlign=" center">
 
-        <div fxLayout="row">
-            <mat-form-field fxFlex appearance="outline">
-                <mat-label>Descrição</mat-label>
-                <textarea  [(ngModel)]="ambiente.descricao" name="descricao" matInput maxlength="144"
-                    placeholder="Digite a descrição do ambiente"></textarea>
-            </mat-form-field>
+                    <mat-form-field fxFlex appearance="outline">
+                        <mat-label>Franquia</mat-label>
+                        <input type="text" matInput [matAutocomplete]="auto" #inputFilter
+                            [(ngModel)]="ambiente.franquia" name="franquia"
+                            (ngModelChange)="onListFranquias(inputFilter.value);">
+                    </mat-form-field>
 
-        </div>
-
-        <!-- <div fxFlex style="background-color: #b71c1c; color: white; font-weight: bold;border-radius: 30px;"
-            fxLayoutAlign="space-between center">
-            <label *ngIf="!fotoImage && !ambiente.anexoUuid" style="max-width: 400px;"
-                class="text-truncate push-left-md">
-                Selecione o arquivo...
-            </label>
+                    <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
+                        (optionSelected)="ambiente.franquia = $event.option.value; onListFranquias();">
+                        <mat-option [value]="null">Nenhum</mat-option>
+                        <mat-option *ngFor="let franquia of franquias" [value]="franquia">{{franquia.nome}}</mat-option>
+                    </mat-autocomplete>
 
 
-            <label *ngIf="ambiente?.nomeArquivo" style="max-width: 400px;" class="text-truncate push-left-md">
-                {{ambiente?.nomeArquivo}}
-            </label>
+                </div>
 
-            <div class="push-right-sm">
-                <button (click)="fotoInput.click()" *ngIf="!fotoImage && !ambiente?.anexoUuid" mat-icon-button
-                    matTooltip="Adicionar anexo">
-                    <mat-icon>attach_file</mat-icon>
-                </button>
+                <div fxLayout="row">
+                    <mat-form-field fxFlex appearance="outline">
+                        <mat-label>Descrição</mat-label>
+                        <textarea [(ngModel)]="ambiente.descricao" name="descricao" matInput maxlength="144"
+                            placeholder="Digite a descrição do ambiente"></textarea>
+                    </mat-form-field>
 
-                <button *ngIf="fotoImage || ambiente?.anexoUuid" (click)="removeAnexo()" matTooltip="Remover anexo"
-                    mat-icon-button>
-                    <mat-icon>delete</mat-icon>
-                </button>
+                </div>
 
-                <button *ngIf="ambiente.anexoUuid" matTooltip="Download anexo" (click)="downloadFile()"
-                    mat-icon-button>
-                    <mat-icon>file_download</mat-icon>
-                </button>
+            </form>
 
+        </mat-tab>
+
+        <mat-tab label="Fotos">
+
+            <div fxLayout="row" fxFlex>
+                <div fxFlex></div>
+                <button color="accent" style="right: 0;" class="white-btn push-top-sm" (click)="addImagemButton()" mat-raised-button>ADICIONAR ARQUIVO</button>
             </div>
 
-            <input hidden type="file" #fotoInput (change)="setAmbienteAnexo($event)">
-        </div> -->
+            <div style="max-height: 350px;overflow: auto;" >
+                <div *ngFor="let ambienteImagem of ambiente.ambienteImagems; let i = index">
+                    <div class="push-top-sm" fxFlex
+                        style="background-color: #b71c1c; color: white; font-weight: bold;border-radius: 30px;"
+                        fxLayoutAlign="space-between center">
+                        <label *ngIf="!fotoImage[i]?.base64 && !ambienteImagem.anexoUuid" style="max-width: 400px;"
+                            class="text-truncate push-left-md">
+                            Selecione o arquivo...
+                        </label>
 
-    </form>
+
+                        <label *ngIf="ambienteImagem?.nomeArquivo" style="max-width: 400px;"
+                            class="text-truncate push-left-md">
+                            {{ambienteImagem?.nomeArquivo}}
+                        </label>
+
+                        <div class="push-right-sm">
+                            <button (click)="removeAnexo(i)" matTooltip="Remover anexo" mat-icon-button>
+                                <mat-icon>delete</mat-icon>
+                            </button>
+
+                            <button (click)="fotoInput.click()"
+                                *ngIf="!fotoImage[i]?.base64 && !ambienteImagem?.anexoUuid" mat-icon-button
+                                matTooltip="Adicionar anexo">
+                                <mat-icon>attach_file</mat-icon>
+                            </button>
+
+                            <button *ngIf="ambienteImagem.anexoUuid" matTooltip="Download anexo"
+                                (click)="downloadFile(i)" mat-icon-button>
+                                <mat-icon>file_download</mat-icon>
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <input hidden type="file" #fotoInput (change)="setAmbienteImagemAnexo($event, i)">
+                </div>
+            </div>
+        </mat-tab>
+
+    </mat-tab-group>
 
 </mat-dialog-content>
 
