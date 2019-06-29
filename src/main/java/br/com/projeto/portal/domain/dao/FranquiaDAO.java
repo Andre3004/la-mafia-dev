@@ -130,11 +130,11 @@ public class FranquiaDAO implements IFranquiaRepository
 		List<Franquia> franquias = jdbcTemplate.query(querySql,new RowMapper<Franquia>(){
 			public Franquia mapRow( ResultSet rs, int row) throws SQLException {
 				Franquia e=new Franquia();
-				e.setId(rs.getLong(1));
-				e.setNome(rs.getString(2));
-				e.setCnpj(rs.getString(3));
-				e.setCidade(rs.getString(5));
-				e.setSituacao( rs.getBoolean( 8 ) );
+				e.setId(rs.getLong("id"));
+				e.setNome(rs.getString("nome"));
+				e.setCnpj(rs.getString("cnpj"));
+				e.setCidade(rs.getString("cidade"));
+				e.setSituacao( rs.getBoolean( "situacao" ) );
 				return e;
 			}
 		});

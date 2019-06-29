@@ -34,13 +34,97 @@ export interface IntlString {
     };
 }
 
+export interface Franquia {
+    id?: number,
+    codigo?: string,
+    nome?: string,
+    cnpj?: string,
+    endereco?: string,
+    cidade?: string,
+    anexoUuid?: string,
+    nomeArquivo?: string,
+    situacao?: Boolean,
+    anexo?: HTMLInputElement,
+    created?: Date,
+    updated?: Date
+}
+
+
+export interface Ambiente {
+    id?: number,
+    franquia?: Franquia,
+    nome?: string,
+    descricao?: string,
+    capacidadeMesas?: number,
+    situacao?: Boolean,
+    franquiaId?: number,
+    ambienteImagems?: AmbienteImagem[],
+    mesas?: Mesa[],
+    quantidadeMesas?: number,
+    created?: Date,
+    updated?: Date
+}
+
+
+export interface AmbienteImagem {
+    id?: number,
+    ambiente?: Ambiente,
+    anexoUuid?: string,
+    nomeArquivo?: string,
+    anexo?: HTMLInputElement,
+    ambienteId?: number,
+    created?: Date,
+    updated?: Date
+}
+
+
+export let PerfilUsuarioValues: string[] = ['ADMINISTRADOR', 'USUARIO'];
+export type PerfilUsuario = 'ADMINISTRADOR' | 'USUARIO';
+
+
 export interface Arquivo {
+    id?: number,
     uuid?: string,
     nomeOriginal?: string,
     fileTransfer?: HTMLInputElement,
     rootPath?: string,
     mimeType?: string,
+    created?: Date,
+    updated?: Date
+}
+
+
+export interface GrupoProduto {
     id?: number,
+    nome?: string,
+    franquia?: Franquia,
+    exigeAno?: Boolean,
+    codigo?: string,
+    situacao?: Boolean,
+    anexoUuid?: string,
+    nomeArquivo?: string,
+    franquiaId?: number,
+    anexo?: HTMLInputElement,
+    created?: Date,
+    updated?: Date
+}
+
+
+export interface Produto {
+    id?: number,
+    nome?: string,
+    descricao?: string,
+    codigo?: string,
+    ano?: number,
+    situacao?: Boolean,
+    anexoUuid?: string,
+    nomeArquivo?: string,
+    grupoProduto?: GrupoProduto,
+    estoque?: number,
+    precoCusto?: number,
+    precoVenda?: number,
+    anexo?: HTMLInputElement,
+    grupoProdutoId?: number,
     created?: Date,
     updated?: Date
 }
@@ -57,27 +141,18 @@ export interface Usuario {
     situacao?: Boolean,
     anexoUuid?: string,
     nomeArquivo?: string,
-    anexoByte?: number,
     anexo?: HTMLInputElement,
     created?: Date,
     updated?: Date
 }
 
 
-export let PerfilUsuarioValues: string[] = ['ADMINISTRADOR', 'USUARIO'];
-export type PerfilUsuario = 'ADMINISTRADOR' | 'USUARIO';
-
-
-export interface Franquia {
-    id?: number,
-    nome?: string,
-    cnpj?: string,
-    endereco?: string,
-    cidade?: string,
-    anexoUuid?: string,
-    nomeArquivo?: string,
-    anexoByte?: number,
-    anexo?: HTMLInputElement,
+export interface Mesa {
+    numeroMesa?: number,
+    ambiente?: Ambiente,
+    quantidadeLugaresMesa?: number,
+    situacao?: Boolean,
+    ambienteId?: number,
     created?: Date,
     updated?: Date
 }

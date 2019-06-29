@@ -44,7 +44,7 @@
 <mat-card>
 
 	<td-data-table *ngIf="pageRequest?.content?.length > 0" #dataTable [data]="pageRequest.content"
-		[columns]="tableColumns" [clickable]="true" (rowClick)="openForm(row)">
+		[columns]="tableColumns" [clickable]="true" >
 
 		<ng-template tdDataTableTemplate="nome" let-usuario="row">
 			<span class="text-truncate">

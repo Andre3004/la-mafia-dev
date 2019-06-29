@@ -1,0 +1,129 @@
+<h2 mat-dialog-title>{{title}}</h2>
+
+
+<mat-dialog-content>
+    <form #qualificadorForm="ngForm" fxLayout="column">
+
+        <div fxLayout="row" fxLayoutGap="30px">
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Código</mat-label>
+                <input [(ngModel)]="produto.codigo" name="codigo" matInput maxlength="50"
+                    placeholder="Digite seu código">
+            </mat-form-field>
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Nome</mat-label>
+                <input required [(ngModel)]="produto.nome" name="nome" matInput maxlength="144"
+                    placeholder="Digite o nome do produto">
+            </mat-form-field>
+
+        </div>
+
+        <div fxLayout="row"  fxLayoutAlign=" center">
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Grupo de produto</mat-label>
+                <input type="text" matInput [matAutocomplete]="auto" #inputFilter [(ngModel)]="produto.grupoProduto"
+                    name="grupoProduto" (ngModelChange)="onListGrupoProdutos(inputFilter.value);">
+            </mat-form-field>
+
+            <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
+                (optionSelected)="produto.grupoProduto = $event.option.value; onListGrupoProdutos();">
+                <mat-option [value]="null">Nenhum</mat-option>
+                <mat-option *ngFor="let grupoProduto of gruposProdutos" [value]="grupoProduto">{{grupoProduto.nome}}
+                </mat-option>
+            </mat-autocomplete>
+
+            <mat-form-field style="margin-left: 30px" *ngIf="produto?.grupoProduto?.exigeAno" fxFlex appearance="outline">
+                <mat-label>Ano</mat-label>
+                <input [(ngModel)]="produto.ano" name="ano"
+                    matInput
+                    [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}"
+                    placeholder="Digite o ano do produto">
+            </mat-form-field>
+
+        </div>
+
+        <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign=" center">
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Estoque</mat-label>
+                <input [(ngModel)]="produto.estoque" name="estoque"
+                    matInput
+                    [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}"
+                    placeholder="Digite a quantidade em estoque">
+            </mat-form-field>
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Preço de custo</mat-label>
+                <input [(ngModel)]="produto.precoCusto" name="precoCusto"
+                    matInput required
+                    [textMask]="{mask: textMasks.getDecimalNumberMask(5, 2), guide: false}"
+                    placeholder="Digite o preço de custo do produto">
+            </mat-form-field>
+            
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Preço de venda</mat-label>
+                <input [(ngModel)]="produto.precoVenda" name="precoVenda"
+                    matInput
+                    [textMask]="{mask: textMasks.getDecimalNumberMask(5, 2), guide: false}"
+                    placeholder="Digite o preço de venda do produto">
+            </mat-form-field>
+        </div>
+
+
+        <div fxLayout="row">
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Descrição</mat-label>
+                <textarea  [(ngModel)]="produto.descricao" name="descricao" matInput maxlength="144"
+                    placeholder="Digite a descrição do produto"></textarea>
+            </mat-form-field>
+        </div>
+
+        <div fxFlex style="background-color: #b71c1c; color: white; font-weight: bold;border-radius: 30px;"
+            fxLayoutAlign="space-between center">
+            <label *ngIf="!fotoImage && !produto.anexoUuid" style="max-width: 400px;"
+                class="text-truncate push-left-md">
+                Selecione o arquivo...
+            </label>
+
+
+            <label *ngIf="produto?.nomeArquivo" style="max-width: 400px;" class="text-truncate push-left-md">
+                {{produto?.nomeArquivo}}
+            </label>
+
+            <div class="push-right-sm">
+                <button (click)="fotoInput.click()" *ngIf="!fotoImage && !produto?.anexoUuid" mat-icon-button
+                    matTooltip="Adicionar anexo">
+                    <mat-icon>attach_file</mat-icon>
+                </button>
+
+                <button *ngIf="fotoImage || produto?.anexoUuid" (click)="removeAnexo()" matTooltip="Remover anexo"
+                    mat-icon-button>
+                    <mat-icon>delete</mat-icon>
+                </button>
+
+                <button *ngIf="produto.anexoUuid" matTooltip="Download anexo" (click)="downloadFile()" mat-icon-button>
+                    <mat-icon>file_download</mat-icon>
+                </button>
+
+            </div>
+
+            <input hidden type="file" #fotoInput (change)="setProdutoAnexo($event)">
+        </div>
+
+    </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="end">
+    <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+        color="primary">
+        SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
+    push-left-md bgc-grey-800">
+        CANCELAR
+    </button>
+</mat-dialog-actions>

@@ -42,7 +42,7 @@ export class UsuarioFormComponent implements OnInit
 
   ngOnInit()
   {
-    if (this.usuario.id)
+    if (this.data.usuarioId)
       this.title = "Alterar usuário";
     else
       this.title = "Inserir usuário";

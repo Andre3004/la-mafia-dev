@@ -2,12 +2,18 @@
 
     <mat-sidenav #sidenav mode="over">
 
-        <h3 class="push-left-md push-bottom-md">MENU</h3>
-        <p *ngFor="let menu of menus">
-            <button (click)="sidenav.toggle()" routerLink="{{menu.router}}" fxLayoutAlign="start center" style="width: 100%;" mat-button>
+        <div style="    background-color: #b71c1c;padding-bottom: 10px;"class="pad-left-md push-bottom-md" fxLayout="row" fxLayoutAlign="space-between center">
+            <h3 style="color: white">MENU</h3>
+
+            <img src="../../../assets/logo.png" style="width: 100px; margin-top: 10px; margin-right: 10px">
+        </div>
+        <p *ngFor="let menu of menus; last as last">
+            <button (click)="sidenav.toggle()" routerLink="{{menu.router}}" fxLayoutAlign="start center" style="width: 100%; margin-bottom: 10px;" mat-button>
                 <mat-icon style="font-size: 20px !important;">{{menu.icon}}</mat-icon>
                 <label class="push-left-md" style="font-size: 20px !important;">{{menu.title}}</label>
             </button>
+
+            <mat-divider *ngIf="!last" ></mat-divider>
         </p>
     </mat-sidenav>
 
@@ -17,7 +23,7 @@
             <button mat-icon-button (click)="sidenav.toggle()">
                 <mat-icon>menu</mat-icon>
             </button>
-            <h3 class="push-left-md">PROJETO</h3>
+            <h2 style="font-size: 20px !important;font-weight: bold;; color: white; margin-left: 10px !important;" >{{title | uppercase}}</h2>
             <!-- <breadcrumb [allowBootstrap]="true"></breadcrumb> -->
 
 

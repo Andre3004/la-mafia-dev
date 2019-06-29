@@ -134,10 +134,10 @@ public class UsuarioDAO implements IUsuarioRepository
 		List<Usuario> usuarios = jdbcTemplate.query(querySql,new RowMapper<Usuario>(){
 			public Usuario mapRow( ResultSet rs, int row) throws SQLException {
 				Usuario e=new Usuario();
-				e.setId(rs.getLong(1));
-				e.setNome(rs.getString(2));
-				e.setEmail(rs.getString(3));
-				e.setSituacao(rs.getBoolean(8));
+				e.setId(rs.getLong("id"));
+				e.setNome(rs.getString("nome"));
+				e.setEmail(rs.getString("email"));
+				e.setSituacao(rs.getBoolean("situacao"));
 				return e;
 			}
 		});

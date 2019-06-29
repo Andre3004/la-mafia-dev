@@ -10,7 +10,10 @@ const usuarioRoutes: Routes = [
         children: [
             {
                 path: '',
-                component: UsuarioListComponent
+                component: UsuarioListComponent,
+                data: {
+                    title: 'Usuários',
+                }
             }
         ]
     },

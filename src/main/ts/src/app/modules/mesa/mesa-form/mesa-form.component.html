@@ -1,0 +1,55 @@
+<h2 mat-dialog-title>{{title}}</h2>
+
+
+<mat-dialog-content>
+  <form #qualificadorForm="ngForm" fxLayout="column">
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Número da mesa</mat-label>
+        <input matInput  [disabled]="true" [(ngModel)]="mesa.numeroMesa" name="numeroMesa" >
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Ambiente</mat-label>
+        <input type="text" matInput [matAutocomplete]="auto" #inputFilter [(ngModel)]="mesa.ambiente"
+          name="ambiente" (ngModelChange)="onListAmbientes(inputFilter.value);">
+      </mat-form-field>
+
+      <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
+        (optionSelected)="mesa.ambiente = $event.option.value; onListAmbientes();">
+        <mat-option [value]="null">Nenhum</mat-option>
+        <mat-option *ngFor="let ambiente of ambientes" [value]="ambiente">{{ambiente.nome}}</mat-option>
+      </mat-autocomplete>
+
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Quantidade de lugares na mesa</mat-label>
+        <input required [(ngModel)]="mesa.quantidadeLugaresMesa" name="quantidadeLugaresMesa" matInput 
+        [textMask]="{mask: textMasks.getNumbersOnlyMask(3), guide: false}"
+          placeholder="Digite a quantidade de lugares">
+      </mat-form-field>
+
+
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="end">
+  <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+    color="primary">
+    SALVAR
+  </button>
+  <button mat-dialog-close mat-raised-button class="white-btn
+    push-left-md bgc-grey-800">
+    CANCELAR
+  </button>
+</mat-dialog-actions>

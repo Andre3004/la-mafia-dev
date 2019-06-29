@@ -45,9 +45,6 @@ public class Usuario extends AbstractEntity
 	private String nomeArquivo;
 
 	//@Transient
-	private byte[] anexoByte;
-
-	//@Transient
 	private FileTransfer anexo;
 
 	/*-------------------------------------------------------------------
@@ -75,7 +72,6 @@ public class Usuario extends AbstractEntity
 				", situacao=" + situacao +
 				", anexoUuid='" + anexoUuid + '\'' +
 				", nomeArquivo='" + nomeArquivo + '\'' +
-				", anexoByte=" + Arrays.toString( anexoByte ) +
 				", anexo=" + anexo +
 				", created=" + created +
 				", updated=" + updated +

@@ -9,7 +9,10 @@ const franquiaRoutes: Routes = [
         children: [
             {
                 path: '',
-                component: FranquiaListComponent
+                component: FranquiaListComponent,
+                data: {
+                    title: 'Franquias',
+                }
             }
         ]
     },

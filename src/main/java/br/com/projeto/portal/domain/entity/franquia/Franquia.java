@@ -9,7 +9,7 @@ import org.directwebremoting.annotations.DataTransferObject;
 import org.directwebremoting.io.FileTransfer;
 
 @Data
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 @DataTransferObject(javascript = "Franquia")
 public class Franquia extends AbstractEntity
 {
@@ -36,9 +36,6 @@ public class Franquia extends AbstractEntity
 	private Boolean situacao;
 
 	//@Transient
-	private byte[] anexoByte;
-
-	//@Transient
 	private FileTransfer anexo;
 
 	/*-------------------------------------------------------------------
@@ -63,7 +60,6 @@ public class Franquia extends AbstractEntity
 				", cidade='" + cidade + '\'' +
 				", anexoUuid='" + anexoUuid + '\'' +
 				", nomeArquivo='" + nomeArquivo + '\'' +
-				", anexoByte=" + Arrays.toString( anexoByte ) +
 				", anexo=" + anexo +
 				", created=" + created +
 				", updated=" + updated +

@@ -13,7 +13,9 @@ import javax.persistence.NoResultException;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.directwebremoting.io.FileTransfer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +24,14 @@ import org.springframework.util.Assert;
 @Repository
 public class IArquivoRepositoryImpl implements IArquivoRepository
 {
-	private final EntityManager entityManager;
+	@Autowired
+	private ArquivoDAO arquivoDAO;
+
 	private final Path rootPath;
 
 	public IArquivoRepositoryImpl( EntityManager entityManager )
 	{
-		this.entityManager = entityManager;
-		this.rootPath = Paths.get( "C:/dev/judith/.upload");
+		this.rootPath = Paths.get( "C:/dev/.upload");
 
 		final File folder = this.rootPath.toFile();
 		if ( !folder.exists() || !folder.isDirectory() )
@@ -74,8 +77,12 @@ public class IArquivoRepositoryImpl implements IArquivoRepository
 			{
 				IOUtils.copy( fileTransfer.getInputStream(), fileOutputStream );
 			}
-			arquivo = entityManager.merge( arquivo );
+
+			this.arquivoDAO.insertArquivo( arquivo );
+
+			arquivo = this.arquivoDAO.findArquivoById( arquivoDAO.getLastId() );
 			arquivo.setRootPath( rootPath.toString() );
+
 			return arquivo;
 		}
 		catch ( Exception e )
@@ -98,8 +105,9 @@ public class IArquivoRepositoryImpl implements IArquivoRepository
 			Arquivo arquivo = get( uuid );
 			arquivo.setNomeOriginal( fileTransfer.getFilename() );
 			arquivo.setMimeType( fileTransfer.getMimeType() );
-			arquivo = entityManager.merge( arquivo );
+			arquivoDAO.updateArquivo( arquivo );
 
+			arquivo = this.arquivoDAO.findArquivoById( arquivoDAO.getLastId() );
 			arquivo.setRootPath( rootPath.toString() );
 			return arquivo;
 		}
@@ -119,7 +127,7 @@ public class IArquivoRepositoryImpl implements IArquivoRepository
 			if (arquivo != null)
 			{
 
-				entityManager.remove( arquivo );
+				arquivoDAO.deleteArquivo( arquivo.getId() );
 				File file = rootPath.resolve( uuid ).toFile();
 
 				if( file.delete() ) (new IllegalArgumentException("Não foi possível excluir o arquivo em disco para UUID " + uuid )).printStackTrace();
@@ -136,10 +144,7 @@ public class IArquivoRepositoryImpl implements IArquivoRepository
 	{
 		try{
 
-			return
-					this.entityManager.createQuery( "FROM Arquivo WHERE uuid = :uuid", Arquivo.class )
-							.setParameter( "uuid", uuid )
-							.getSingleResult();
+			return arquivoDAO.findArquivoByUuid( uuid );
 		}
 		catch ( Exception e ){
 			e.printStackTrace();

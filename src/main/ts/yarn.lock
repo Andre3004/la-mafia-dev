@@ -6167,6 +6167,11 @@ terser@^4.0.0:
     source-map "~0.6.1"
     source-map-support "~0.5.10"
 
+text-mask-addons@3.7.2:
+  version "3.7.2"
+  resolved "https://npm.eits.com.br:443/text-mask-addons/-/text-mask-addons-3.7.2.tgz#56d34780c94f2ee593a77de6e79b55d56f8a8bb8"
+  integrity sha512-uezfAuWcDJ/B/lu5ooz38DEdI8NfIVX2xKwshLs40Er8MBGSppklOqOYw32wEmCUP7XPVX2u3u2TdQcIRuBLXA==
+
 text-mask-core@^5.0.0:
   version "5.1.2"
   resolved "https://npm.eits.com.br:443/text-mask-core/-/text-mask-core-5.1.2.tgz#80dd5ebe04825757e46619e691407a9f8b3c1b6f"

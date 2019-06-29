@@ -1,3 +1,6 @@
+<h2 mat-dialog-title>{{title}}</h2>
+
+
 <mat-dialog-content>
   <form #qualificadorForm="ngForm" fxLayout="column">
 
@@ -10,7 +13,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Nome</mat-label>
-        <input required [(ngModel)]="franquia.nome" name="nome" matInput maxlength="144" placeholder="Digite seu nome">
+        <input required [(ngModel)]="franquia.nome" name="nome" matInput maxlength="144" placeholder="Digite o nome da franquia">
       </mat-form-field>
 
     </div>
@@ -42,23 +45,63 @@
     </div>
 
     <div>
-      <div fxLayout="column" class="push-left">
-        <span class="tc-grey-500 mat-caption" *ngIf="!fotoImage">ADICIONAR ANEXO</span>
-        <span class="tc-grey-500 mat-caption" *ngIf="franquia?.nomeArquivo">{{franquia?.nomeArquivo}}</span>
-        <button type="button" (click)="fotoInput.click()" style="color: whitesmoke; background: #001f3f" mat-button
-          class="push-bottom">
-          <span matTooltip="Selecionar Anexo" *ngIf="!fotoImage">SELECIONAR ANEXO</span>
-          <span matTooltip="Alterar abexi" *ngIf="fotoImage">ALTERAR ANEXO</span>
-        </button>
-        <button type="button" matTooltip="Remover anexo" *ngIf="fotoImage || franquia?.anexoUuid"
-          (click)="removeAnexo()" mat-button style="color: whitesmoke; background: #FF4136" class="push-bottom  ">
-          REMOVER
-        </button>
-        <input hidden type="file" #fotoInput (change)="setFranquiaAnexo($event)">
-        <button mat-button (click)="downloadFile()" *ngIf="franquia.anexoUuid"
-          style="color: whitesmoke; background: #3D9970" class="push-bottom  ">DOWNLOAD</button>
 
+
+
+      <div  fxFlex
+        style="background-color: #b71c1c; color: white; font-weight: bold;border-radius: 30px;"
+        fxLayoutAlign="space-between center">
+        <label *ngIf="!fotoImage && !franquia.anexoUuid" style="max-width: 400px;" class="text-truncate push-left-md">
+          Selecione o arquivo...
+        </label>
+
+
+        <label *ngIf="franquia?.nomeArquivo" style="max-width: 400px;" class="text-truncate push-left-md">
+          {{franquia?.nomeArquivo}}
+        </label>
+
+        <div class="push-right-sm">
+          <button (click)="fotoInput.click()" *ngIf="!fotoImage && !franquia?.anexoUuid" mat-icon-button matTooltip="Adicionar anexo">
+            <mat-icon>attach_file</mat-icon>
+          </button>
+
+          <button *ngIf="fotoImage || franquia?.anexoUuid" (click)="removeAnexo()" matTooltip="Remover anexo"
+            mat-icon-button >
+            <mat-icon>delete</mat-icon>
+          </button>
+
+          <button *ngIf="franquia.anexoUuid"  matTooltip="Download anexo" (click)="downloadFile()" mat-icon-button >
+            <mat-icon>file_download</mat-icon>
+          </button>
+
+        </div>
+
+        <input hidden type="file" #fotoInput (change)="setFranquiaAnexo($event)">
       </div>
+      <!-- <div fxLayout="column" class="push-left">
+          <span class="tc-grey-500 mat-caption" *ngIf="!fotoImage">ADICIONAR ANEXO</span>
+
+          <span class="tc-grey-500 mat-caption" *ngIf="franquia?.nomeArquivo">{{franquia?.nomeArquivo}}</span>
+
+
+
+          <button type="button" (click)="fotoInput.click()" style="color: whitesmoke; background: #001f3f" mat-button
+            class="push-bottom">
+            <span matTooltip="Selecionar Anexo" *ngIf="!fotoImage">SELECIONAR ANEXO</span>
+            <span matTooltip="Alterar abexi" *ngIf="fotoImage">ALTERAR ANEXO</span>
+          </button>
+          <input hidden type="file" #fotoInput (change)="setFranquiaAnexo($event)">
+
+
+          <button type="button" matTooltip="Remover anexo" *ngIf="fotoImage || franquia?.anexoUuid"
+            (click)="removeAnexo()" mat-button style="color: whitesmoke; background: #FF4136" class="push-bottom  ">
+            REMOVER
+          </button>
+          
+          <button mat-button (click)="downloadFile()" *ngIf="franquia.anexoUuid"
+            style="color: whitesmoke; background: #3D9970" class="push-bottom  ">DOWNLOAD</button>
+
+      </div> -->
     </div>
 
   </form>

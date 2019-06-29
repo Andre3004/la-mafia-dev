@@ -55,7 +55,18 @@ public class ExceptionHandlerAspect
 	@AfterThrowing(pointcut = "within(@org.springframework.stereotype.Service *)", throwing = "exception")
 	public void handleException( JoinPoint joinPoint, org.springframework.dao.DuplicateKeyException exception )
 	{
-		throw new DuplicateKeyException( this.messageSource.getMessage( "repository.duplicatedKey", null, LocaleContextHolder.getLocale() ) );
+		String message = exception.getMessage();
+		String key = message.substring( message.indexOf( "Key" ) );
+
+		key = key.substring( key.indexOf( '(' ) + 1, key.indexOf( ')' ) );
+
+		if ( key.startsWith( "lower(" ) )
+		{
+			key = key.replace( "lower(", "" );
+			key = key.replace( "::text", "" );
+		}
+
+		throw new IllegalStateException( "Não foi possível realizar a operação pois o campo "+ key + " está vinculado a outro registro." );
 	}
 
 	/**

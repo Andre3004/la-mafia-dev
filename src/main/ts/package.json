@@ -29,7 +29,8 @@
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1",
     "roboto-fontface": "^0.8.0",
-    "angular2-text-mask": "^9.0.0"
+    "angular2-text-mask": "^9.0.0",
+    "text-mask-addons": "3.7.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.800.3",
