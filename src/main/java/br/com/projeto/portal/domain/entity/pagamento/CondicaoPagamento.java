@@ -1,5 +1,8 @@
 package br.com.projeto.portal.domain.entity.pagamento;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,6 +28,9 @@ public class CondicaoPagamento extends AbstractEntity
 	private Boolean situacao;
 
 	private Boolean aPrazo;
+
+	//@Transient
+	private List<CondicaoPagamentoParcela> parcelas = new ArrayList<>();
 
 	/*-------------------------------------------------------------------
 	 * 		 					CONSTRUCTORS
