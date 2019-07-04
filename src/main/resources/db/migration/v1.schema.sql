@@ -191,4 +191,36 @@ CREATE TABLE grupo_produto_franquia(
 
 
 
+CREATE TABLE forma_pagamento (
+	codigo serial PRIMARY KEY,
+	created TIMESTAMP NOT NULL,
+	updated TIMESTAMP,
+	situacao boolean NOT NULL,
+	nome character varying(144) NOT NULL UNIQUE
+);
+
+CREATE TABLE condicao_pagamento (
+	codigo serial PRIMARY KEY,
+	created TIMESTAMP NOT NULL,
+	updated TIMESTAMP,
+  juros decimal,
+  multa decimal,
+  desconto decimal,
+  situacao boolean NOT NULL,
+	a_prazo boolean NOT NULL
+);
+
+CREATE TABLE condicao_pagamento_parcela (
+	created TIMESTAMP NOT NULL,
+	updated TIMESTAMP,
+	condicao_pagamento_id  bigint REFERENCES condicao_pagamento NOT NULL,
+  forma_pagamento_id  bigint REFERENCES forma_pagamento NOT NULL,
+  dias int NOT NULL,
+  porcentagem decimal NOT NULL,
+  parcela int NOT NULL,
+	PRIMARY KEY(condicao_pagamento_id, forma_pagamento_id)
+);
+
+
+
 SET search_path = public, pg_catalog;
