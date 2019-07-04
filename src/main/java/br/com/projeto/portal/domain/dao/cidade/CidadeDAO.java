@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.projeto.portal.domain.dao.estado.EstadoDAO;
 import br.com.projeto.portal.domain.entity.Cidade;
 import br.com.projeto.portal.domain.repository.ICidadeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class CidadeDAO implements ICidadeRepository
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    EstadoDAO estadoDAO;
+
     @Override
     public Cidade findCidadeById(int id)
     {
@@ -36,6 +40,8 @@ public class CidadeDAO implements ICidadeRepository
 
         Cidade cidade = (Cidade) jdbcTemplate.queryForObject(sql,
                 new Object[] { id }, new BeanPropertyRowMapper(Cidade.class));
+
+        cidade.setEstado( estadoDAO.findEstadoById( cidade.getIdEstado() ) );
 
         return cidade;
     }

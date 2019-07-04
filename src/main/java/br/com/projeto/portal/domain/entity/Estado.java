@@ -29,6 +29,9 @@ public class Estado extends AbstractEntity
 
     private Boolean situacao;
 
+    //@Transient
+    private int idPais;
+
 
     /*-------------------------------------------------------------------
      * 		 					CONSTRUCTORS

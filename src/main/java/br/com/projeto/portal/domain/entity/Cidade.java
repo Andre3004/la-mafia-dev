@@ -29,6 +29,8 @@ public class Cidade extends AbstractEntity
 
     private Boolean situacao;
 
+    private int idEstado;
+
 
     /*-------------------------------------------------------------------
      * 		 					CONSTRUCTORS

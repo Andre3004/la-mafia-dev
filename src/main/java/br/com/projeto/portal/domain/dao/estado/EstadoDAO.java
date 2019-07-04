@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.projeto.portal.domain.dao.pais.PaisDAO;
 import br.com.projeto.portal.domain.entity.Estado;
 import br.com.projeto.portal.domain.repository.IEstadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class EstadoDAO implements IEstadoRepository
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    PaisDAO paisDAO;
+
     @Override
     public Estado findEstadoById(int id)
     {
@@ -37,6 +41,7 @@ public class EstadoDAO implements IEstadoRepository
         Estado estado = (Estado) jdbcTemplate.queryForObject(sql,
                 new Object[] { id }, new BeanPropertyRowMapper(Estado.class));
 
+        estado.setPais( paisDAO.findPaisById( estado.getIdPais() ) );
         return estado;
     }
 
