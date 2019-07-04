@@ -4,25 +4,48 @@
 
   <form #qualificadorForm="ngForm" fxLayout="column">
 
-    <div fxLayout="row">
+    <div fxLayout="row" >
 
       <mat-form-field fxFlex appearance="outline">
-        <mat-label>Nome</mat-label>
-        <input required [(ngModel)]="usuario.nome" name="nome" matInput maxlength="144" placeholder="Digite seu nome">
+        <mat-label>Código</mat-label>
+        <input uppercase matInput [(ngModel)]="usuario.codigo" [disabled]="true" name="codigo">
       </mat-form-field>
 
+      <mat-form-field style="margin-left: 30px" fxFlex appearance="outline">
+        <mat-label>Franquia</mat-label>
+        <input uppercase required type="text" matInput [matAutocomplete]="auto" #inputFilter [(ngModel)]="usuario.franquia"
+          name="franquia" (keyup)="onListFranquias(inputFilter.value);">
+      </mat-form-field>
+
+      <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
+        (optionSelected)="usuario.franquia = $event.option.value; onListFranquias();">
+        <mat-option [value]="null">Nenhum</mat-option>
+        <mat-option *ngFor="let franquia of franquias" [value]="franquia">{{franquia.franquia}}</mat-option>
+      </mat-autocomplete>
+
+
+    </div>
+
+    <div fxLayout="row">
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Usuário</mat-label>
+        <input uppercase  required [(ngModel)]="usuario.usuario" name="nome" matInput maxlength="144"
+          placeholder="Digite o nome do usuário">
+      </mat-form-field>
     </div>
 
     <div fxLayout="row" fxLayoutGap="30px">
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>CPF</mat-label>
-        <input required [textMask]="{mask: maskCpf, guide: false}" [(ngModel)]="usuario.cpf" name="cpf" matInput maxlength="144" placeholder="Digite seu cpf">
+        <input uppercase required [textMask]="{mask: maskCpf, guide: false}" [(ngModel)]="usuario.cpf" name="cpf" matInput
+          maxlength="144" placeholder="Digite seu cpf">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Telefone</mat-label>
-        <input maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput name="telefone" [(ngModel)]="usuario.telefone" placeholder="Digite seu telefone">
+        <input uppercase required maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput name="telefone"
+          [(ngModel)]="usuario.telefone" placeholder="Digite seu telefone">
       </mat-form-field>
 
     </div>
@@ -31,7 +54,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>E-mail</mat-label>
-        <input required [(ngModel)]="usuario.email" email="true" name="email" type="email" matInput maxlength="144"
+        <input uppercase required [(ngModel)]="usuario.email" email="true" name="email" type="email" matInput maxlength="144"
           placeholder="Digite seu e-mail">
       </mat-form-field>
 
@@ -40,14 +63,14 @@
     <div fxLayout="row" fxLayoutGap="30px">
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Senha</mat-label>
-        <input matInput type="password" [(ngModel)]="usuario.senha" maxlength="144" name="senha"
-        [required]="!usuario.id"
-          placeholder="Digite sua senha">
+        <input uppercase matInput type="password" [(ngModel)]="usuario.senha" maxlength="144" name="senha"
+          [required]="!usuario.codigo" placeholder="Digite sua senha">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Confirmação da senha</mat-label>
-        <input matInput type="password" maxlength="144" [(ngModel)]="confSenha" name="confSenha" placeholder="Digite sua confirmação da senha">
+        <input uppercase matInput type="password" maxlength="144" [(ngModel)]="confSenha" name="confSenha"
+          placeholder="Digite sua confirmação da senha">
       </mat-form-field>
     </div>
 

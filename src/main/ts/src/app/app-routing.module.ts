@@ -25,6 +25,26 @@ const routes: Routes = [
   {
     path: 'ambiente',
     loadChildren : () => import('../app/modules/ambiente/ambiente.module').then(m => m.AmbienteModule)
+  },
+  {
+    path: 'cliente',
+    loadChildren : () => import('../app/modules/cliente/cliente.module').then(m => m.ClienteModule)
+  },
+  {
+    path: 'fornecedor',
+    loadChildren : () => import('../app/modules/fornecedor/fornecedor.module').then(m => m.FornecedorModule)
+  },
+  {
+    path: 'cidade',
+    loadChildren : () => import('../app/modules/cidade/cidade.module').then(m => m.CidadeModule)
+  },
+  {
+    path: 'estado',
+    loadChildren : () => import('../app/modules/estado/estado.module').then(m => m.EstadoModule)
+  },
+  {
+    path: 'pais',
+    loadChildren : () => import('../app/modules/pais/pais.module').then(m => m.PaisModule)
   }
 ];
 

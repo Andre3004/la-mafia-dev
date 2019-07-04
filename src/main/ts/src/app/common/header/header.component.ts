@@ -23,7 +23,13 @@ export class HeaderComponent implements OnInit
     {title: "Grupo de produtos", icon: 'style', router: 'grupo-produto'},
     {title: "Mesas", icon: 'local_bar', router: 'mesa'},
     {title: "Produtos", icon: 'assignment_turned_in', router: 'produto'},
-    {title: "Ambientes", icon: 'event_seat', router: 'ambiente'}
+    {title: "Ambientes", icon: 'event_seat', router: 'ambiente'},
+
+    {title: "Clientes", icon: 'people', router: 'cliente'},
+    {title: "Fornecedores", icon: 'people_outline', router: 'fornecedor'},
+    {title: "Cidade", icon: 'location_on', router: 'cidade'},
+    {title: "Estado", icon: 'location_on', router: 'estado'},
+    {title: "País", icon: 'location_on', router: 'pais'}
   ]
 
   /*-------------------------------------------------------------------

@@ -1,13 +1,8 @@
 <mat-toolbar class="toolbar-default">
 	<mat-toolbar-row fxLayoutGap="30px">
 		<mat-form-field fxFlex="20" appearance="outline">
-			<mat-label>Nome</mat-label>
-			<input matInput placeholder="Pesquisar por nome" maxlength="144" [(ngModel)]="filters.nome">
-		</mat-form-field>
-
-		<mat-form-field fxFlex="20" appearance="outline">
-			<mat-label>Código</mat-label>
-			<input matInput placeholder="Pesquisar por código" maxlength="50" [(ngModel)]="filters.codigo">
+			<mat-label>Produto</mat-label>
+			<input uppercase matInput placeholder="Pesquisar por nome" maxlength="144" [(ngModel)]="filters.nome">
 		</mat-form-field>
 
 		<div fxFlex></div>
@@ -31,13 +26,7 @@
 
 		<ng-template tdDataTableTemplate="nome" let-produto="row">
 			<span class="text-truncate">
-				{{ produto?.nome}}
-			</span>
-		</ng-template>
-
-		<ng-template tdDataTableTemplate="codigo" let-produto="row">
-			<span class="text-truncate">
-				{{ produto?.codigo}}
+				{{ produto?.produto}}
 			</span>
 		</ng-template>
 

@@ -16,7 +16,7 @@ public class AmbienteImagem extends AbstractEntity
 	 *				 		     ATTRIBUTES
 	 *-------------------------------------------------------------------*/
 
-	private Long id;
+	private Long codigo;
 
 	private Ambiente ambiente;
 

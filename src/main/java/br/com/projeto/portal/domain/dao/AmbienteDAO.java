@@ -33,7 +33,7 @@ public class AmbienteDAO implements IAmbienteRepository
 	@Override
 	public Ambiente findAmbienteById( long id)
 	{
-		String sql = "SELECT * FROM ambiente WHERE id = ?";
+		String sql = "SELECT * FROM ambiente WHERE codigo = ?";
 
 		Ambiente ambiente = (Ambiente) jdbcTemplate.queryForObject(sql,
 				new Object[] { id }, new BeanPropertyRowMapper(Ambiente.class));
@@ -47,21 +47,22 @@ public class AmbienteDAO implements IAmbienteRepository
 	@Override
 	public Long insertAmbiente( Ambiente ambiente )
 	{
-		String sqlId = "SELECT max(id) FROM ambiente";
-		Long id = jdbcTemplate.queryForObject(sqlId, Long.class)+1;
+		String sqlId = "SELECT max(codigo) FROM ambiente";
+		Long returnQuery = jdbcTemplate.queryForObject( sqlId, Long.class );
+		Long id = returnQuery == null ? 1 : returnQuery+1;
 
 		jdbcTemplate.update(
 				"INSERT INTO ambiente " +
-						"(id, " +
-						"nome, " +
+						"(codigo, " +
+						"ambiente, " +
 						"franquia_id, " +
 						"descricao, " +
 						"capacidade_mesas, " +
 						"situacao, " +
 						"created) VALUES (?, ?, ?, ?, ?, ?, ?)",
 				id,
-				ambiente.getNome(),
-				ambiente.getFranquia().getId(),
+				ambiente.getAmbiente(),
+				ambiente.getFranquia().getCodigo(),
 				ambiente.getDescricao(),
 				ambiente.getCapacidadeMesas(),
 				ambiente.getSituacao(),
@@ -75,30 +76,30 @@ public class AmbienteDAO implements IAmbienteRepository
 	{
 		jdbcTemplate.update("UPDATE ambiente " +
 						"SET " +
-						"nome = ?, " +
+						"ambiente = ?, " +
 						"franquia_id = ?, " +
 						"descricao = ?, " +
 						"capacidade_mesas = ?, " +
 						"situacao = ?, " +
 						"updated = ? " +
-						"WHERE id = ?",
-				ambiente.getNome(),
-				ambiente.getFranquia().getId(),
+						"WHERE codigo = ?",
+				ambiente.getAmbiente(),
+				ambiente.getFranquia().getCodigo(),
 				ambiente.getDescricao(),
 				ambiente.getCapacidadeMesas(),
 				ambiente.getSituacao(),
 				Timestamp.valueOf( LocalDateTime.now()),
-				ambiente.getId());
+				ambiente.getCodigo());
 	}
 
 	@Override
 	public void deleteAmbiente(long id){
-		jdbcTemplate.update("DELETE from ambiente WHERE id = ? ", id);
+		jdbcTemplate.update("DELETE from ambiente WHERE codigo = ? ", id);
 	}
 
 	@Override
 	public void updateSituacaoAmbiente(long id, boolean situacao){
-		jdbcTemplate.update("UPDATE ambiente SET situacao = ? WHERE id = ?", situacao, id);
+		jdbcTemplate.update("UPDATE ambiente SET situacao = ? WHERE codigo = ?", situacao, id);
 	}
 
 	@Override
@@ -117,7 +118,7 @@ public class AmbienteDAO implements IAmbienteRepository
 		String selectAndFrom = "SELECT * " +
 				"FROM ambiente ";
 
-		String where =  "WHERE nome LIKE  '%" + nome + "%' ";
+		String where =  "WHERE ambiente LIKE  '%" + nome + "%' ";
 
 		where += franquiaId != null ?	"AND franquia_id = " + franquiaId + "  " : "";
 
@@ -131,8 +132,8 @@ public class AmbienteDAO implements IAmbienteRepository
 			public Ambiente mapRow( ResultSet rs, int row) throws SQLException
 			{
 				Ambiente e=new Ambiente();
-				e.setId(rs.getLong(1));
-				e.setNome(rs.getString(5));
+				e.setCodigo(rs.getLong(1));
+				e.setAmbiente(rs.getString(5));
 				e.setFranquia( franquiaDAO.findFranquiaById( rs.getLong( 4 ) ) );
 				e.setSituacao( rs.getBoolean( 8 ) );
 				return e;
@@ -166,7 +167,7 @@ public class AmbienteDAO implements IAmbienteRepository
 						"anexo_uuid, " +
 						"nome_arquivo, " +
 						"created) VALUES (?, ?, ?, ?)",
-						ambienteImagem.getAmbiente().getId(),
+						ambienteImagem.getAmbiente().getCodigo(),
 						ambienteImagem.getAnexoUuid(),
 						ambienteImagem.getNomeArquivo(),
 						Timestamp.valueOf( LocalDateTime.now()) );
@@ -181,18 +182,18 @@ public class AmbienteDAO implements IAmbienteRepository
 								"anexo_uuid = ?, " +
 								"nome_arquivo = ?, " +
 								"updated = ? " +
-								"WHERE id = ?",
-				ambienteImagem.getAmbiente().getId(),
+								"WHERE codigo = ?",
+				ambienteImagem.getAmbiente().getCodigo(),
 				ambienteImagem.getAnexoUuid(),
 				ambienteImagem.getNomeArquivo(),
 				Timestamp.valueOf( LocalDateTime.now()),
-				ambienteImagem.getId());
+				ambienteImagem.getCodigo());
 	}
 
 	@Override
 	public void deleteAmbienteImagem( long id)
 	{
-		jdbcTemplate.update("DELETE from ambiente_imagem WHERE id = ? ", id);
+		jdbcTemplate.update("DELETE from ambiente_imagem WHERE codigo = ? ", id);
 	}
 
 

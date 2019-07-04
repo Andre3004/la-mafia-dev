@@ -1,7 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { UsuarioService } from 'src/generated/services';
+import { UsuarioService, FranquiaService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
+import { Franquia, Usuario } from 'src/generated/entities';
 
 @Component({
   selector: 'app-usuario-form',
@@ -18,7 +19,7 @@ export class UsuarioFormComponent implements OnInit
 
   public title = "";
 
-  public usuario: any = {};
+  public usuario: Usuario = { franquia: {}};
 
   public maskCpf = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
 
@@ -26,10 +27,13 @@ export class UsuarioFormComponent implements OnInit
 
   public confSenha = null;
 
+  public franquias: Franquia[];
+
 
   constructor(
     private usuarioService: UsuarioService,
     private openSnackBarService: OpenSnackBarService,
+    private franquiaService: FranquiaService,
     public dialogRef: MatDialogRef<UsuarioFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   )
@@ -38,6 +42,8 @@ export class UsuarioFormComponent implements OnInit
     {
       this.onFindUsuarioById(data.usuarioId);
     }
+
+    this.onListFranquias("");
   }
 
   ngOnInit()
@@ -64,6 +70,12 @@ export class UsuarioFormComponent implements OnInit
   public onSubmit(): void
   {
 
+    if( !this.usuario.franquia || (this.usuario.franquia && !this.usuario.franquia.codigo))
+    {
+      this.openSnackBarService.openError("O campo franquia deve ser preenchido.");
+      return;
+    }
+
     if (typeof this.usuario.cpf == "string")
     {
       this.usuario.cpf = this.usuario.cpf.replace(/\.|-/gi, '');
@@ -79,9 +91,9 @@ export class UsuarioFormComponent implements OnInit
     if (this.usuario.telefone) 
     {
         var numb = this.usuario.telefone.match(/\d/g);
-        numb = numb.join("").toString();
+        var numbString = numb.join("").toString();
 
-        if(numb.length != 14)
+        if(numbString.length != 14)
         {
           this.openSnackBarService.openError('O campo telefone está inválido.');
           return;
@@ -98,7 +110,7 @@ export class UsuarioFormComponent implements OnInit
         return;
     }
 
-    if (!this.usuario.id)
+    if (!this.usuario.codigo)
     {
       this.usuarioService.insertUsuario(this.usuario).subscribe(usuario =>
       {
@@ -161,5 +173,16 @@ export class UsuarioFormComponent implements OnInit
     return true;
   }
 
+
+  public onListFranquias(filter)
+  {
+    this.franquiaService.listFranquiasByFilters(filter ? filter : "", "", null).subscribe( franquiaPage => {
+      this.franquias = franquiaPage.content; 
+    })
+  }
+
+  public displayFn(franquia?: Franquia): string | undefined {
+    return franquia ? franquia.franquia : undefined;
+  }
 
 }

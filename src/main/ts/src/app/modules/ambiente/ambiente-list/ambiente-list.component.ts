@@ -37,10 +37,11 @@ export class AmbienteListComponent implements OnInit
        * Colunas da Grid
        */
     public tableColumns: ITdDataTableColumn[] = [
-        { name: 'nome', label: 'NOME', sortable: false },
+        { name: 'codigo', label: 'CÓDIGO', sortable: false },
+        { name: 'nome', label: 'AMBIENTE', sortable: false },
         { name: 'franquia.nome', label: 'FRANQUIA', sortable: false },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
-        { name: 'opcoes', label: 'OPÇÕES', tooltip: 'Opções', sortable: false, width: 150 }
+        { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 150 }
     ];
 
     /**
@@ -75,9 +76,9 @@ export class AmbienteListComponent implements OnInit
     public openForm(ambiente)
     {
         const dialogRef = this.dialog.open(AmbienteFormComponent, {
-            width: '600px',
+            width: '800px',
             height: 'auto',
-            data: { ambienteId: ambiente ? ambiente.id : null }
+            data: { ambienteId: ambiente ? ambiente.codigo : null }
         });
 
         dialogRef.afterClosed().subscribe(ambienteSaved =>
@@ -99,7 +100,7 @@ export class AmbienteListComponent implements OnInit
         {
             if (accept)
             {
-                this.ambienteService.updateSituacaoAmbiente(ambiente.id, !ambiente.situacao).subscribe( result => {
+                this.ambienteService.updateSituacaoAmbiente(ambiente.codigo, !ambiente.situacao).subscribe( result => {
                     this.openSnackBarService.openSuccess(ambiente.situacao ? 'Ambiente desativado com sucesso.' : 'Ambiente ativado com sucesso.');
                     this.onListAmbientes();
                 }, err => this.openSnackBarService.openError(err.message))
@@ -124,7 +125,7 @@ export class AmbienteListComponent implements OnInit
 
         this.ambienteService.listAmbientesByFilters(
             this.filters.nome,
-            this.filters.franquia != null ? this.filters.franquia.id : null,
+            this.filters.franquia != null ? this.filters.franquia.codigo : null,
             this.pageRequest.pageable
         ).subscribe((result) =>
         {
@@ -134,13 +135,13 @@ export class AmbienteListComponent implements OnInit
 
     public onListFranquias()
     {
-        this.franquiaService.listFranquiasByFilters(this.franquiaFilter ? this.franquiaFilter : "", "", "", null).subscribe( franquiaPage => {
+        this.franquiaService.listFranquiasByFilters(this.franquiaFilter ? this.franquiaFilter : "", "", null).subscribe( franquiaPage => {
         this.franquias = franquiaPage.content; 
         })
     }
 
     public displayFn(franquia?: Franquia): string | undefined {
-        return franquia ? franquia.nome : undefined;
+        return franquia ? franquia.franquia : undefined;
     }
     
 

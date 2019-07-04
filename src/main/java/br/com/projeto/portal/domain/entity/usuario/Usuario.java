@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import br.com.projeto.portal.domain.entity.franquia.Franquia;
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
 import org.directwebremoting.annotations.DataTransferObject;
 
@@ -24,9 +25,9 @@ public class Usuario extends AbstractEntity
 	 *				 		     ATTRIBUTES
 	 *-------------------------------------------------------------------*/
 
-	private Long id;
+	private Long codigo;
 
-	private String nome;
+	private String usuario;
 
 	private String email;
 
@@ -44,8 +45,12 @@ public class Usuario extends AbstractEntity
 
 	private String nomeArquivo;
 
+	private Franquia franquia;
+
 	//@Transient
 	private FileTransfer anexo;
+
+	private Long franquiaId;
 
 	/*-------------------------------------------------------------------
 	 * 		 					CONSTRUCTORS
@@ -58,23 +63,4 @@ public class Usuario extends AbstractEntity
 	 *							BEHAVIORS
 	 *-------------------------------------------------------------------*/
 
-	@Override
-	public String toString()
-	{
-		return "Usuario{" +
-				"id=" + id +
-				", nome='" + nome + '\'' +
-				", email='" + email + '\'' +
-				", senha='" + senha + '\'' +
-				", telefone='" + telefone + '\'' +
-				", cpf='" + cpf + '\'' +
-				", perfilUsuario=" + perfilUsuario +
-				", situacao=" + situacao +
-				", anexoUuid='" + anexoUuid + '\'' +
-				", nomeArquivo='" + nomeArquivo + '\'' +
-				", anexo=" + anexo +
-				", created=" + created +
-				", updated=" + updated +
-				'}';
-	}
 }

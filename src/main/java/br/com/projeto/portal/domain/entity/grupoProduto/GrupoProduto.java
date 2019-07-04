@@ -1,5 +1,9 @@
 package br.com.projeto.portal.domain.entity.grupoProduto;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import br.com.projeto.portal.domain.entity.GrupoProdutoFranquia;
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
 import lombok.Data;
@@ -12,15 +16,11 @@ import org.directwebremoting.io.FileTransfer;
 @DataTransferObject(javascript = "GrupoProduto")
 public class GrupoProduto extends AbstractEntity
 {
-	private Long id;
+	private Long codigo;
 
-	private String nome;
-
-	private Franquia franquia;
+	private String grupoProduto;
 
 	private Boolean exigeAno;
-
-	private String codigo;
 
 	private Boolean situacao;
 
@@ -29,16 +29,20 @@ public class GrupoProduto extends AbstractEntity
 	private String nomeArquivo;
 
 	//@Transient
-	private Long franquiaId;
-
-	//@Transient
 	private FileTransfer anexo;
 
+	//@Transient
+	private List<GrupoProdutoFranquia> grupoProdutoFranquia = new ArrayList<>();
 	/*-------------------------------------------------------------------
 	 * 		 					CONSTRUCTORS
 	 *-------------------------------------------------------------------*/
 
 	public GrupoProduto(){}
+
+	public GrupoProduto(Long id){
+		this.codigo = id;
+	}
+
 
 
 	/*-------------------------------------------------------------------
@@ -49,11 +53,8 @@ public class GrupoProduto extends AbstractEntity
 	public String toString()
 	{
 		return "GrupoProduto{" +
-				"id=" + id +
-				", nome='" + nome + '\'' +
-				", franquia=" + franquia +
+				"id=" + codigo +
 				", exigeAno=" + exigeAno +
-				", codigo='" + codigo + '\'' +
 				", situacao=" + situacao +
 				", anexoUuid='" + anexoUuid + '\'' +
 				", nomeArquivo='" + nomeArquivo + '\'' +

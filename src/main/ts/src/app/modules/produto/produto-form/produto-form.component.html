@@ -6,23 +6,29 @@
 
         <div fxLayout="row" fxLayoutGap="30px">
 
+
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Código</mat-label>
-                <input [(ngModel)]="produto.codigo" name="codigo" matInput maxlength="50"
-                    placeholder="Digite seu código">
+                <input uppercase matInput [(ngModel)]="produto.codigo" [disabled]="true" name="codigo">
             </mat-form-field>
 
             <mat-form-field fxFlex appearance="outline">
-                <mat-label>Nome</mat-label>
-                <input required [(ngModel)]="produto.nome" name="nome" matInput maxlength="144"
+                <mat-label>Produto</mat-label>
+                <input uppercase required [(ngModel)]="produto.produto" name="nome" matInput maxlength="144"
                     placeholder="Digite o nome do produto">
             </mat-form-field>
 
         </div>
 
-        <div fxLayout="row"  fxLayoutAlign=" center">
+        <div fxLayout="row" fxLayoutAlign=" center">
 
             <mat-form-field fxFlex appearance="outline">
+                <mat-label>Unidade comercial</mat-label>
+                <input uppercase required [(ngModel)]="produto.unidadeComercial" name="unidadeComercial" matInput
+                    maxlength="50" placeholder="Digite a unidade comercial do produto">
+            </mat-form-field>
+
+            <mat-form-field fxFlex appearance="outline" style="margin-left: 30px">
                 <mat-label>Grupo de produto</mat-label>
                 <input type="text" matInput [matAutocomplete]="auto" #inputFilter [(ngModel)]="produto.grupoProduto"
                     name="grupoProduto" (ngModelChange)="onListGrupoProdutos(inputFilter.value);">
@@ -31,14 +37,15 @@
             <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
                 (optionSelected)="produto.grupoProduto = $event.option.value; onListGrupoProdutos();">
                 <mat-option [value]="null">Nenhum</mat-option>
-                <mat-option *ngFor="let grupoProduto of gruposProdutos" [value]="grupoProduto">{{grupoProduto.nome}}
+                <mat-option *ngFor="let grupoProduto of gruposProdutos" [value]="grupoProduto">
+                    {{grupoProduto.codigo}} - {{grupoProduto.grupoProduto}}
                 </mat-option>
             </mat-autocomplete>
 
-            <mat-form-field style="margin-left: 30px" *ngIf="produto?.grupoProduto?.exigeAno" fxFlex appearance="outline">
+            <mat-form-field style="margin-left: 30px" *ngIf="produto?.grupoProduto?.exigeAno" fxFlex
+                appearance="outline">
                 <mat-label>Ano</mat-label>
-                <input [(ngModel)]="produto.ano" name="ano"
-                    matInput
+                <input [(ngModel)]="produto.ano" name="ano" matInput
                     [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}"
                     placeholder="Digite o ano do produto">
             </mat-form-field>
@@ -48,24 +55,19 @@
         <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign=" center">
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Estoque</mat-label>
-                <input [(ngModel)]="produto.estoque" name="estoque"
-                    matInput
-                    [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}"
-                    placeholder="Digite a quantidade em estoque">
+                <input value="-" matInput [disabled]="true">
             </mat-form-field>
 
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Preço de custo</mat-label>
-                <input [(ngModel)]="produto.precoCusto" name="precoCusto"
-                    matInput required
+                <input [(ngModel)]="produto.precoCusto" name="precoCusto" matInput required
                     [textMask]="{mask: textMasks.getDecimalNumberMask(5, 2), guide: false}"
                     placeholder="Digite o preço de custo do produto">
             </mat-form-field>
-            
+
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Preço de venda</mat-label>
-                <input [(ngModel)]="produto.precoVenda" name="precoVenda"
-                    matInput
+                <input [(ngModel)]="produto.precoVenda" name="precoVenda" matInput
                     [textMask]="{mask: textMasks.getDecimalNumberMask(5, 2), guide: false}"
                     placeholder="Digite o preço de venda do produto">
             </mat-form-field>
@@ -75,10 +77,34 @@
         <div fxLayout="row">
 
             <mat-form-field fxFlex appearance="outline">
+                <mat-label>Código de barras</mat-label>
+                <input uppercase [(ngModel)]="produto.codigoBarras" name="codigoBarras" matInput
+                    [textMask]="{mask: textMasks.getNumbersOnlyMask(100), guide: false}"
+                    placeholder="Digite o código de barras do produto">
+            </mat-form-field>
+        </div>
+
+        <div fxLayout="row">
+
+            <mat-form-field fxFlex appearance="outline">
                 <mat-label>Descrição</mat-label>
-                <textarea  [(ngModel)]="produto.descricao" name="descricao" matInput maxlength="144"
+                <textarea uppercase [(ngModel)]="produto.descricao" name="descricao" matInput maxlength="144"
                     placeholder="Digite a descrição do produto"></textarea>
             </mat-form-field>
+        </div>
+
+        <div fxLayout="row" fxLayoutGap="30px">
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Fornecedor da ultima compra</mat-label>
+                <input value="-" matInput [disabled]="true">
+            </mat-form-field>
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Data da ultima compra</mat-label>
+                <input value="-" matInput [disabled]="true">
+            </mat-form-field>
+
         </div>
 
         <div fxFlex style="background-color: #b71c1c; color: white; font-weight: bold;border-radius: 30px;"

@@ -25,7 +25,6 @@ export class ProdutoListComponent implements OnInit
 
     public filters = {
         nome: '',
-        codigo: ''
     }
 
 
@@ -33,10 +32,10 @@ export class ProdutoListComponent implements OnInit
        * Colunas da Grid
        */
     public tableColumns: ITdDataTableColumn[] = [
-        { name: 'nome', label: 'NOME', sortable: false },
         { name: 'codigo', label: 'CÓDIGO', sortable: false },
+        { name: 'nome', label: 'PRODUTO', sortable: false },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
-        { name: 'opcoes', label: 'OPÇÕES', tooltip: 'Opções', sortable: false, width: 150 }
+        { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 150 }
     ];
 
     /**
@@ -71,7 +70,7 @@ export class ProdutoListComponent implements OnInit
         const dialogRef = this.dialog.open(ProdutoFormComponent, {
             width: '800px',
             height: 'auto',
-            data: { produtoId: produto ? produto.id : null }
+            data: { produtoId: produto ? produto.codigo : null }
         });
 
         dialogRef.afterClosed().subscribe(produtoSaved =>
@@ -93,7 +92,7 @@ export class ProdutoListComponent implements OnInit
         {
             if (accept)
             {
-                this.produtoService.updateSituacaoProduto(produto.id, !produto.situacao).subscribe( result => {
+                this.produtoService.updateSituacaoProduto(produto.codigo, !produto.situacao).subscribe( result => {
                     this.openSnackBarService.openSuccess(produto.situacao ? 'Produto desativado com sucesso.' : 'Produto ativado com sucesso.');
                     this.onListProdutos();
                 }, err => this.openSnackBarService.openError(err.message))
@@ -118,7 +117,6 @@ export class ProdutoListComponent implements OnInit
 
         this.produtoService.listProdutosByFilters(
             this.filters.nome,
-            this.filters.codigo,
             this.pageRequest.pageable
         ).subscribe((result) =>
         {
@@ -132,8 +130,7 @@ export class ProdutoListComponent implements OnInit
     public clearFilters()
     {
         this.filters = {
-            nome: '',
-            codigo: ''
+            nome: ''
         }
 
         this.onListProdutos();

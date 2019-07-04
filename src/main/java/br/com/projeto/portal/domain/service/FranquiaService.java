@@ -1,6 +1,7 @@
 package br.com.projeto.portal.domain.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import br.com.projeto.portal.domain.dao.FranquiaDAO;
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
@@ -41,9 +42,9 @@ public class FranquiaService implements IFranquiaRepository
 	 *-------------------------------------------------------------------*/
 
 	@Override
-	public Page<Franquia> listFranquiasByFilters( String nome, String cnpj, String cidade, PageRequest pageable )
+	public Page<Franquia> listFranquiasByFilters( String nome, String cnpj, PageRequest pageable )
 	{
-		return this.franquiaDao.listFranquiasByFilters( nome, cnpj, cidade, pageable );
+		return this.franquiaDao.listFranquiasByFilters( nome, cnpj, pageable );
 	}
 
 	@Override
@@ -71,12 +72,12 @@ public class FranquiaService implements IFranquiaRepository
 	}
 
 	@Override
-	public void updateFranquia( Franquia franquia )
+	public void updateFranquia( Franquia franquia)
 	{
 		if(franquia.getAnexoUuid() == null && franquia.getAnexo() != null)
 			this.insertArquivo( franquia );
 
-		Franquia franquiaSaved = this.franquiaDao.findFranquiaById( franquia.getId() );
+		Franquia franquiaSaved = this.franquiaDao.findFranquiaById( franquia.getCodigo() );
 
 		franquia.setUpdated( LocalDateTime.now() );
 

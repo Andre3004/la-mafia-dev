@@ -32,10 +32,11 @@ export class UsuarioListComponent implements OnInit
        * Colunas da Grid
        */
     public tableColumns: ITdDataTableColumn[] = [
-        { name: 'nome', label: 'NOME', sortable: false },
+        { name: 'codigo', label: 'CÓDIGO', sortable: false },
+        { name: 'nome', label: 'USUÁRIO', sortable: false },
         { name: 'email', label: 'E-MAIL', sortable: false },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
-        { name: 'opcoes', label: 'OPÇÕES', tooltip: 'Opções', sortable: false, width: 150 }
+        { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 150 }
     ];
 
     /**
@@ -102,7 +103,7 @@ export class UsuarioListComponent implements OnInit
         const dialogRef = this.dialog.open(UsuarioFormComponent, {
             width: '600px',
             height: 'auto',
-            data: { usuarioId: usuario ? usuario.id : null }
+            data: { usuarioId: usuario ? usuario.codigo : null }
         });
 
         dialogRef.afterClosed().subscribe(usuarioSaved =>
@@ -124,7 +125,7 @@ export class UsuarioListComponent implements OnInit
         {
             if (accept)
             {
-                this.usuarioService.updateSituacaoUsuario(usuario.id, !usuario.situacao).subscribe( result => {
+                this.usuarioService.updateSituacaoUsuario(usuario.codigo, !usuario.situacao).subscribe( result => {
                     this.openSnackBarService.openSuccess(usuario.situacao ? 'Usuário desativado com sucesso.' : 'Usuário ativado com sucesso.');
                     this.onListUsuarios();
                 }, err => this.openSnackBarService.openError(err.message))

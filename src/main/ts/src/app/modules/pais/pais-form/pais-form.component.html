@@ -1,0 +1,55 @@
+<mat-dialog-content>
+
+  <form #qualificadorForm="ngForm" fxLayout="column">
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Código</mat-label>
+        <input uppercase  required matInput [(ngModel)]="pais.idPais" name="idPais" [disabled]="true">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Sigla</mat-label>
+        <input uppercase  [(ngModel)]="pais.sigla" name="sigla" matInput maxlength="5">
+      </mat-form-field>
+
+
+
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>DDI</mat-label>
+        <input uppercase  [(ngModel)]="pais.ddi" name="ddi" matInput [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}" maxlength="4">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>País</mat-label>
+        <input uppercase  required [(ngModel)]="pais.pais" name="pais" matInput maxlength="144">
+      </mat-form-field>
+
+
+
+
+
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="end">
+  <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+    color="primary">
+    SALVAR
+  </button>
+  <button mat-dialog-close mat-raised-button class="white-btn
+  push-left-md bgc-grey-800">
+    CANCELAR
+  </button>
+</mat-dialog-actions>

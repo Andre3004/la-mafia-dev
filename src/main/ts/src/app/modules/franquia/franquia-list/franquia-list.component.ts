@@ -25,7 +25,6 @@ export class FranquiaListComponent implements OnInit
     public filters = {
         nome: '',
         cnpj: '',
-        cidade: ''
     }
 
     public maskCnpj = [/\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/];
@@ -34,11 +33,12 @@ export class FranquiaListComponent implements OnInit
        * Colunas da Grid
        */
     public tableColumns: ITdDataTableColumn[] = [
-        { name: 'nome', label: 'NOME', sortable: false },
+        { name: 'codigo', label: 'CÓDIGO', sortable: false },
+        { name: 'nome', label: 'FRANQUIA', sortable: false },
         { name: 'cnpj', label: 'CNPJ', sortable: false },
         { name: 'cidade', label: 'CIDADE', sortable: false },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
-        { name: 'opcoes', label: 'OPÇÕES', tooltip: 'Opções', sortable: false, width: 150 }
+        { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 150 }
     ];
 
     /**
@@ -80,7 +80,6 @@ export class FranquiaListComponent implements OnInit
         this.franquiaService.listFranquiasByFilters(
             this.filters.nome,
             this.filters.cnpj,
-            this.filters.cidade,
             this.pageRequest.pageable
         ).subscribe((result) =>
         {
@@ -93,7 +92,6 @@ export class FranquiaListComponent implements OnInit
         this.filters = {
             nome: '',
             cnpj: '',
-            cidade: ''
         }
         
         this.onListFranquias();
@@ -103,9 +101,9 @@ export class FranquiaListComponent implements OnInit
     public openForm(franquia)
     {
         const dialogRef = this.dialog.open(FranquiaFormComponent, {
-            width: '600px',
+            width: '900px',
             height: 'auto',
-            data: { franquiaId: franquia ? franquia.id : null }
+            data: { franquiaId: franquia ? franquia.codigo : null }
         });
 
         dialogRef.afterClosed().subscribe(franquiaSaved =>
@@ -127,7 +125,7 @@ export class FranquiaListComponent implements OnInit
         {
             if (accept)
             {
-                this.franquiaService.updateSituacaoFranquia(franquia.id, !franquia.situacao).subscribe( result => {
+                this.franquiaService.updateSituacaoFranquia(franquia.codigo, !franquia.situacao).subscribe( result => {
                     this.openSnackBarService.openSuccess(franquia.situacao ? 'franquia desativada com sucesso.' : 'franquia ativada com sucesso.');
                     this.onListFranquias();
                 }, err => this.openSnackBarService.openError(err.message))

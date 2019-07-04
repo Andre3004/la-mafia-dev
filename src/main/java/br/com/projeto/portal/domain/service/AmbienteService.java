@@ -97,7 +97,7 @@ public class AmbienteService implements IAmbienteRepository
 
 		if(ambiente.getAmbienteImagems() != null && ambiente.getAmbienteImagems().size() > 0)
 		{
-			List<AmbienteImagem> ambienteImagemsToInsert = ambiente.getAmbienteImagems().stream().filter( ambienteImagem -> ambienteImagem.getId() == null ).collect( Collectors.toList() );
+			List<AmbienteImagem> ambienteImagemsToInsert = ambiente.getAmbienteImagems().stream().filter( ambienteImagem -> ambienteImagem.getCodigo() == null ).collect( Collectors.toList() );
 
 			ambienteImagemsToInsert.forEach( ambienteImagem -> {
 				ambienteImagem.setAmbiente( ambiente );
@@ -121,7 +121,7 @@ public class AmbienteService implements IAmbienteRepository
 		Ambiente ambiente = ambienteDao.findAmbienteById( id );
 		if(ambiente.getAmbienteImagems() != null && ambiente.getAmbienteImagems().size() > 0)
 		{
-			for ( Long imagensDeletadasId : ambiente.getAmbienteImagems().stream().map( AmbienteImagem::getId ).collect( Collectors.toList() ) )
+			for ( Long imagensDeletadasId : ambiente.getAmbienteImagems().stream().map( AmbienteImagem::getCodigo ).collect( Collectors.toList() ) )
 			{
 				deleteAmbienteImagem( imagensDeletadasId );
 			}

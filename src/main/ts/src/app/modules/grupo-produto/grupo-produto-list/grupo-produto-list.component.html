@@ -1,20 +1,9 @@
 <mat-toolbar class="toolbar-default">
 	<mat-toolbar-row fxLayoutGap="30px">
 		<mat-form-field fxFlex="20" appearance="outline">
-			<mat-label>Nome</mat-label>
-			<input matInput placeholder="Pesquisar por nome" maxlength="144" [(ngModel)]="filters.nome">
+			<mat-label>Grupo de produto</mat-label>
+			<input matInput uppercase placeholder="Pesquisar por nome" maxlength="144" [(ngModel)]="filters.nome">
 		</mat-form-field>
-
-		<mat-form-field fxFlex="20" appearance="outline">
-			<mat-label>Franquia</mat-label>
-			<input type="text" matInput [matAutocomplete]="auto" [(ngModel)]="franquiaFilter" name="franquiaFilter"
-				(ngModelChange)="onListFranquias();">
-		</mat-form-field>
-
-		<mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete" (optionSelected)="filters.franquia = $event.option.value; onListFranquias();" >
-			<mat-option [value]="null">Nenhum</mat-option>
-			<mat-option *ngFor="let franquia of franquias" [value]="franquia">{{franquia.nome}}</mat-option>
-		</mat-autocomplete>
 
 		<div fxFlex></div>
 
@@ -37,13 +26,7 @@
 
 		<ng-template tdDataTableTemplate="nome" let-grupoProduto="row">
 			<span class="text-truncate">
-				{{ grupoProduto?.nome}}
-			</span>
-		</ng-template>
-
-		<ng-template tdDataTableTemplate="franquia.nome" let-grupoProduto="row">
-			<span class="text-truncate">
-				{{ grupoProduto?.franquia?.nome}}
+				{{ grupoProduto?.grupoProduto}}
 			</span>
 		</ng-template>
 

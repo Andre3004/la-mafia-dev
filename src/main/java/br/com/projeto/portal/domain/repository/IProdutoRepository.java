@@ -8,7 +8,7 @@ public interface IProdutoRepository
 {
 	public Produto findProdutoById(long id);
 
-	public Page<Produto> listProdutosByFilters( String nome, String codigo, PageRequest pageable );
+	public Page<Produto> listProdutosByFilters( String nome, PageRequest pageable );
 
 	public void insertProduto( Produto produto );
 

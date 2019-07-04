@@ -67,7 +67,7 @@ export class MesaFormComponent implements OnInit
   public onSubmit(): void
   {
 
-    if(!this.mesa.ambiente || (this.mesa.ambiente && !this.mesa.ambiente.id))
+    if(!this.mesa.ambiente || (this.mesa.ambiente && !this.mesa.ambiente.codigo))
     {
       this.openSnackBarService.openError("O campo ambiente é obrigatório.");
       return;
@@ -108,7 +108,7 @@ export class MesaFormComponent implements OnInit
   }
 
   public displayFn(ambiente?: Ambiente): string | undefined {
-      return ambiente ? ambiente.nome : undefined;
+      return ambiente ? ambiente.ambiente : undefined;
   }
 
 }

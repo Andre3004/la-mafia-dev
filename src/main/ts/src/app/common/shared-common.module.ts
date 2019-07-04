@@ -12,11 +12,13 @@ import { OpenSnackBarService } from './open-snackbar/open-snackbar.service';
 import { BROKER_CONFIGURATION } from 'src/generated/services-wrapper';
 import { RouterModule } from '@angular/router';
 import { TextMaskModule } from 'angular2-text-mask';
+import { UppercaseDirective } from './uppercase/uppercase.directive';
 
 
 @NgModule({
     declarations: [
-        HeaderComponent
+        HeaderComponent,
+        UppercaseDirective
     ],
     imports: [
         CommonModule,
@@ -84,6 +86,7 @@ import { TextMaskModule } from 'angular2-text-mask';
     ],
     exports: [
         HeaderComponent,
+        UppercaseDirective,
       
         CommonModule,
         FormsModule,

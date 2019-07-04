@@ -8,6 +8,9 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.projeto.portal.domain.dao.cidade.CidadeDAO;
+import br.com.projeto.portal.domain.dao.estado.EstadoDAO;
+import br.com.projeto.portal.domain.dao.pais.PaisDAO;
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
 import br.com.projeto.portal.domain.repository.IFranquiaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +31,26 @@ public class FranquiaDAO implements IFranquiaRepository
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
+	@Autowired
+	CidadeDAO cidadeDAO;
+
+	@Autowired
+	EstadoDAO estadoDAO;
+
+	@Autowired
+	PaisDAO paisDAO;
+
 	@Override
 	public Franquia findFranquiaById(long id)
 	{
-		String sql = "SELECT * FROM franquia WHERE id = ?";
+		String sql = "SELECT * FROM franquia WHERE codigo = ?";
 
 		Franquia franquia = (Franquia) jdbcTemplate.queryForObject(sql,
 				new Object[] { id }, new BeanPropertyRowMapper(Franquia.class));
 
+		franquia.setEstado( estadoDAO.findEstadoById(franquia.getEstadoId()) );
+		franquia.setCidade( cidadeDAO.findCidadeById( franquia.getCidadeId()) );
+		franquia.setPais( paisDAO.findPaisById( franquia.getPaisId()) );
 		return franquia;
 	}
 
@@ -44,23 +59,35 @@ public class FranquiaDAO implements IFranquiaRepository
 	{
 		jdbcTemplate.update(
 				"INSERT INTO franquia " +
-						"(nome, " +
+						"(franquia, " +
 						"cnpj, " +
 						"endereco, " +
-						"cidade, " +
 						"anexo_uuid, " +
 						"nome_arquivo, " +
-						"codigo, " +
 						"situacao, " +
-						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-				franquia.getNome(),
+						"numero, " +
+						"complemento, " +
+						"bairro, " +
+						"cep, " +
+						"cidade_id, " +
+						"estado_id, " +
+						"pais_id, " +
+						"telefone, " +
+						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				franquia.getFranquia(),
 				franquia.getCnpj(),
 				franquia.getEndereco(),
-				franquia.getCidade(),
 				franquia.getAnexoUuid(),
 				franquia.getNomeArquivo(),
-				franquia.getCodigo(),
 				franquia.getSituacao(),
+				franquia.getNumero(),
+				franquia.getComplemento(),
+				franquia.getBairro(),
+				franquia.getCep(),
+				franquia.getCidade().getIdCidade(),
+				franquia.getEstado().getIdEstado(),
+				franquia.getPais().getIdPais(),
+				franquia.getTelefone(),
 				Timestamp.valueOf(LocalDateTime.now()) );
 	}
 
@@ -69,40 +96,54 @@ public class FranquiaDAO implements IFranquiaRepository
 	{
 		jdbcTemplate.update("UPDATE franquia " +
 						"SET " +
-						"nome = ?, " +
+						"franquia = ?, " +
 						"cnpj = ?, " +
 						"endereco = ?, " +
 						"cidade = ?, " +
 						"anexo_uuid = ?, " +
 						"nome_arquivo = ?, " +
-						"codigo = ?, " +
 						"situacao = ?, " +
+						"numero  = ?, " +
+						"complemento  = ?, " +
+						"bairro  = ?, " +
+						"cep  = ?, " +
+						"cidade_id  = ?, " +
+						"estado_id  = ?, " +
+						"pais_id  = ?, " +
+						"telefone = ?, " +
 						"updated = ? " +
-						"WHERE id = ?",
-				franquia.getNome(),
+						"WHERE codigo = ?",
+				franquia.getFranquia(),
 				franquia.getCnpj(),
 				franquia.getEndereco(),
 				franquia.getCidade(),
 				franquia.getAnexoUuid(),
 				franquia.getNomeArquivo(),
-				franquia.getCodigo(),
 				franquia.getSituacao(),
+				franquia.getNumero(),
+				franquia.getComplemento(),
+				franquia.getBairro(),
+				franquia.getCep(),
+				franquia.getCidade().getIdCidade(),
+				franquia.getEstado().getIdEstado(),
+				franquia.getPais().getIdPais(),
+				franquia.getTelefone(),
 				Timestamp.valueOf(LocalDateTime.now()),
-				franquia.getId());
+				franquia.getCodigo());
 	}
 
 	@Override
 	public void deleteFranquia(long id){
-		jdbcTemplate.update("DELETE from franquia WHERE id = ? ", id);
+		jdbcTemplate.update("DELETE from franquia WHERE codigo = ? ", id);
 	}
 
 	@Override
 	public void updateSituacaoFranquia(long id, boolean situacao){
-		jdbcTemplate.update("UPDATE franquia SET situacao = ? WHERE id = ?", situacao, id);
+		jdbcTemplate.update("UPDATE franquia SET situacao = ? WHERE codigo = ?", situacao, id);
 	}
 
 	@Override
-	public Page<Franquia> listFranquiasByFilters( String nome, String cnpj, String cidade, PageRequest pageable )
+	public Page<Franquia> listFranquiasByFilters( String nome, String cnpj, PageRequest pageable )
 	{
 		if(pageable == null) pageable = new PageRequest(0, 10);
 
@@ -117,9 +158,8 @@ public class FranquiaDAO implements IFranquiaRepository
 		String selectAndFrom = "SELECT * " +
 				"FROM franquia ";
 
-		String where =  "WHERE nome LIKE  '%" + nome + "%' AND "+
-				"cnpj LIKE  '%" + cnpj + "%' AND "
-				+"cidade LIKE  '%" + cidade + "%' ";
+		String where =  "WHERE franquia LIKE  '%" + nome + "%' AND "+
+				"cnpj LIKE  '%" + cnpj + "%' ";
 
 
 		String pagination = "LIMIT " + pageable.getPageSize() + " " +
@@ -130,10 +170,10 @@ public class FranquiaDAO implements IFranquiaRepository
 		List<Franquia> franquias = jdbcTemplate.query(querySql,new RowMapper<Franquia>(){
 			public Franquia mapRow( ResultSet rs, int row) throws SQLException {
 				Franquia e=new Franquia();
-				e.setId(rs.getLong("id"));
-				e.setNome(rs.getString("nome"));
+				e.setCodigo(rs.getLong("codigo"));
+				e.setFranquia(rs.getString("franquia"));
 				e.setCnpj(rs.getString("cnpj"));
-				e.setCidade(rs.getString("cidade"));
+				e.setCidade(cidadeDAO.findCidadeById( rs.getInt("cidade_id") ));
 				e.setSituacao( rs.getBoolean( "situacao" ) );
 				return e;
 			}

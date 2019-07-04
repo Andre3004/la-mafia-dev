@@ -1,18 +1,13 @@
 <mat-toolbar class="toolbar-default">
 	<mat-toolbar-row fxLayoutGap="30px">
 		<mat-form-field fxFlex="20" appearance="outline">
-			<mat-label>Nome</mat-label>
-			<input matInput placeholder="Pesquisar por nome" maxlength="144" [(ngModel)]="filters.nome">
+			<mat-label>Franquia</mat-label>
+			<input uppercase matInput placeholder="Pesquisar por nome" maxlength="144" [(ngModel)]="filters.nome">
 		</mat-form-field>
 
 		<mat-form-field fxFlex="20" appearance="outline">
 			<mat-label>CNPJ</mat-label>
-			<input matInput [textMask]="{mask: maskCnpj, guide: false}" placeholder="Pesquisar por cnpj" maxlength="144" [(ngModel)]="filters.cnpj">
-		</mat-form-field>
-
-		<mat-form-field fxFlex="20" appearance="outline">
-			<mat-label>Cidade</mat-label>
-			<input matInput placeholder="Pesquisar por cidade" maxlength="144" [(ngModel)]="filters.cidade">
+			<input uppercase matInput [textMask]="{mask: maskCnpj, guide: false}" placeholder="Pesquisar por cnpj" maxlength="144" [(ngModel)]="filters.cnpj">
 		</mat-form-field>
 
 		<div fxFlex></div>
@@ -36,13 +31,13 @@
 
 		<ng-template tdDataTableTemplate="nome" let-franquia="row">
 			<span class="text-truncate">
-				{{ franquia?.nome}}
+				{{ franquia?.franquia}}
 			</span>
 		</ng-template>
 
 		<ng-template tdDataTableTemplate="cidade" let-franquia="row">
 			<span class="text-truncate">
-				{{ franquia?.cidade}}
+				{{ franquia?.cidade?.cidade}}
 			</span>
 		</ng-template>
 

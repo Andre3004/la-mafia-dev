@@ -1,45 +1,65 @@
-<h2 mat-dialog-title>{{title}}</h2>
-
+<div fxLayoutAlign="space-between center">
+    <h2 mat-dialog-title>{{title}}</h2>
+    <button color="accent" style="right: 0;" class="white-btn push-top-sm" (click)="addFranquia()"
+    mat-raised-button>ADICIONAR FRANQUIA</button>
+</div>
 
 <mat-dialog-content>
     <form #qualificadorForm="ngForm" fxLayout="column">
 
-        <div fxLayout="row" fxLayoutGap="30px">
-
-            <mat-form-field fxFlex appearance="outline">
-                <mat-label>Código</mat-label>
-                <input [(ngModel)]="grupoProduto.codigo" name="codigo" matInput maxlength="50"
-                    placeholder="Digite seu código">
-            </mat-form-field>
-
-            <mat-form-field fxFlex appearance="outline">
-                <mat-label>Nome</mat-label>
-                <input required [(ngModel)]="grupoProduto.nome" name="nome" matInput maxlength="144"
-                    placeholder="Digite o nome do grupo">
-            </mat-form-field>
-
-        </div>
-
         <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign=" center">
 
             <mat-form-field fxFlex appearance="outline">
-                <mat-label>Franquia</mat-label>
-                <input type="text" matInput [matAutocomplete]="auto" #inputFilter [(ngModel)]="grupoProduto.franquia" name="franquia"
-                    (ngModelChange)="onListFranquias(inputFilter.value);">
+                <mat-label>Código</mat-label>
+                <input uppercase matInput [(ngModel)]="grupoProduto.codigo" [disabled]="true" name="codigo">
             </mat-form-field>
 
-            <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete" (optionSelected)="grupoProduto.franquia = $event.option.value; onListFranquias();" >
-                <mat-option [value]="null">Nenhum</mat-option>
-                <mat-option *ngFor="let franquia of franquias" [value]="franquia">{{franquia.nome}}</mat-option>
-            </mat-autocomplete>
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Grupo de produto</mat-label>
+                <input uppercase required [(ngModel)]="grupoProduto.grupoProduto" name="nome" matInput maxlength="144"
+                    placeholder="Digite o nome do grupo">
+            </mat-form-field>
 
             <mat-checkbox fxFlex [(ngModel)]="grupoProduto.exigeAno" name="exigeAno">Exige ano ?</mat-checkbox>
 
+           
 
         </div>
 
 
-        <div fxFlex style="background-color: #b71c1c; color: white; font-weight: bold;border-radius: 30px;"
+        <div fxLayout="column" fxLayoutGap="30px">
+            <div style="max-height: 350px;overflow: auto;" fxLayout="row wrap">
+                <div *ngFor="let grupoProdutoFranquia of grupoProduto.grupoProdutoFranquia; let i = index">
+                    <div class="push-top-sm" fxLayoutAlign=" center">
+
+                        <mat-form-field fxFlex appearance="outline">
+                            <mat-label>Franquia</mat-label>
+                            <input type="text" matInput [matAutocomplete]="auto" #inputFilter
+                                [(ngModel)]="grupoProdutoFranquia.franquia" name="franquia{{i}}"
+                                (ngModelChange)="onListFranquias(inputFilter.value);"
+                                [disabled]="grupoProdutoFranquia?.franquia?.codigo">
+                        </mat-form-field>
+
+                        <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
+                            (optionSelected)="grupoProdutoFranquia.franquia = $event.option.value; onListFranquias();">
+                            <mat-option [value]="null">Nenhum</mat-option>
+                            <mat-option *ngFor="let franquia of franquias" [value]="franquia">{{franquia.franquia}}
+                            </mat-option>
+                        </mat-autocomplete>
+
+                        <button (click)="removeFranquia(i)" matTooltip="Remover franquia" mat-icon-button>
+                            <mat-icon>delete</mat-icon>
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="push-top-sm" fxFlex
+            style="background-color: #b71c1c; color: white; font-weight: bold;border-radius: 30px;"
             fxLayoutAlign="space-between center">
             <label *ngIf="!fotoImage && !grupoProduto.anexoUuid" style="max-width: 400px;"
                 class="text-truncate push-left-md">

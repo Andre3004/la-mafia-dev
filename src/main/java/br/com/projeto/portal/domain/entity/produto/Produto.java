@@ -1,5 +1,8 @@
 package br.com.projeto.portal.domain.entity.produto;
 
+import java.time.LocalDateTime;
+
+import br.com.projeto.portal.domain.entity.Fornecedor;
 import br.com.projeto.portal.domain.entity.grupoProduto.GrupoProduto;
 import br.com.projeto.portal.domain.entity.usuario.PerfilUsuario;
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
@@ -20,11 +23,9 @@ public class Produto extends AbstractEntity
 	 *				 		     ATTRIBUTES
 	 *-------------------------------------------------------------------*/
 
-	private Long id;
+	private Long codigo;
 
-	private String codigo;
-
-	private String nome;
+	private String produto;
 
 	private String descricao;
 
@@ -38,17 +39,26 @@ public class Produto extends AbstractEntity
 
 	private GrupoProduto grupoProduto;
 
-	private Integer estoque;
-
 	private Double precoCusto;
 
 	private Double precoVenda;
+
+	private String unidadeComercial;
+
+	private String codigoBarras;
+
+	private Fornecedor fornecedor;
+
+	private LocalDateTime dataUltimaCompra;
 
 	//@Transient
 	private FileTransfer anexo;
 
 	//@Transient
 	private Long grupoProdutoId;
+
+	//@Transient
+	private int fornecedorId;
 
 	/*-------------------------------------------------------------------
 	 * 		 					CONSTRUCTORS
@@ -61,21 +71,4 @@ public class Produto extends AbstractEntity
 	 *							BEHAVIORS
 	 *-------------------------------------------------------------------*/
 
-	@Override
-	public String toString()
-	{
-		return "Produto{" +
-				"id=" + id +
-				", nome='" + nome + '\'' +
-				", descricao='" + descricao + '\'' +
-				", codigo='" + codigo + '\'' +
-				", ano=" + ano +
-				", situacao=" + situacao +
-				", anexoUuid='" + anexoUuid + '\'' +
-				", nomeArquivo='" + nomeArquivo + '\'' +
-				", anexo=" + anexo +
-				", created=" + created +
-				", updated=" + updated +
-				'}';
-	}
 }

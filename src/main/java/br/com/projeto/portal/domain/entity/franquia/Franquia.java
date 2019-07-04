@@ -2,6 +2,9 @@ package br.com.projeto.portal.domain.entity.franquia;
 
 import java.util.Arrays;
 
+import br.com.projeto.portal.domain.entity.Cidade;
+import br.com.projeto.portal.domain.entity.Estado;
+import br.com.projeto.portal.domain.entity.Pais;
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,17 +20,11 @@ public class Franquia extends AbstractEntity
 	 *				 		     ATTRIBUTES
 	 *-------------------------------------------------------------------*/
 
-	private Long id;
+	private Long codigo;
 
-	private String codigo;
-
-	private String nome;
+	private String franquia;
 
 	private String cnpj;
-
-	private String endereco;
-
-	private String cidade;
 
 	private String anexoUuid;
 
@@ -35,9 +32,35 @@ public class Franquia extends AbstractEntity
 
 	private Boolean situacao;
 
+	private String endereco;
+
+	private Integer numero;
+
+	private String complemento;
+
+	private String bairro;
+
+	private String cep;
+
+	private Cidade cidade;
+
+	private Estado estado;
+
+	private Pais pais;
+
+	private String telefone;
+
 	//@Transient
 	private FileTransfer anexo;
 
+	//@Transient
+	private int cidadeId;
+
+	//@Transient
+	private int estadoId;
+
+	//@Transient
+	private int paisId;
 	/*-------------------------------------------------------------------
 	 * 		 					CONSTRUCTORS
 	 *-------------------------------------------------------------------*/
@@ -49,20 +72,4 @@ public class Franquia extends AbstractEntity
 	 *							BEHAVIORS
 	 *-------------------------------------------------------------------*/
 
-	@Override
-	public String toString()
-	{
-		return "Franquia{" +
-				"id=" + id +
-				", nome='" + nome + '\'' +
-				", cnpj='" + cnpj + '\'' +
-				", endereco='" + endereco + '\'' +
-				", cidade='" + cidade + '\'' +
-				", anexoUuid='" + anexoUuid + '\'' +
-				", nomeArquivo='" + nomeArquivo + '\'' +
-				", anexo=" + anexo +
-				", created=" + created +
-				", updated=" + updated +
-				'}';
-	}
 }

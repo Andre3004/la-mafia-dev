@@ -38,9 +38,9 @@ public class ProdutoService implements IProdutoRepository
 	 *-------------------------------------------------------------------*/
 
 	@Override
-	public Page<Produto> listProdutosByFilters( String nome, String codigo, PageRequest pageable )
+	public Page<Produto> listProdutosByFilters( String nome, PageRequest pageable )
 	{
-		return this.produtoDao.listProdutosByFilters( nome, codigo, pageable );
+		return this.produtoDao.listProdutosByFilters( nome, pageable );
 	}
 
 	@Override
@@ -72,7 +72,7 @@ public class ProdutoService implements IProdutoRepository
 		if(produto.getAnexoUuid() == null && produto.getAnexo() != null)
 			this.insertArquivo( produto );
 
-		Produto produtoSaved = this.produtoDao.findProdutoById( produto.getId() );
+		Produto produtoSaved = this.produtoDao.findProdutoById( produto.getCodigo() );
 
 		produto.setUpdated( LocalDateTime.now() );
 

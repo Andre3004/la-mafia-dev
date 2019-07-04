@@ -17,7 +17,9 @@ export class GrupoProdutoFormComponent implements OnInit
 
   public title = "";
 
-  public grupoProduto: GrupoProduto = { exigeAno: false, franquia: {} };
+  public grupoProduto: GrupoProduto = { codigo:0, exigeAno: false, grupoProdutoFranquia: [] };
+
+  public grupoProdutoFranquiasToRemoved = [];
 
   public fotoImage: any;
 
@@ -66,11 +68,13 @@ export class GrupoProdutoFormComponent implements OnInit
 
     let anexoOld = null;
 
-    if( !this.grupoProduto.franquia || (this.grupoProduto.franquia && !this.grupoProduto.franquia.id))
+    if( !this.grupoProduto.grupoProdutoFranquia || (this.grupoProduto.grupoProdutoFranquia && !this.grupoProduto.grupoProdutoFranquia.length))
     {
-      this.openSnackBarService.openError("O campo franquia deve ser selecionado.");
+      this.openSnackBarService.openError("É necessário adicionar ao menos uma franquia.");
       return;
     }
+    else
+      this.grupoProduto.grupoProdutoFranquia = this.grupoProduto.grupoProdutoFranquia.filter( gp => gp.franquia);
 
     if(this.grupoProduto.anexo && typeof(this.grupoProduto.anexo) == 'string')
     {
@@ -78,7 +82,7 @@ export class GrupoProdutoFormComponent implements OnInit
       this.grupoProduto.anexo = null;
     }
 
-    if (!this.grupoProduto.id)
+    if (!this.grupoProduto.codigo)
     {
       this.grupoProdutoService.insertGrupoProduto(this.grupoProduto).subscribe(grupoProduto =>
       {
@@ -94,7 +98,7 @@ export class GrupoProdutoFormComponent implements OnInit
     }
     else
     {
-      this.grupoProdutoService.updateGrupoProduto(this.grupoProduto).subscribe(grupoProduto =>
+      this.grupoProdutoService.updateGrupoProduto(this.grupoProduto, this.grupoProdutoFranquiasToRemoved).subscribe(grupoProduto =>
       {
         this.openSnackBarService.openSuccess("Grupo de produto atualizado com sucesso.");
         this.dialogRef.close(this.grupoProduto);
@@ -108,13 +112,13 @@ export class GrupoProdutoFormComponent implements OnInit
 
   public onListFranquias(filter)
   {
-    this.franquiaService.listFranquiasByFilters(filter ? filter : "", "", "", null).subscribe( franquiaPage => {
+    this.franquiaService.listFranquiasByFilters(filter ? filter : "", "", null).subscribe( franquiaPage => {
       this.franquias = franquiaPage.content; 
     })
   }
 
   public displayFn(franquia?: Franquia): string | undefined {
-    return franquia ? franquia.nome : undefined;
+    return franquia ? franquia.franquia : undefined;
   }
 
   /*-------------------------------------------------------------------
@@ -168,5 +172,24 @@ export class GrupoProdutoFormComponent implements OnInit
       this.grupoProduto.anexo = null;
     }
   }
+
+
+
+   /*-------------------------------------------------------------------
+  *                           Franquias
+  *-------------------------------------------------------------------*/
+ 
+ public addFranquia()
+ {
+   this.grupoProduto.grupoProdutoFranquia.push({});
+ }
+
+ public removeFranquia(index)
+ {
+   if(this.grupoProduto.grupoProdutoFranquia[index].created)
+       this.grupoProdutoFranquiasToRemoved.push(this.grupoProduto.grupoProdutoFranquia[index].franquia.codigo)
+
+   this.grupoProduto.grupoProdutoFranquia.splice(index, 1);
+ }
 
 }

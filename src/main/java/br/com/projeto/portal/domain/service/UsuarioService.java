@@ -85,7 +85,7 @@ public class UsuarioService implements IUsuarioRepository
 		if(usuario.getAnexoUuid() == null && usuario.getAnexo() != null)
 			this.insertArquivo( usuario );
 
-		Usuario usuarioSaved = this.usuarioDao.findUsuarioById( usuario.getId() );
+		Usuario usuarioSaved = this.usuarioDao.findUsuarioById( usuario.getCodigo() );
 
 		if(usuario.getSenha() == null || usuario.getSenha().isEmpty())
 		{

@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.projeto.portal.domain.dao.fornecedor.FornecedorDAO;
 import br.com.projeto.portal.domain.entity.produto.Produto;
 import br.com.projeto.portal.domain.repository.IProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +29,19 @@ public class ProdutoDAO implements IProdutoRepository
 	@Autowired
 	GrupoProdutoDAO grupoProdutoDAO;
 
+	@Autowired
+	FornecedorDAO fornecedorDAO;
+
 	@Override
 	public Produto findProdutoById( long id)
 	{
-		String sql = "SELECT * FROM produto WHERE id = ?";
+		String sql = "SELECT * FROM produto WHERE codigo = ?";
 
 		Produto produto = (Produto) jdbcTemplate.queryForObject(sql,
 				new Object[] { id }, new BeanPropertyRowMapper(Produto.class));
 
 		produto.setGrupoProduto( grupoProdutoDAO.findGrupoProdutoById( produto.getGrupoProdutoId() ) );
+		produto.setFornecedor( fornecedorDAO.findFornecedorById( produto.getFornecedorId() ) );
 
 		return produto;
 	}
@@ -46,29 +51,31 @@ public class ProdutoDAO implements IProdutoRepository
 	{
 		jdbcTemplate.update(
 				"INSERT INTO produto " +
-						"(nome, " +
+						"(produto, " +
 						"descricao, " +
-						"codigo, " +
 						"ano, " +
 						"situacao, " +
 						"anexo_uuid, " +
 						"nome_arquivo, " +
 						"preco_custo, " +
 						"preco_venda, " +
-						"estoque, " +
 						"grupo_produto_id, " +
-						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-				produto.getNome(),
+						"codigo_barras, " +
+						"unidade_comercial, " +
+						"fornecedor_id, " +
+						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				produto.getProduto(),
 				produto.getDescricao(),
-				produto.getCodigo(),
 				produto.getAno(),
 				produto.getSituacao(),
 				produto.getAnexoUuid(),
 				produto.getNomeArquivo(),
 				produto.getPrecoCusto(),
 				produto.getPrecoVenda(),
-				produto.getEstoque(),
-				produto.getGrupoProduto().getId(),
+				produto.getGrupoProduto().getCodigo(),
+				produto.getCodigoBarras(),
+				produto.getUnidadeComercial(),
+				produto.getFornecedor() != null ? produto.getFornecedor().getIdFornecedor() : null,
 				Timestamp.valueOf( LocalDateTime.now()) );
 	}
 
@@ -77,9 +84,8 @@ public class ProdutoDAO implements IProdutoRepository
 	{
 		jdbcTemplate.update("UPDATE produto " +
 						"SET " +
-						"nome = ?, " +
+						"produto = ?, " +
 						"descricao = ?, " +
-						"codigo = ?, " +
 						"ano = ?, " +
 						"situacao = ?, " +
 						"anexo_uuid = ?, " +
@@ -87,36 +93,39 @@ public class ProdutoDAO implements IProdutoRepository
 						"grupo_produto_id = ? "+
 						"preco_custo = ? " +
 						"preco_venda = ? " +
-						"estoque = ? " +
+						"codigo_barras, " +
+						"unidade_comercial, " +
+						"fornecedor_id, " +
 						"updated = ? " +
-						"WHERE id = ?",
-				produto.getNome(),
+						"WHERE codigo = ?",
+				produto.getProduto(),
 				produto.getDescricao(),
-				produto.getCodigo(),
 				produto.getAno(),
 				produto.getSituacao(),
 				produto.getAnexoUuid(),
 				produto.getNomeArquivo(),
-				produto.getGrupoProduto().getId(),
+				produto.getGrupoProduto().getCodigo(),
 				produto.getPrecoCusto(),
 				produto.getPrecoVenda(),
-				produto.getEstoque(),
+				produto.getCodigoBarras(),
+				produto.getUnidadeComercial(),
+				produto.getFornecedor().getIdFornecedor(),
 				Timestamp.valueOf(LocalDateTime.now()),
-				produto.getId());
+				produto.getCodigo());
 	}
 
 	@Override
 	public void deleteProduto(long id){
-		jdbcTemplate.update("DELETE from produto WHERE id = ? ", id);
+		jdbcTemplate.update("DELETE from produto WHERE codigo = ? ", id);
 	}
 
 	@Override
 	public void updateSituacaoProduto(long id, boolean situacao){
-		jdbcTemplate.update("UPDATE produto SET situacao = ? WHERE id = ?", situacao, id);
+		jdbcTemplate.update("UPDATE produto SET situacao = ? WHERE codigo = ?", situacao, id);
 	}
 
 	@Override
-	public Page<Produto> listProdutosByFilters( String nome, String codigo, PageRequest pageable )
+	public Page<Produto> listProdutosByFilters( String nome, PageRequest pageable )
 	{
 		if(pageable == null) pageable = new PageRequest(0, 10);
 
@@ -131,8 +140,7 @@ public class ProdutoDAO implements IProdutoRepository
 		String selectAndFrom = "SELECT * " +
 				"FROM produto ";
 
-		String where =  "WHERE nome LIKE  '%" + nome + "%' AND "+
-				"codigo LIKE  '%" + codigo + "%' ";
+		String where =  "WHERE produto LIKE  '%" + nome + "%' ";
 
 
 		String pagination = "LIMIT " + pageable.getPageSize() + " " +
@@ -144,9 +152,8 @@ public class ProdutoDAO implements IProdutoRepository
 			public Produto mapRow( ResultSet rs, int row) throws SQLException
 			{
 				Produto e=new Produto();
-				e.setId(rs.getLong("id"));
-				e.setNome(rs.getString("nome"));
-				e.setCodigo(rs.getString("codigo"));
+				e.setCodigo(rs.getLong("codigo"));
+				e.setProduto(rs.getString("produto"));
 				e.setSituacao( rs.getBoolean( "situacao" ) );
 				return e;
 			}

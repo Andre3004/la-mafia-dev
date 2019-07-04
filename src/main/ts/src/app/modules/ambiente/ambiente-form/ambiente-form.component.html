@@ -10,9 +10,14 @@
                 <div fxLayout="row" fxLayoutGap="30px">
 
                     <mat-form-field fxFlex appearance="outline">
-                        <mat-label>Nome</mat-label>
-                        <input required [(ngModel)]="ambiente.nome" name="nome" matInput maxlength="144"
-                            placeholder="Digite o nome do ambiente">
+                        <mat-label>Código</mat-label>
+                        <input uppercase matInput [(ngModel)]="ambiente.codigo" [disabled]="true" name="codigo">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex appearance="outline">
+                        <mat-label>Ambiente</mat-label>
+                        <input uppercase required [(ngModel)]="ambiente.ambiente" name="ambiente" matInput
+                            maxlength="144" placeholder="Digite o nome do ambiente">
                     </mat-form-field>
 
                     <mat-form-field fxFlex appearance="outline">
@@ -37,7 +42,8 @@
                     <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
                         (optionSelected)="ambiente.franquia = $event.option.value; onListFranquias();">
                         <mat-option [value]="null">Nenhum</mat-option>
-                        <mat-option *ngFor="let franquia of franquias" [value]="franquia">{{franquia.nome}}</mat-option>
+                        <mat-option *ngFor="let franquia of franquias" [value]="franquia">{{franquia.franquia}}
+                        </mat-option>
                     </mat-autocomplete>
 
 
@@ -46,7 +52,7 @@
                 <div fxLayout="row">
                     <mat-form-field fxFlex appearance="outline">
                         <mat-label>Descrição</mat-label>
-                        <textarea [(ngModel)]="ambiente.descricao" name="descricao" matInput maxlength="144"
+                        <textarea uppercase [(ngModel)]="ambiente.descricao" name="descricao" matInput maxlength="144"
                             placeholder="Digite a descrição do ambiente"></textarea>
                     </mat-form-field>
 
@@ -60,10 +66,11 @@
 
             <div fxLayout="row" fxFlex>
                 <div fxFlex></div>
-                <button color="accent" style="right: 0;" class="white-btn push-top-sm" (click)="addImagemButton()" mat-raised-button>ADICIONAR ARQUIVO</button>
+                <button color="accent" style="right: 0;" class="white-btn push-top-sm" (click)="addImagemButton()"
+                    mat-raised-button>ADICIONAR ARQUIVO</button>
             </div>
 
-            <div style="max-height: 350px;overflow: auto;" >
+            <div style="max-height: 350px;overflow: auto;">
                 <div *ngFor="let ambienteImagem of ambiente.ambienteImagems; let i = index">
                     <div class="push-top-sm" fxFlex
                         style="background-color: #b71c1c; color: white; font-weight: bold;border-radius: 30px;"
@@ -101,6 +108,34 @@
                     <input hidden type="file" #fotoInput (change)="setAmbienteImagemAnexo($event, i)">
                 </div>
             </div>
+        </mat-tab>
+
+        <mat-tab label="Mesas">
+
+            <mat-card  style="max-height: 350px;overflow: auto;">
+
+                <td-data-table *ngIf="ambiente?.mesas?.length > 0" #dataTable [data]="ambiente.mesas" [columns]="tableColumns"
+                    [clickable]="true">
+
+                    <ng-template tdDataTableTemplate="numeroMesa" let-mesa="row">
+                        <span class="text-truncate">
+                            {{ mesa?.numeroMesa}}
+                        </span>
+                    </ng-template>
+
+                    <ng-template fxLayoutAlign="end" tdDataTableTemplate="situacao" let-mesa="row">
+                        <mat-icon *ngIf="mesa?.situacao" class="tc-green-700" matTooltip="Ativado">check_circle
+                        </mat-icon>
+                        <mat-icon *ngIf="!mesa?.situacao" matTooltip="Desativado" class="tc-red-700">block</mat-icon>
+                    </ng-template>
+
+                </td-data-table>
+
+                <div *ngIf="ambiente?.mesas?.length == 0" class="pad-md" fxLayoutAlign="center ">
+                    <label>Nenhuma mesa vinculada a este ambiente.</label>
+                </div>
+            </mat-card>
+
         </mat-tab>
 
     </mat-tab-group>

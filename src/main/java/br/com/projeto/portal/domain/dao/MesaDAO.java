@@ -49,7 +49,7 @@ public class MesaDAO implements IMesaRepository
 						"quantidade_lugares, " +
 						"situacao, " +
 						"created) VALUES (?, ?, ?, ?)",
-				mesa.getAmbiente().getId(),
+				mesa.getAmbiente().getCodigo(),
 				mesa.getQuantidadeLugaresMesa(),
 				mesa.getSituacao(),
 				Timestamp.valueOf( LocalDateTime.now()) );
@@ -65,7 +65,7 @@ public class MesaDAO implements IMesaRepository
 						"situacao = ?, " +
 						"updated = ? " +
 						"WHERE numero_mesa = ?",
-				mesa.getAmbiente().getId(),
+				mesa.getAmbiente().getCodigo(),
 				mesa.getQuantidadeLugaresMesa(),
 				mesa.getSituacao(),
 				Timestamp.valueOf( LocalDateTime.now()),

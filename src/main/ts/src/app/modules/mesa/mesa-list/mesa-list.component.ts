@@ -42,7 +42,7 @@ export class MesaListComponent implements OnInit
         { name: 'numeroMesa', label: 'NÚMERO MESA', sortable: false },
         { name: 'ambiente.nome', label: 'AMBIENTE', sortable: false },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
-        { name: 'opcoes', label: 'OPÇÕES', tooltip: 'Opções', sortable: false, width: 150 }
+        { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 150 }
     ];
 
     /**
@@ -85,7 +85,7 @@ export class MesaListComponent implements OnInit
 
         this.mesaService.listMesasByFilters(
             this.filters.numeroMesa,
-            this.filters.ambiente != null ? this.filters.ambiente.id : null,
+            this.filters.ambiente != null ? this.filters.ambiente.codigo : null,
             this.pageRequest.pageable
         ).subscribe((result) =>
         {
@@ -160,6 +160,6 @@ export class MesaListComponent implements OnInit
     }
 
     public displayFn(ambiente?: Ambiente): string | undefined {
-        return ambiente ? ambiente.nome : undefined;
+        return ambiente ? ambiente.ambiente : undefined;
     }
 }

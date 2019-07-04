@@ -13,7 +13,7 @@
 
 		<mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete" (optionSelected)="filters.ambiente = $event.option.value; onListAmbientes();" >
 			<mat-option [value]="null">Nenhum</mat-option>
-			<mat-option *ngFor="let ambiente of ambientes" [value]="ambiente">{{ambiente.nome}}</mat-option>
+			<mat-option *ngFor="let ambiente of ambientes" [value]="ambiente">{{ambiente.ambiente}}</mat-option>
 		</mat-autocomplete>
 
 		<div fxFlex></div>
@@ -43,7 +43,7 @@
 
 		<ng-template tdDataTableTemplate="ambiente.nome" let-mesa="row">
 			<span class="text-truncate">
-				{{ mesa?.ambiente?.nome}}
+				{{ mesa?.ambiente?.ambiente}}
 			</span>
 		</ng-template>
 

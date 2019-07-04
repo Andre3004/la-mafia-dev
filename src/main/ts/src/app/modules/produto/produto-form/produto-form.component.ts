@@ -17,7 +17,7 @@ export class ProdutoFormComponent implements OnInit
     *-------------------------------------------------------------------*/
   public title = "";
 
-  public produto: Produto = {};
+  public produto: Produto = {codigo: 0};
 
   public fotoImage: any;
 
@@ -68,7 +68,7 @@ export class ProdutoFormComponent implements OnInit
 
     let anexoOld = null;
 
-    if( !this.produto.grupoProduto || (this.produto.grupoProduto && !this.produto.grupoProduto.id))
+    if( !this.produto.grupoProduto || (this.produto.grupoProduto && !this.produto.grupoProduto.codigo))
     {
       this.openSnackBarService.openError("O campo grupo de produto deve ser selecionado.");
       return;
@@ -80,7 +80,7 @@ export class ProdutoFormComponent implements OnInit
       this.produto.anexo = null;
     }
 
-    if (!this.produto.id)
+    if (!this.produto.codigo)
     {
       this.produtoService.insertProduto(this.produto).subscribe(produto =>
       {
@@ -110,13 +110,13 @@ export class ProdutoFormComponent implements OnInit
 
   public onListGrupoProdutos(filter)
   {
-    this.grupoProdutoService.listGrupoProdutosByFilters(filter ? filter : "", null, null).subscribe( grupoProdutoPage => {
+    this.grupoProdutoService.listGrupoProdutosByFilters(filter ? filter : "", isNaN(filter) || filter == null || filter == "" ? null : parseInt(filter.substring(0,9)), null).subscribe( grupoProdutoPage => {
       this.gruposProdutos = grupoProdutoPage.content; 
     })
   }
 
   public displayFn(grupoProduto?: GrupoProduto): string | undefined {
-    return grupoProduto ? grupoProduto.nome : undefined;
+    return grupoProduto ?  grupoProduto.codigo +" - "+ grupoProduto.grupoProduto : undefined;
   }
 
   /*-------------------------------------------------------------------

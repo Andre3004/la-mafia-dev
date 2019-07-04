@@ -1,0 +1,124 @@
+<mat-dialog-content>
+    <h2 mat-dialog-title>{{title}}</h2>
+
+
+  <form #qualificadorForm="ngForm" fxLayout="column">
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Código</mat-label>
+        <input uppercase  uppercase required matInput [(ngModel)]="cliente.idCliente" name="idCliente" [disabled]="true">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Cliente</mat-label>
+        <input uppercase  uppercase required [(ngModel)]="cliente.cliente" name="cliente" matInput maxlength="144">
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign=" center">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Apelido</mat-label>
+        <input uppercase  uppercase [(ngModel)]="cliente.apelido" name="apelido" matInput maxlength="144">
+      </mat-form-field>
+
+      <mat-radio-group required [(ngModel)]="cliente.sexo" name="sexo" aria-label="Sexo">
+        <mat-radio-button value="Masculino">Masculino</mat-radio-button>
+        <mat-radio-button value="Feminino" class="push-left-sm">Feminino</mat-radio-button>
+      </mat-radio-group>
+
+    </div>
+
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>CPF</mat-label>
+        <input uppercase  uppercase required [textMask]="{mask: maskCpf, guide: false}" [(ngModel)]="cliente.cpf" name="cpf" matInput
+          maxlength="144">
+      </mat-form-field>
+    </div>
+
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Celular</mat-label>
+        <input uppercase  uppercase required [textMask]="{mask: maskCelular, guide: false}" [(ngModel)]="cliente.celular" matInput
+          name="celular">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Telefone</mat-label>
+        <input uppercase  uppercase maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput name="telefone"
+          [(ngModel)]="cliente.telefone">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>E-mail</mat-label>
+        <input uppercase  uppercase [(ngModel)]="cliente.email" email="true" name="email" type="email" matInput maxlength="144">
+      </mat-form-field>
+
+    </div>
+
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Endereço</mat-label>
+        <input uppercase  uppercase required [(ngModel)]="cliente.endereco" name="endereco" matInput maxlength="144">
+      </mat-form-field>
+
+    </div>
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>País</mat-label>
+        <input uppercase  uppercase required [(ngModel)]="cliente.pais" name="pais" matInput maxlength="144">
+      </mat-form-field>
+
+    </div>
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Estado</mat-label>
+        <input uppercase  uppercase required [(ngModel)]="cliente.estado" name="estado" matInput maxlength="144">
+      </mat-form-field>
+
+    </div>
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Cidade</mat-label>
+        <input uppercase  uppercase required [(ngModel)]="cliente.cidade" name="cidade" matInput maxlength="144">
+      </mat-form-field>
+
+    </div>
+
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="end">
+  <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+    color="primary">
+    SALVAR
+  </button>
+  <button mat-dialog-close mat-raised-button class="white-btn
+  push-left-md bgc-grey-800">
+    CANCELAR
+  </button>
+</mat-dialog-actions>

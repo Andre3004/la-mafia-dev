@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.projeto.portal.domain.entity.GrupoProdutoFranquia;
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
 import br.com.projeto.portal.domain.entity.grupoProduto.GrupoProduto;
 import br.com.projeto.portal.domain.repository.IGrupoProdutoRepository;
@@ -33,75 +34,76 @@ public class GrupoProdutoDAO implements IGrupoProdutoRepository
 	@Override
 	public GrupoProduto findGrupoProdutoById( long id )
 	{
-		String sql = "SELECT * FROM grupo_produto WHERE id = ?";
+		String sql = "SELECT * FROM grupo_produto WHERE codigo = ?";
 
 		GrupoProduto grupoProduto = (GrupoProduto) jdbcTemplate.queryForObject( sql,
 				new Object[]{id}, new BeanPropertyRowMapper( GrupoProduto.class ) );
 
-		grupoProduto.setFranquia( franquiaDAO.findFranquiaById( grupoProduto.getFranquiaId() ) );
+		grupoProduto.setGrupoProdutoFranquia( findGrupoProdutoFranquiaById( id ) );
+
 		return grupoProduto;
 	}
 
 	@Override
-	public void insertGrupoProduto( GrupoProduto grupoProduto )
+	public Long insertGrupoProduto( GrupoProduto grupoProduto )
 	{
+		String sqlId = "SELECT max(codigo) FROM grupo_produto";
+		Long returnQuery = jdbcTemplate.queryForObject( sqlId, Long.class );
+		Long id = returnQuery == null ? 1 : returnQuery+1;
+
 		jdbcTemplate.update(
 				"INSERT INTO grupo_produto " +
-						"(franquia_id, " +
-						"nome, " +
+						"(grupo_produto, " +
 						"exige_ano, " +
 						"codigo, " +
 						"situacao, " +
 						"anexo_uuid, " +
 						"nome_arquivo, " +
-						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-				grupoProduto.getFranquia().getId(),
-				grupoProduto.getNome(),
+						"created) VALUES (?, ?, ?, ?, ?, ?, ?)",
+				grupoProduto.getGrupoProduto(),
 				grupoProduto.getExigeAno(),
-				grupoProduto.getCodigo(),
+				id,
 				grupoProduto.getSituacao(),
 				grupoProduto.getAnexoUuid(),
 				grupoProduto.getNomeArquivo(),
 				Timestamp.valueOf( LocalDateTime.now() ) );
+
+		return id;
 	}
 
 	@Override
-	public void updateGrupoProduto( GrupoProduto grupoProduto )
+	public void updateGrupoProduto( GrupoProduto grupoProduto,  List<Long> grupoProdutoFranquiaIds  )
 	{
 		jdbcTemplate.update( "UPDATE grupo_produto " +
 						"SET " +
-						"franquia_id = ?, " +
-						"nome = ?, " +
+						"grupo_produto = ?, " +
 						"exige_ano = ?, " +
-						"codigo = ?, " +
 						"anexo_uuid = ?, " +
 						"nome_arquivo = ?, " +
 						"updated = ? " +
-						"WHERE id = ?",
-				grupoProduto.getFranquia().getId(),
-				grupoProduto.getNome(),
+						"WHERE codigo = ?",
+				grupoProduto.getGrupoProduto(),
 				grupoProduto.getExigeAno(),
-				grupoProduto.getCodigo(),
 				grupoProduto.getAnexoUuid(),
 				grupoProduto.getNomeArquivo(),
 				Timestamp.valueOf( LocalDateTime.now() ),
-				grupoProduto.getId() );
+				grupoProduto.getCodigo() );
 	}
 
 	@Override
 	public void deleteGrupoProduto( long id )
 	{
-		jdbcTemplate.update( "DELETE from grupo_produto WHERE id = ? ", id );
+		jdbcTemplate.update( "DELETE from grupo_produto WHERE codigo = ? ", id );
 	}
 
 	@Override
 	public void updateSituacaoGrupoProduto( long id, boolean situacao )
 	{
-		jdbcTemplate.update( "UPDATE grupo_produto SET situacao = ? WHERE id = ?", situacao, id );
+		jdbcTemplate.update( "UPDATE grupo_produto SET situacao = ? WHERE codigo = ?", situacao, id );
 	}
 
 	@Override
-	public Page<GrupoProduto> listGrupoProdutosByFilters( String nome, Long franquiaId, PageRequest pageable )
+	public Page<GrupoProduto> listGrupoProdutosByFilters( String nome, Long codigo, PageRequest pageable )
 	{
 		if ( pageable == null ) pageable = new PageRequest( 0, 10 );
 
@@ -116,9 +118,9 @@ public class GrupoProdutoDAO implements IGrupoProdutoRepository
 		String selectAndFrom = "SELECT * " +
 				"FROM grupo_produto ";
 
-		String where = "WHERE nome LIKE  '%" + nome + "%' ";
+		String where = "WHERE grupo_produto LIKE  '%" + nome + "%' ";
 
-		where += franquiaId != null ? "AND franquia_id = " + franquiaId + "  " : "";
+		where += codigo != null ? "OR codigo = " + codigo + " " : "";
 
 		String pagination = "LIMIT " + pageable.getPageSize() + " " +
 				"OFFSET " + pageable.getOffset() + ";";
@@ -130,14 +132,50 @@ public class GrupoProdutoDAO implements IGrupoProdutoRepository
 			public GrupoProduto mapRow( ResultSet rs, int row ) throws SQLException
 			{
 				GrupoProduto e = new GrupoProduto();
-				e.setId( rs.getLong( "id" ) );
-				e.setNome( rs.getString( "nome" ) );
-				e.setFranquia( franquiaDAO.findFranquiaById( rs.getLong( "franquia_id" ) ) );
+				e.setCodigo( rs.getLong( "codigo" ) );
+				e.setGrupoProduto( rs.getString( "grupo_produto" ) );
 				e.setSituacao( rs.getBoolean( "situacao" ) );
 				e.setExigeAno( rs.getBoolean( "exige_ano" ) );
 				return e;
 			}
 		} );
 		return new PageImpl<>( grupoProdutos, pageable, total );
+	}
+
+
+	/*-------------------------------------------------------------------
+	 *				 		     GRUPO PRODUTO FRANQUIA
+	 *-------------------------------------------------------------------*/
+
+
+
+	public List<GrupoProdutoFranquia> findGrupoProdutoFranquiaById( long grupoProdutoId )
+	{
+		String querySql = "SELECT * FROM grupo_produto_franquia WHERE grupo_produto_id = " + grupoProdutoId +" ;";
+
+		List<GrupoProdutoFranquia> grupoProdutoFranquias = jdbcTemplate.query(querySql, new BeanPropertyRowMapper(GrupoProdutoFranquia.class));
+
+		grupoProdutoFranquias.forEach( grupoProdutoFranquia -> {
+			grupoProdutoFranquia.setFranquia( franquiaDAO.findFranquiaById( grupoProdutoFranquia.getFranquiaId() ) );
+		} );
+
+		return grupoProdutoFranquias;
+	}
+
+	public void insertGrupoProdutoFranquia( GrupoProdutoFranquia grupoProdutoFranquia )
+	{
+		jdbcTemplate.update(
+				"INSERT INTO grupo_produto_franquia " +
+						"(grupo_produto_id, " +
+						"franquia_id, " +
+						"created) VALUES (?, ?, ?)",
+				grupoProdutoFranquia.getGrupoProduto().getCodigo(),
+				grupoProdutoFranquia.getFranquia().getCodigo(),
+				Timestamp.valueOf( LocalDateTime.now() ) );
+	}
+
+	public void deleteGrupoProdutoFraquia( long franquiaId, long grupoProdutoId )
+	{
+		jdbcTemplate.update( "DELETE from grupo_produto_franquia WHERE franquia_id = " + franquiaId +" AND grupo_produto_id = " +grupoProdutoId+ " ;"  );
 	}
 }

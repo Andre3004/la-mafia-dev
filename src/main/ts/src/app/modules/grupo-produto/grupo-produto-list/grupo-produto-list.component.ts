@@ -36,10 +36,10 @@ export class GrupoProdutoListComponent implements OnInit
        * Colunas da Grid
        */
     public tableColumns: ITdDataTableColumn[] = [
-        { name: 'nome', label: 'NOME', sortable: false },
-        { name: 'franquia.nome', label: 'FRANQUIA', sortable: false },
+        { name: 'codigo', label: 'CÓDIGO', sortable: false },
+        { name: 'nome', label: 'GRUPO DE PRODUTO', sortable: false },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
-        { name: 'opcoes', label: 'OPÇÕES', tooltip: 'Opções', sortable: false, width: 150 }
+        { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 150 }
     ];
 
     /**
@@ -73,9 +73,9 @@ export class GrupoProdutoListComponent implements OnInit
     public openForm(grupoProduto)
     {
         const dialogRef = this.dialog.open(GrupoProdutoFormComponent, {
-            width: '600px',
+            width: '800px',
             height: 'auto',
-            data: { grupoProdutoId: grupoProduto ? grupoProduto.id : null }
+            data: { grupoProdutoId: grupoProduto ? grupoProduto.codigo : null }
         });
 
         dialogRef.afterClosed().subscribe(grupoProdutoSaved =>
@@ -97,7 +97,7 @@ export class GrupoProdutoListComponent implements OnInit
         {
             if (accept)
             {
-                this.grupoProdutoService.updateSituacaoGrupoProduto(grupoProduto.id, !grupoProduto.situacao).subscribe( result => {
+                this.grupoProdutoService.updateSituacaoGrupoProduto(grupoProduto.codigo, !grupoProduto.situacao).subscribe( result => {
                     this.openSnackBarService.openSuccess(grupoProduto.situacao ? 'Grupo de produto desativado com sucesso.' : 'Grupo de produto ativado com sucesso.');
                     this.onListGrupoProdutos();
                 }, err => this.openSnackBarService.openError(err.message))
@@ -122,7 +122,7 @@ export class GrupoProdutoListComponent implements OnInit
 
         this.grupoProdutoService.listGrupoProdutosByFilters(
             this.filters.nome,
-            this.filters.franquia != null ? this.filters.franquia.id : null,
+            this.filters.franquia != null ? this.filters.franquia.codigo : null,
             this.pageRequest.pageable
         ).subscribe((result) =>
         {
@@ -132,13 +132,13 @@ export class GrupoProdutoListComponent implements OnInit
 
     public onListFranquias()
     {
-        this.franquiaService.listFranquiasByFilters(this.franquiaFilter ? this.franquiaFilter : "", "", "", null).subscribe( franquiaPage => {
+        this.franquiaService.listFranquiasByFilters(this.franquiaFilter ? this.franquiaFilter : "", "", null).subscribe( franquiaPage => {
         this.franquias = franquiaPage.content; 
         })
     }
 
     public displayFn(franquia?: Franquia): string | undefined {
-        return franquia ? franquia.nome : undefined;
+        return franquia ? franquia.franquia : undefined;
     }
     
 

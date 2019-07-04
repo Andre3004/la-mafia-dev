@@ -20,11 +20,11 @@ public class Ambiente extends AbstractEntity
 	 *				 		     ATTRIBUTES
 	 *-------------------------------------------------------------------*/
 
-	private Long id;
+	private Long codigo;
 
 	private Franquia franquia;
 
-	private String nome;
+	private String ambiente;
 
 	private String descricao;
 
@@ -51,9 +51,9 @@ public class Ambiente extends AbstractEntity
 
 	 public Ambiente(){}
 
-	 public Ambiente(Long id)
+	 public Ambiente(Long codigo)
 	 {
-	 	this.id = id;
+	 	this.codigo = codigo;
 	 }
 
 	/*-------------------------------------------------------------------

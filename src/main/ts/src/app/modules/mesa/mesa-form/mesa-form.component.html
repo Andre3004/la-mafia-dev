@@ -11,9 +11,17 @@
         <input matInput  [disabled]="true" [(ngModel)]="mesa.numeroMesa" name="numeroMesa" >
       </mat-form-field>
 
+      
+      <mat-form-field fxFlex appearance="outline">
+          <mat-label>Quantidade de lugares na mesa</mat-label>
+          <input required [(ngModel)]="mesa.quantidadeLugaresMesa" name="quantidadeLugaresMesa" matInput 
+          [textMask]="{mask: textMasks.getNumbersOnlyMask(3), guide: false}"
+            placeholder="Digite a quantidade de lugares">
+        </mat-form-field>
+
     </div>
 
-    <div fxLayout="row" fxLayoutGap="30px">
+    <div fxLayout="row" >
 
 
       <mat-form-field fxFlex appearance="outline">
@@ -25,17 +33,13 @@
       <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
         (optionSelected)="mesa.ambiente = $event.option.value; onListAmbientes();">
         <mat-option [value]="null">Nenhum</mat-option>
-        <mat-option *ngFor="let ambiente of ambientes" [value]="ambiente">{{ambiente.nome}}</mat-option>
+        <mat-option *ngFor="let ambiente of ambientes" [value]="ambiente">{{ambiente.ambiente}}</mat-option>
       </mat-autocomplete>
 
-
-      <mat-form-field fxFlex appearance="outline">
-        <mat-label>Quantidade de lugares na mesa</mat-label>
-        <input required [(ngModel)]="mesa.quantidadeLugaresMesa" name="quantidadeLugaresMesa" matInput 
-        [textMask]="{mask: textMasks.getNumbersOnlyMask(3), guide: false}"
-          placeholder="Digite a quantidade de lugares">
+      <mat-form-field *ngIf="mesa.ambiente" fxFlex appearance="outline" style="margin-left: 30px">
+        <mat-label>Franquia</mat-label>
+        <input type="text" [disabled]="true" matInput [ngModel]="mesa?.ambiente?.franquia?.franquia" name="franquia" >
       </mat-form-field>
-
 
     </div>
 

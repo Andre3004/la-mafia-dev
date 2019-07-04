@@ -5,6 +5,7 @@ import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.
 import { Ambiente, Franquia, AmbienteImagem } from 'src/generated/entities';
 import { TextMasks } from 'src/app/common/mask/text-masks';
 import { DragScrollComponent } from 'ngx-drag-scroll';
+import { ITdDataTableColumn } from '@covalent/core';
 
 @Component({
   selector: 'app-ambiente-form',
@@ -19,7 +20,7 @@ export class AmbienteFormComponent implements OnInit
 
   public title = "";
 
-  public ambiente: Ambiente = { franquia: {}, ambienteImagems: [] };
+  public ambiente: Ambiente = { codigo:0, franquia: {}, ambienteImagems: [], mesas: [] };
 
   public fotoImage: any[] = [];
 
@@ -28,14 +29,14 @@ export class AmbienteFormComponent implements OnInit
   public textMasks = TextMasks;
 
   public imagemsRemoved = [];
-  
-  public images = [
-    "https://dqqzjdqmiszdy.cloudfront.net/sites/default/files/html5_assets/frames_minions_char_3_mob.png",
-    "http://i2.wp.com/farm1.staticflickr.com/502/19162022903_f8cd8501af.jpg?resize=500%2C271&ssl=1",
-    "https://i.pinimg.com/736x/78/1d/29/781d2914510339a762267ed4913cb62b.jpg",
-    "https://www.losminionsaldia.com/images/mas-minions/minion.png"
+
+  public mesas = [];
+
+  public tableColumns: ITdDataTableColumn[] = [
+      { name: 'numeroMesa', label: 'NÚMERO MESA', sortable: false },
+      { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
   ];
-  
+
   constructor(
     private ambienteService: AmbienteService,
     private franquiaService: FranquiaService,
@@ -76,6 +77,7 @@ export class AmbienteFormComponent implements OnInit
       {
         ambiente.ambienteImagems.forEach( ambienteImagem => this.fotoImage.push({base64: null}));
       }
+
     }, err => this.openSnackBarService.openError(err.message))
 
   }
@@ -85,7 +87,7 @@ export class AmbienteFormComponent implements OnInit
 
     let anexoOld = null;
 
-    if( !this.ambiente.franquia || (this.ambiente.franquia && !this.ambiente.franquia.id))
+    if( !this.ambiente.franquia || (this.ambiente.franquia && !this.ambiente.franquia.codigo))
     {
       this.openSnackBarService.openError("O campo franquia deve ser selecionado.");
       return;
@@ -94,7 +96,7 @@ export class AmbienteFormComponent implements OnInit
     if( this.ambiente.ambienteImagems && this.ambiente.ambienteImagems.length > 0)
       this.ambiente.ambienteImagems = this.ambiente.ambienteImagems.filter(ambienteImagem => ambienteImagem.anexo)
 
-    if (!this.ambiente.id)
+    if (!this.ambiente.codigo)
     {
       this.ambienteService.insertAmbiente(this.ambiente).subscribe(ambiente =>
       {
@@ -126,13 +128,13 @@ export class AmbienteFormComponent implements OnInit
 
   public onListFranquias(filter)
   {
-    this.franquiaService.listFranquiasByFilters(filter ? filter : "", "", "", null).subscribe( franquiaPage => {
+    this.franquiaService.listFranquiasByFilters(filter ? filter : "", "", null).subscribe( franquiaPage => {
       this.franquias = franquiaPage.content; 
     })
   }
 
   public displayFn(franquia?: Franquia): string | undefined {
-    return franquia ? franquia.nome : undefined;
+    return franquia ? franquia.franquia : undefined;
   }
 
   /*-------------------------------------------------------------------
@@ -148,7 +150,7 @@ export class AmbienteFormComponent implements OnInit
   public removeAnexo(index)
   {
     if(this.ambiente.ambienteImagems[index].anexoUuid)
-        this.imagemsRemoved.push(this.ambiente.ambienteImagems[index].id)
+        this.imagemsRemoved.push(this.ambiente.ambienteImagems[index].codigo)
 
     this.ambiente.ambienteImagems.splice(index, 1);
     this.fotoImage.splice(index, 1);

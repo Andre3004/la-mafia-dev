@@ -1,8 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { FranquiaService, ArquivoService } from 'src/generated/services';
+import { FranquiaService, ArquivoService, CidadeService, EstadoService, PaisService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
-import { Franquia } from 'src/generated/entities';
+import { Franquia, Pais, Cidade, Estado } from 'src/generated/entities';
+import { TextMasks } from 'src/app/common/mask/text-masks';
 
 @Component({
   selector: 'app-franquia-form',
@@ -19,17 +20,30 @@ export class FranquiaFormComponent implements OnInit
 
   public title = "";
 
-  public franquia: Franquia = {};
+  public franquia: Franquia = { codigo: 0};
 
   public maskCnpj = [/\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/];
 
+  public maskTelefone = ['+', /\d/, /\d/, /\d/, ' ', '(', /\d/, /\d/, ')', ' ', /\d/, ' ', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
+
   public fotoImage: any;
+
+  public cidades: Cidade[];
+
+  public estados: Estado[];
+
+  public paises: Pais[];
+
+  public masks = TextMasks;
 
   constructor(
     private franquiaService: FranquiaService,
     private openSnackBarService: OpenSnackBarService,
     public dialogRef: MatDialogRef<FranquiaFormComponent>,
     private arquivoService: ArquivoService,
+    private cidadeService: CidadeService,
+    private estadoService: EstadoService,
+    private paisService: PaisService,
     @Inject(MAT_DIALOG_DATA) public data: any
   )
   {
@@ -45,6 +59,10 @@ export class FranquiaFormComponent implements OnInit
       this.title = "Alterar franquia";
     else
       this.title = "Inserir franquia";
+
+    this.onListCidades("");
+    this.onListEstados("");
+    this.onListPaises("");
   }
 
   /*-------------------------------------------------------------------
@@ -69,6 +87,22 @@ export class FranquiaFormComponent implements OnInit
         return;
     }
 
+    if (this.franquia.telefone) 
+    {
+        var numb = this.franquia.telefone.match(/\d/g);
+        var numbString = numb.join("").toString();
+
+        if(numbString.length != 14)
+        {
+          this.openSnackBarService.openError('O campo telefone está inválido.');
+          return;
+        }
+    }
+    else
+    {
+      this.franquia.telefone = this.franquia.telefone.replace(/\.|-/gi, '');
+    }
+
     let anexoOld = null;
 
     if(this.franquia.anexo && typeof(this.franquia.anexo) == 'string')
@@ -77,7 +111,7 @@ export class FranquiaFormComponent implements OnInit
       this.franquia.anexo = null;
     }
 
-    if (!this.franquia.id)
+    if (!this.franquia.codigo)
     {
       this.franquiaService.insertFranquia(this.franquia).subscribe(franquia =>
       {
@@ -218,5 +252,41 @@ export class FranquiaFormComponent implements OnInit
        return true;
 
    }
+
+   
+   public onListCidades(filter)
+   {
+       this.cidadeService.listCidadesByFilters(filter ? filter : "", null).subscribe( page => {
+          this.cidades = page.content; 
+       })
+   }
+
+   public displayFnCidade(cidade?: Cidade): string | undefined {
+       return cidade ? cidade.cidade : undefined;
+   }
+
+   public onListEstados(filter)
+   {
+       this.estadoService.listEstadosByFilters(filter ? filter : "", null).subscribe( page => {
+       this.estados = page.content; 
+       })
+   }
+
+   public displayFnEstado(estado?: Estado): string | undefined {
+       return estado ? estado.estado : undefined;
+   }
+
+
+   public onListPaises(filter)
+   {
+       this.paisService.listPaisesByFilters(filter ?filter : "", null).subscribe( page => {
+       this.paises = page.content; 
+       })
+   }
+
+   public displayFnPais(pais?: Pais): string | undefined {
+       return pais ? pais.pais : undefined;
+   }
+   
 
 }

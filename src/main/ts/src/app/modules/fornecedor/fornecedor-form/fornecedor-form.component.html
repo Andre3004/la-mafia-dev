@@ -1,0 +1,131 @@
+<mat-dialog-content>
+
+    <h2 mat-dialog-title>{{title}}</h2>
+
+    
+  <form #qualificadorForm="ngForm" fxLayout="column">
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Código</mat-label>
+        <input required matInput [(ngModel)]="fornecedor.idFornecedor" name="idFornecedor" [disabled]="true">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Razão Social</mat-label>
+        <input required [(ngModel)]="fornecedor.razaoSocial" name="razaoSocial" matInput maxlength="144">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>CNPJ</mat-label>
+        <input required [textMask]="{mask: maskCnpj, guide: false}" [(ngModel)]="fornecedor.cnpj" name="cnpj" matInput
+          maxlength="144">
+      </mat-form-field>
+    </div>
+
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Celular</mat-label>
+        <input required [textMask]="{mask: maskCelular, guide: false}" [(ngModel)]="fornecedor.celular" matInput
+          name="celular">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Telefone</mat-label>
+        <input required maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput name="telefone"
+          [(ngModel)]="fornecedor.telefone">
+      </mat-form-field>
+
+    </div>
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>E-mail</mat-label>
+        <input [(ngModel)]="fornecedor.email" email="true" name="email" type="email" matInput maxlength="144">
+      </mat-form-field>
+
+    </div>
+
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Endereço</mat-label>
+        <input required [(ngModel)]="fornecedor.endereco" name="endereco" matInput maxlength="144">
+      </mat-form-field>
+
+    </div>
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Bairro</mat-label>
+        <input required matInput [(ngModel)]="fornecedor.bairro" maxlength="144" name="bairro">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Número</mat-label>
+        <input required matInput  [textMask]="{mask: masks.getNumbersOnlyMask(5), guide: false}" [(ngModel)]="fornecedor.numero" name="numero">
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>País</mat-label>
+        <input required [(ngModel)]="fornecedor.pais" name="pais" matInput maxlength="144">
+      </mat-form-field>
+
+    </div>
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Estado</mat-label>
+        <input required [(ngModel)]="fornecedor.estado" name="estado" matInput maxlength="144">
+      </mat-form-field>
+
+    </div>
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Cidade</mat-label>
+        <input required [(ngModel)]="fornecedor.cidade" name="cidade" matInput maxlength="144">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>CEP</mat-label>
+        <input required [textMask]="{mask: masks.cep, guide: false}" [(ngModel)]="fornecedor.cep" name="cep" matInput maxlength="144">
+      </mat-form-field>
+
+    </div>
+
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="end">
+  <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+    color="primary">
+    SALVAR
+  </button>
+  <button mat-dialog-close mat-raised-button class="white-btn
+  push-left-md bgc-grey-800">
+    CANCELAR
+  </button>
+</mat-dialog-actions>

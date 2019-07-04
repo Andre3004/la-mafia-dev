@@ -1,8 +1,11 @@
 package br.com.projeto.portal.domain.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import br.com.projeto.portal.domain.dao.GrupoProdutoDAO;
+import br.com.projeto.portal.domain.entity.GrupoProdutoFranquia;
 import br.com.projeto.portal.domain.entity.grupoProduto.GrupoProduto;
 import br.com.projeto.portal.domain.repository.IGrupoProdutoRepository;
 import br.com.projeto.portal.infrastructure.arquivo.Arquivo;
@@ -38,9 +41,9 @@ public class GrupoProdutoService implements IGrupoProdutoRepository
 	 *-------------------------------------------------------------------*/
 
 	@Override
-	public Page<GrupoProduto> listGrupoProdutosByFilters( String nome, Long franquiaId, PageRequest pageable )
+	public Page<GrupoProduto> listGrupoProdutosByFilters( String nome, Long codigo, PageRequest pageable )
 	{
-		return this.grupoProdutoDao.listGrupoProdutosByFilters( nome, franquiaId, pageable );
+		return this.grupoProdutoDao.listGrupoProdutosByFilters( nome, codigo, pageable );
 	}
 
 	@Override
@@ -57,27 +60,57 @@ public class GrupoProdutoService implements IGrupoProdutoRepository
 	}
 
 	@Override
-	public void insertGrupoProduto( GrupoProduto grupoProduto )
+	public Long insertGrupoProduto( GrupoProduto grupoProduto )
 	{
 		if(grupoProduto.getAnexo() != null)
 			this.insertArquivo( grupoProduto );
 
 		grupoProduto.setSituacao( true );
 
-		this.grupoProdutoDao.insertGrupoProduto( grupoProduto );
+		Long grupoProdutoId = this.grupoProdutoDao.insertGrupoProduto( grupoProduto );
+
+		if(grupoProduto.getGrupoProdutoFranquia() != null && grupoProduto.getGrupoProdutoFranquia().size() > 0)
+		{
+			for ( GrupoProdutoFranquia grupoProdutoFranquia : grupoProduto.getGrupoProdutoFranquia() )
+			{
+				grupoProdutoFranquia.setGrupoProduto( new GrupoProduto(grupoProdutoId) );
+				grupoProdutoDao.insertGrupoProdutoFranquia( grupoProdutoFranquia );
+			}
+
+		}
+
+		return grupoProdutoId;
 	}
 
 	@Override
-	public void updateGrupoProduto( GrupoProduto grupoProduto )
+	public void updateGrupoProduto( GrupoProduto grupoProduto, List<Long> grupoProdutoFranquiaIds )
 	{
 		if(grupoProduto.getAnexoUuid() == null && grupoProduto.getAnexo() != null)
 			this.insertArquivo( grupoProduto );
 
-		GrupoProduto grupoProdutoSaved = this.grupoProdutoDao.findGrupoProdutoById( grupoProduto.getId() );
+		if(grupoProdutoFranquiaIds != null && grupoProdutoFranquiaIds.size() > 0)
+		{
+			for ( Long grupoProdutoFranquiaId : grupoProdutoFranquiaIds )
+			{
+				grupoProdutoDao.deleteGrupoProdutoFraquia(grupoProdutoFranquiaId,  grupoProduto.getCodigo() );
+			}
+		}
+
+		if(grupoProduto.getGrupoProdutoFranquia() != null && grupoProduto.getGrupoProdutoFranquia().size() > 0)
+		{
+			List<GrupoProdutoFranquia> toInsert = grupoProduto.getGrupoProdutoFranquia().stream().filter( grupoProdutoFranquia -> grupoProdutoFranquia.getCreated() == null ).collect( Collectors.toList() );
+
+			for ( GrupoProdutoFranquia grupoProdutoFranquia : toInsert )
+			{
+				grupoProdutoFranquia.setCreated( LocalDateTime.now() );
+				grupoProdutoFranquia.setGrupoProduto( grupoProduto );
+				grupoProdutoDao.insertGrupoProdutoFranquia( grupoProdutoFranquia );
+			}
+		}
 
 		grupoProduto.setUpdated( LocalDateTime.now() );
 
-		this.grupoProdutoDao.updateGrupoProduto( grupoProduto );
+		this.grupoProdutoDao.updateGrupoProduto( grupoProduto, grupoProdutoFranquiaIds );
 	}
 
 	@Override
@@ -89,6 +122,16 @@ public class GrupoProdutoService implements IGrupoProdutoRepository
 	@Override
 	public void deleteGrupoProduto( long id )
 	{
+		GrupoProduto grupoProdutoSaved = this.grupoProdutoDao.findGrupoProdutoById( id );
+
+		if(grupoProdutoSaved.getGrupoProdutoFranquia() != null && grupoProdutoSaved.getGrupoProdutoFranquia().size() > 0)
+		{
+			for ( GrupoProdutoFranquia grupoProdutoFranquia : grupoProdutoSaved.getGrupoProdutoFranquia() )
+			{
+				grupoProdutoDao.deleteGrupoProdutoFraquia(grupoProdutoFranquia.getFranquia().getCodigo(), id );
+			}
+		}
+
 		//TODO validar se existe registros relacionados, se existe só desativa
 		GrupoProduto grupoProduto = this.findGrupoProdutoById( id );
 		if(grupoProduto.getAnexoUuid() != null) this.removeArquivo( grupoProduto.getAnexoUuid() );
@@ -111,5 +154,14 @@ public class GrupoProdutoService implements IGrupoProdutoRepository
 	public void removeArquivo(String uuid)
 	{
 		this.arquivoService.deleteArquivo( uuid );
+	}
+
+	/*-------------------------------------------------------------------
+ *				 		     GRUPO PRODUTO FRANQUIA
+	 *-------------------------------------------------------------------*/
+
+	public void insertGrupoProdutoFranquia( GrupoProdutoFranquia grupoProdutoFranquia )
+	{
+
 	}
 }

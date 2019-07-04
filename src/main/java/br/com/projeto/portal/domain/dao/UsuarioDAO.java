@@ -28,14 +28,18 @@ public class UsuarioDAO implements IUsuarioRepository
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
+	@Autowired
+	FranquiaDAO franquiaDAO;
+
 	@Override
 	public Usuario findUsuarioById(long id)
 	{
-		String sql = "SELECT * FROM usuario WHERE id = ?";
+		String sql = "SELECT * FROM usuario WHERE codigo = ?";
 
 		Usuario usuario = (Usuario) jdbcTemplate.queryForObject(sql,
 				new Object[] { id }, new BeanPropertyRowMapper(Usuario.class));
 
+		usuario.setFranquia( franquiaDAO.findFranquiaById( usuario.getFranquiaId() ) );
 		return usuario;
 	}
 
@@ -44,25 +48,23 @@ public class UsuarioDAO implements IUsuarioRepository
 	{
 		jdbcTemplate.update(
 				"INSERT INTO usuario " +
-						"(nome, " +
+						"(usuario, " +
 						"email, " +
 						"senha, " +
 						"telefone, " +
 						"cpf, " +
 						"perfil_usuario, " +
 						"situacao, " +
-						"anexo_uuid, " +
-						"nome_arquivo, " +
-						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-				usuario.getNome(),
+						"franquia_id, " +
+						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				usuario.getUsuario(),
 				usuario.getEmail(),
 				usuario.getSenha(),
 				usuario.getTelefone(),
 				usuario.getCpf(),
 				usuario.getPerfilUsuario().ordinal(),
 				usuario.getSituacao(),
-				usuario.getAnexoUuid(),
-				usuario.getNomeArquivo(),
+				usuario.getFranquia().getCodigo(),
 				Timestamp.valueOf(LocalDateTime.now()) );
 	}
 
@@ -71,38 +73,36 @@ public class UsuarioDAO implements IUsuarioRepository
 	{
 		jdbcTemplate.update("UPDATE usuario " +
 						"SET " +
-						"nome = ?, " +
+						"usuario = ?, " +
 						"email = ?, " +
 						"senha = ?, " +
 						"telefone = ?, " +
 						"cpf = ?, " +
 						"perfil_usuario = ?, " +
 						"situacao = ?, " +
-						"anexo_uuid = ?, " +
-						"nome_arquivo = ?, " +
+						"franquia_id = ?, " +
 						"updated = ? " +
-						"WHERE id = ?",
-				usuario.getNome(),
+						"WHERE codigo = ?",
+				usuario.getUsuario(),
 				usuario.getEmail(),
 				usuario.getSenha(),
 				usuario.getTelefone(),
 				usuario.getCpf(),
 				usuario.getPerfilUsuario().ordinal(),
 				usuario.getSituacao(),
-				usuario.getAnexoUuid(),
-				usuario.getNomeArquivo(),
+				usuario.getFranquia().getCodigo(),
 				Timestamp.valueOf(LocalDateTime.now()),
-				usuario.getId());
+				usuario.getCodigo());
 	}
 
 	@Override
 	public void deleteUsuario(long id){
-		jdbcTemplate.update("DELETE from usuario WHERE id = ? ", id);
+		jdbcTemplate.update("DELETE from usuario WHERE codigo = ? ", id);
 	}
 
 	@Override
 	public void updateSituacaoUsuario(long id, boolean situacao){
-		jdbcTemplate.update("UPDATE usuario SET situacao = ? WHERE id = ?", situacao, id);
+		jdbcTemplate.update("UPDATE usuario SET situacao = ? WHERE codigo = ?", situacao, id);
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public class UsuarioDAO implements IUsuarioRepository
 		String selectAndFrom = "SELECT * " +
 							   "FROM usuario ";
 
-		String where =  "WHERE nome LIKE  '%" + nome + "%' AND "+
+		String where =  "WHERE usuario LIKE  '%" + nome + "%' AND "+
 						"email LIKE  '%" + email + "%' ";
 
 		where += situacao != null ?	"AND situacao = " + situacao + "  " : "";
@@ -134,10 +134,12 @@ public class UsuarioDAO implements IUsuarioRepository
 		List<Usuario> usuarios = jdbcTemplate.query(querySql,new RowMapper<Usuario>(){
 			public Usuario mapRow( ResultSet rs, int row) throws SQLException {
 				Usuario e=new Usuario();
-				e.setId(rs.getLong("id"));
-				e.setNome(rs.getString("nome"));
+				e.setCodigo(rs.getLong("codigo"));
+				e.setUsuario(rs.getString("usuario"));
 				e.setEmail(rs.getString("email"));
 				e.setSituacao(rs.getBoolean("situacao"));
+				e.setTelefone(rs.getString("telefone"));
+				e.setFranquia( franquiaDAO.findFranquiaById( rs.getLong( "franquia_id" ) ) );
 				return e;
 			}
 		});

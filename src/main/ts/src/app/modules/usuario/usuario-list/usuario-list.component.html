@@ -1,8 +1,8 @@
 <mat-toolbar class="toolbar-default">
 	<mat-toolbar-row fxLayoutGap="30px">
 		<mat-form-field fxFlex="20" appearance="outline">
-			<mat-label>Nome</mat-label>
-			<input matInput placeholder="Pesquisar por nome" maxlength="144" [(ngModel)]="filters.nome">
+			<mat-label>Usuário</mat-label>
+			<input uppercase matInput placeholder="Pesquisar por nome" maxlength="144" [(ngModel)]="filters.nome">
 		</mat-form-field>
 
 
@@ -24,7 +24,7 @@
 
 		<mat-form-field fxFlex="20" appearance="outline">
 			<mat-label>E-mail</mat-label>
-			<input matInput placeholder="Pesquisar por E-mail" maxlength="144" [(ngModel)]="filters.email">
+			<input uppercase matInput placeholder="Pesquisar por E-mail" maxlength="144" [(ngModel)]="filters.email">
 		</mat-form-field>
 
 		<div fxFlex></div>
@@ -48,7 +48,7 @@
 
 		<ng-template tdDataTableTemplate="nome" let-usuario="row">
 			<span class="text-truncate">
-				{{ usuario?.nome}}
+				{{ usuario?.usuario}}
 			</span>
 		</ng-template>
 
