@@ -57,7 +57,8 @@ public class FornecedorDAO implements IFornecedorRepository
                         "estado, " +
                         "pais, " +
                         "cep, " +
-                        "created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        "situacao, " +
+                        "created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 fornecedor.getRazaoSocial(),
                 fornecedor.getCnpj(),
                 fornecedor.getTelefone(),
@@ -70,6 +71,7 @@ public class FornecedorDAO implements IFornecedorRepository
                 fornecedor.getEstado(),
                 fornecedor.getPais(),
                 fornecedor.getCep(),
+                fornecedor.getSituacao(),
                 Timestamp.valueOf(LocalDateTime.now()) );
     }
 

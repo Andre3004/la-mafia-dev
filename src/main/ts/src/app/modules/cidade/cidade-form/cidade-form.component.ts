@@ -1,8 +1,8 @@
-import { Cidade } from './../../../../generated/entities';
+import { Cidade, Estado } from './../../../../generated/entities';
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
-import { CidadeService } from 'src/generated/services';
+import { CidadeService, EstadoService } from 'src/generated/services';
 import { PaisService } from 'src/generated/services';
 
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
@@ -15,16 +15,18 @@ import { TextMasks } from 'src/app/common/mask/text-masks';
 })
 export class CidadeFormComponent implements OnInit {
 
-  public cidade: any = { idCidade: 0};
+  public cidade: Cidade = { idCidade: 0};
 
   public title = "";
 
   public textMasks = TextMasks;
 
+  public estados: Estado[];
+
   constructor(
     private cidadeService: CidadeService,
     private paisService: PaisService,
-
+    private estadoService: EstadoService,
     private openSnackBarService: OpenSnackBarService,
     public dialogRef: MatDialogRef<CidadeFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -44,6 +46,7 @@ export class CidadeFormComponent implements OnInit {
       this.title = "Inserir cidade";
 
     this.paisService.listPaisesByFilters("", null);
+    this.onListEstados("");
   }
 
   /*-------------------------------------------------------------------
@@ -62,11 +65,17 @@ export class CidadeFormComponent implements OnInit {
  public onSubmit(): void
   {
 
-
+    if(!this.cidade.estado || (this.cidade.estado && !this.cidade.estado.idEstado))
+    {
+      this.openSnackBarService.openError("O campo estado deve ser preenchido.");
+      return;
+    }
+    
     if (!this.cidade.idCidade)
     {
       this.cidadeService.insertCidade(this.cidade).subscribe(cidade =>
       {
+        this.openSnackBarService.openSuccess("Cidade inserida com sucesso.");
         this.dialogRef.close(this.cidade);
       }, err => this.openSnackBarService.openError(err.message))
     }
@@ -74,13 +83,23 @@ export class CidadeFormComponent implements OnInit {
     {
       this.cidadeService.updateCidade(this.cidade).subscribe(cidade =>
       {
-        this.openSnackBarService.openSuccess("Cidade atualizado.");
+        this.openSnackBarService.openSuccess("Cidade atualizada com sucesso.");
         this.dialogRef.close(this.cidade);
       }, err => this.openSnackBarService.openError(err.message))
     }
 
   }
 
+  public onListEstados(filter)
+  {
+      this.estadoService.listEstadosByFilters(filter ? filter : "", null).subscribe( page => {
+      this.estados = page.content; 
+      })
+  }
+
+  public displayFnEstado(estado?: Estado): string | undefined {
+      return estado ? estado.estado : undefined;
+  }
 
  
 

@@ -1,4 +1,4 @@
-import { Estado } from './../../../../generated/entities';
+import { Estado, Pais } from './../../../../generated/entities';
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
@@ -23,12 +23,14 @@ export class EstadoFormComponent implements OnInit {
 
   public textMasks = TextMasks;
 
+  public paises: Pais[];
+
+  
 
 
   constructor(
     private estadoService: EstadoService,
     private paisService: PaisService,
-
     private openSnackBarService: OpenSnackBarService,
     public dialogRef: MatDialogRef<EstadoFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -38,6 +40,8 @@ export class EstadoFormComponent implements OnInit {
     {
       this.onFindEstadoById(data.idEstado);
     }
+
+    this.onListPaises("");
   }
 
   ngOnInit()
@@ -66,6 +70,12 @@ export class EstadoFormComponent implements OnInit {
 
  public onSubmit(): void
   {
+    if(!this.estado.pais || (this.estado.pais && !this.estado.pais.idPais))
+    {
+      this.openSnackBarService.openError("O campo país deve ser preenchido.");
+      return;
+    }
+    
 
 
     if (!this.estado.idEstado)
@@ -88,7 +98,16 @@ export class EstadoFormComponent implements OnInit {
 
 
  
+  public onListPaises(filter)
+  {
+      this.paisService.listPaisesByFilters(filter ?filter : "", null).subscribe( page => {
+      this.paises = page.content; 
+      })
+  }
 
+  public displayFnPais(pais?: Pais): string | undefined {
+      return pais ? pais.pais : undefined;
+  }
 
 
 

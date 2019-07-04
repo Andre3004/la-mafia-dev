@@ -56,7 +56,8 @@ public class ClienteDAO implements IClienteRepository
                         "cidade, " +
                         "estado, " +
                         "pais, " +
-                        "created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "situacao, " +
+                        "created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 cliente.getCliente(),
                 cliente.getApelido(),
                 cliente.getCpf(),

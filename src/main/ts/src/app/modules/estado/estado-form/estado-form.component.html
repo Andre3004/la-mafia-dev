@@ -22,12 +22,24 @@
 
     </div>
 
-    <div fxLayout="row" fxLayoutGap="30px">
+    <div fxLayout="row">
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Estado</mat-label>
         <input uppercase required [(ngModel)]="estado.estado" name="estado" matInput maxlength="144">
       </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline" class="push-left-md">
+        <mat-label>País</mat-label>
+        <input required type="text" matInput [matAutocomplete]="autoPais" #inputFilter [(ngModel)]="estado.pais"
+          name="pais" (ngModelChange)="onListPaises(inputFilter.value);">
+      </mat-form-field>
+
+      <mat-autocomplete [displayWith]="displayFnPais" #autoPais="matAutocomplete"
+        (optionSelected)="estado.pais = $event.option.value; onListPaises();">
+        <mat-option [value]="null">Nenhum</mat-option>
+        <mat-option *ngFor="let pais of paises" [value]="pais">{{pais?.pais}}</mat-option>
+      </mat-autocomplete>
 
     </div>
 

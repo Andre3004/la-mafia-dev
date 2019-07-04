@@ -48,10 +48,12 @@ public class PaisDAO implements IPaisRepository
                         "(pais  , " +
                         "sigla, " +
                         "ddi, " +
-                        "created) VALUES (?, ?, ?, ?)",
+                        "situacao, " +
+                        "created) VALUES (?, ?, ?, ?, ?)",
                 pais.getPais(),
                 pais.getSigla(),
                 pais.getDdi(),
+                pais.getSituacao(),
                 Timestamp.valueOf(LocalDateTime.now()) );
     }
 

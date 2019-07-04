@@ -48,10 +48,12 @@ public class CidadeDAO implements ICidadeRepository
                         "(cidade  , " +
                         "ddd, " +
                         "idEstado, " +
-                        "created) VALUES (?, ?, ?, ?)",
+                        "situacao, " +
+                        "created) VALUES (?, ?, ?, ?, ?)",
                 cidade.getCidade(),
                 cidade.getDdd(),
                 cidade.getEstado().getIdEstado(),
+                cidade.getSituacao(),
                 Timestamp.valueOf(LocalDateTime.now()) );
     }
 

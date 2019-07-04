@@ -48,10 +48,12 @@ public class EstadoDAO implements IEstadoRepository
                         "(estado  , " +
                         "uf, " +
                         "idPais, " +
-                        "created) VALUES (?, ?, ?, ?)",
+                        "situacao, " +
+                        "created) VALUES (?, ?, ?, ?, ?)",
                 estado.getEstado(),
                 estado.getUf(),
                 estado.getPais().getIdPais(),
+                estado.getSituacao(),
                 Timestamp.valueOf(LocalDateTime.now()) );
     }
 
@@ -63,11 +65,13 @@ public class EstadoDAO implements IEstadoRepository
                         "estado= ?, " +
                         "uf= ?, " +
                         "idPais= ?," +
+                        "situacao= ?," +
                         "updated = ? " +
                         "WHERE idEstado = ?",
                 estado.getEstado(),
                 estado.getUf(),
                 estado.getPais().getIdPais(),
+                estado.getSituacao(),
                 Timestamp.valueOf(LocalDateTime.now()),
                 estado.getIdEstado());
     }

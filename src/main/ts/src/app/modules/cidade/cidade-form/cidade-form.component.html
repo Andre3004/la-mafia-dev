@@ -14,20 +14,31 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>DDD</mat-label>
-        <input [(ngModel)]="cidade.ddd" [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}" maxlength="4" name="ddd" matInput maxlength="50">
+        <input required [(ngModel)]="cidade.ddd" [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}" maxlength="4" name="ddd" matInput maxlength="50">
       </mat-form-field>
 
 
 
     </div>
 
-    <div fxLayout="row" fxLayoutGap="30px">
+    <div fxLayout="row" >
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Cidade</mat-label>
         <input required uppercase [(ngModel)]="cidade.cidade" name="cidade" matInput maxlength="144">
       </mat-form-field>
 
+      <mat-form-field fxFlex style="margin-left: 30px" appearance="outline" class="push-left-md">
+        <mat-label>Estado</mat-label>
+        <input uppercase required type="text" matInput [matAutocomplete]="autoEstado" #inputFilterEstado [(ngModel)]="cidade.estado"
+          name="estado" (ngModelChange)="onListEstados(inputFilterEstado.value);">
+      </mat-form-field>
+
+      <mat-autocomplete [displayWith]="displayFnEstado" #autoEstado="matAutocomplete"
+        (optionSelected)="cidade.estado = $event.option.value; onListEstados();">
+        <mat-option [value]="null">Nenhum</mat-option>
+        <mat-option *ngFor="let estado of estados" [value]="estado">{{estado?.estado}}</mat-option>
+      </mat-autocomplete>
 
     </div>
 
