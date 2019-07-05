@@ -9,7 +9,6 @@ public interface IFornecedorRepository
 {
     public Fornecedor findFornecedorById(int id);
 
-
     public Page<Fornecedor> listFornecedorsByFilters( String razaoSocial, PageRequest pageable );
 
     public void insertFornecedor( Fornecedor fornecedor );

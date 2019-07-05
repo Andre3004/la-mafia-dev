@@ -196,7 +196,7 @@ CREATE TABLE forma_pagamento (
 	created TIMESTAMP NOT NULL,
 	updated TIMESTAMP,
 	situacao boolean NOT NULL,
-	nome character varying(144) NOT NULL UNIQUE
+	forma_pagamento character varying(144) NOT NULL UNIQUE
 );
 
 CREATE TABLE condicao_pagamento (
@@ -207,20 +207,19 @@ CREATE TABLE condicao_pagamento (
   multa decimal,
   desconto decimal,
   situacao boolean NOT NULL,
-	a_prazo boolean NOT NULL
+	prazo boolean NOT NULL
 );
 
 CREATE TABLE condicao_pagamento_parcela (
+	codigo serial PRIMARY KEY,
 	created TIMESTAMP NOT NULL,
 	updated TIMESTAMP,
 	condicao_pagamento_id  bigint REFERENCES condicao_pagamento NOT NULL,
   forma_pagamento_id  bigint REFERENCES forma_pagamento NOT NULL,
   dias int NOT NULL,
   porcentagem decimal NOT NULL,
-  parcela int NOT NULL,
-	PRIMARY KEY(condicao_pagamento_id, forma_pagamento_id)
+  parcela int NOT NULL
 );
-
 
 
 SET search_path = public, pg_catalog;

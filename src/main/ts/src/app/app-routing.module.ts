@@ -45,8 +45,18 @@ const routes: Routes = [
   {
     path: 'pais',
     loadChildren : () => import('../app/modules/pais/pais.module').then(m => m.PaisModule)
+  },
+  {
+    path: 'condicao-pagamento',
+    loadChildren : () => import('../app/modules/condicao-pagamento/condicao-pagamento.module').then(m => m.CondicaoPagamentoModule)
+  },
+  {
+    path: 'forma-pagamento',
+    loadChildren : () => import('../app/modules/forma-pagamento/forma-pagamento.module').then(m => m.FormaPagamentoModule)
   }
 ];
+
+
 
 export const routing: ModuleWithProviders = RouterModule.forRoot(routes, { useHash: true });
 

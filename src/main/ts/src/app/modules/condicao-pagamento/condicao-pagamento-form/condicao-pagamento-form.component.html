@@ -1,0 +1,168 @@
+<div fxLayoutAlign="space-between center">
+    <h2 mat-dialog-title>{{title}}</h2>
+    <button *ngIf="condicaoPagamento.prazo" color="accent" style="right: 0;" class="white-btn push-top-sm"
+        (click)="addParcela()" mat-raised-button>ADICIONAR PARCELA</button>
+</div>
+
+<mat-dialog-content>
+
+    <mat-tab-group>
+        <mat-tab label="Informações">
+            <form #qualificadorForm="ngForm" fxLayout="column" class="push-top-md">
+
+                <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign=" center">
+
+                    <mat-form-field fxFlex appearance="outline">
+                        <mat-label>Código</mat-label>
+                        <input uppercase matInput [(ngModel)]="condicaoPagamento.codigo" [disabled]="true"
+                            name="codigo">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex appearance="outline">
+                        <mat-label>Juros</mat-label>
+                        <input uppercase [(ngModel)]="condicaoPagamento.juros" name="juros" matInput
+                            [textMask]="{mask: masks.getDecimalNumberMask(8,2), guide: false}"
+                            placeholder="Digite o juros">
+                    </mat-form-field>
+
+
+                    <mat-form-field fxFlex appearance="outline">
+                        <mat-label>Multa</mat-label>
+                        <input uppercase [(ngModel)]="condicaoPagamento.multa" name="multa" matInput
+                            [textMask]="{mask: masks.getDecimalNumberMask(8,2), guide: false}"
+                            placeholder="Digite a multa">
+                    </mat-form-field>
+
+
+
+
+
+                </div>
+
+
+                <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign=" center">
+
+                    <mat-form-field fxFlex appearance="outline">
+                        <mat-label>Descontos</mat-label>
+                        <input uppercase [(ngModel)]="condicaoPagamento.desconto" name="desconto" matInput
+                            [textMask]="{mask: masks.getDecimalNumberMask(8,2), guide: false}"
+                            placeholder="Digite o desconto">
+                    </mat-form-field>
+
+                    <mat-checkbox fxFlex [(ngModel)]="condicaoPagamento.prazo" name="prazo">parcelado ?</mat-checkbox>
+
+                </div>
+
+            </form>
+        </mat-tab>
+
+        <mat-tab *ngIf="condicaoPagamento.prazo" label="Parcelas" class="push-top-md">
+
+            <mat-card  *ngIf="condicaoPagamento?.parcelas?.length > 0" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="30px" style="padding: 15px;">
+
+
+                <div fxLayout="column" fxLayoutAlign=" center">
+                    <label style="margin-bottom: 5px;font-weight: bold;">Total de parcelas</label>
+                    <label>{{totalParcelas}}</label>
+                </div>
+
+                <div fxLayout="column" fxLayoutAlign=" center">
+                    <label style="margin-bottom: 5px;font-weight: bold;">Total de dias</label>
+                    <label>{{totalDias}}</label>
+                </div>
+
+                <div fxLayout="column" fxLayoutAlign=" center">
+                    <label style="margin-bottom: 5px;font-weight: bold;">Porcentagem total</label>
+                    <label >{{totalPorcentagem}}%</label>
+                </div>
+
+
+            </mat-card>
+            <form #parcelaForm="ngForm">
+                <div fxLayout="row" fxLayoutGap="30px" class="push-top-md" >
+                    <div style="max-height: 350px;overflow: auto;width: 100%;" >
+                        <div *ngFor="let parcela of condicaoPagamento.parcelas; let i = index" >
+                            <div class="push-top-sm" fxLayoutAlign=" center">
+
+                                <mat-form-field fxFlex appearance="outline">
+                                    <mat-label>Parcela</mat-label>
+                                    <input required uppercase [(ngModel)]="parcela.parcela" name="parcela{{i}}" matInput
+                                        [textMask]="{mask: masks.getNumbersOnlyMask(4), guide: false}"
+                                        placeholder="Digite a parcela">
+                                </mat-form-field>
+
+                                <mat-form-field fxFlex appearance="outline" class="push-left-md">
+                                    <mat-label>Dias</mat-label>
+                                    <input required uppercase [(ngModel)]="parcela.dias" name="dias{{i}}" matInput
+                                        [textMask]="{mask: masks.getNumbersOnlyMask(4), guide: false}"
+                                        placeholder="Digite os dias">
+                                </mat-form-field>
+
+
+                                <mat-form-field fxFlex appearance="outline" class="push-left-md">
+                                    <mat-label>Porcentagem (%)</mat-label>
+                                    <input required uppercase [(ngModel)]="parcela.porcentagem" name="porcentagem{{i}}"
+                                        matInput [textMask]="{mask: masks.getDecimalNumberMask(8,2), guide: false}"
+                                        placeholder="Digite a porcentagem">
+                                </mat-form-field>
+
+
+                                <mat-form-field fxFlex appearance="outline" class="push-left-md">
+                                    <mat-label>Forma de Pagamento</mat-label>
+                                    <input required type="text" matInput [matAutocomplete]="auto" #inputFilter
+                                        [(ngModel)]="parcela.formaPagamento" name="formaPagamento{{i}}"
+                                        (ngModelChange)="onListFormasPagamento(inputFilter.value);"
+                                        [disabled]="parcela?.formaPagamento?.codigo">
+                                    <button *ngIf="parcela.formaPagamento" (click)="parcela.formaPagamento = null"
+                                        matTooltip="Remover forma de pagamento" matSuffix mat-icon-button
+                                        class="tc-grey-700 delete-button-hover">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+
+                                </mat-form-field>
+
+
+
+
+                                <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
+                                    (optionSelected)="parcela.formaPagamento = $event.option.value; onListFormasPagamento();">
+                                    <mat-option [value]="null">Nenhum</mat-option>
+                                    <mat-option *ngFor="let formaPagamento of formasPagamento" [value]="formaPagamento">
+                                        {{formaPagamento.formaPagamento}}
+                                    </mat-option>
+                                </mat-autocomplete>
+
+                                <button (click)="removeParcela(i)" class="tc-grey-700 delete-button-hover push-left-md"
+                                    matTooltip="Remover parcela" mat-icon-button>
+                                    <mat-icon>remove_circle</mat-icon>
+                                </button>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <mat-card *ngIf="condicaoPagamento?.parcelas?.length == 0">
+                    <div class="pad-md" fxLayoutAlign="center ">
+                        <label>Nenhuma parcela vinculada a esta condição de pagamento.</label>
+                    </div>
+                </mat-card>
+
+            </form>
+
+        </mat-tab>
+
+    </mat-tab-group>
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="end">
+    <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+        color="primary">
+        SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
+    push-left-md bgc-grey-800">
+        CANCELAR
+    </button>
+</mat-dialog-actions>

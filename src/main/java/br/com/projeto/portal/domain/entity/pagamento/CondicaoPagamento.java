@@ -27,7 +27,7 @@ public class CondicaoPagamento extends AbstractEntity
 
 	private Boolean situacao;
 
-	private Boolean aPrazo;
+	private Boolean prazo;
 
 	//@Transient
 	private List<CondicaoPagamentoParcela> parcelas = new ArrayList<>();
@@ -37,6 +37,10 @@ public class CondicaoPagamento extends AbstractEntity
 	 *-------------------------------------------------------------------*/
 
 	public CondicaoPagamento(){}
+
+	public CondicaoPagamento(Long codigo){
+		this.codigo = codigo;
+	}
 
 
 	/*-------------------------------------------------------------------

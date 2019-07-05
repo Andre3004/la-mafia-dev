@@ -75,8 +75,6 @@ export class EstadoFormComponent implements OnInit {
       this.openSnackBarService.openError("O campo país deve ser preenchido.");
       return;
     }
-    
-
 
     if (!this.estado.idEstado)
     {
@@ -108,8 +106,5 @@ export class EstadoFormComponent implements OnInit {
   public displayFnPais(pais?: Pais): string | undefined {
       return pais ? pais.pais : undefined;
   }
-
-
-
 
 }

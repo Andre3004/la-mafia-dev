@@ -18,7 +18,7 @@ public class FormaPagamento extends AbstractEntity
 
 	private Boolean situacao;
 
-	private String nome;
+	private String formaPagamento;
 
 	/*-------------------------------------------------------------------
 	 * 		 					CONSTRUCTORS

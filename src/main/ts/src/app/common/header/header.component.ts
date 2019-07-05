@@ -24,7 +24,8 @@ export class HeaderComponent implements OnInit
     {title: "Mesas", icon: 'local_bar', router: 'mesa'},
     {title: "Produtos", icon: 'assignment_turned_in', router: 'produto'},
     {title: "Ambientes", icon: 'event_seat', router: 'ambiente'},
-
+    {title: "Formas de pagamentos", icon: 'payment', router: 'forma-pagamento'},
+    {title: "Condições de pagamentos", icon: 'attach_money', router: 'condicao-pagamento'},
     {title: "Clientes", icon: 'people', router: 'cliente'},
     {title: "Fornecedores", icon: 'people_outline', router: 'fornecedor'},
     {title: "Cidade", icon: 'location_on', router: 'cidade'},
