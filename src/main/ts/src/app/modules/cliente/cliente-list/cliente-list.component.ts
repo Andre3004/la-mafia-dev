@@ -69,7 +69,7 @@ export class ClienteListComponent implements OnInit
     public openForm(cliente)
     {
         const dialogRef = this.dialog.open(ClienteFormComponent, {
-            width: '800px',
+            width: '900px',
             height: 'auto',
             data: { idCliente: cliente ? cliente.idCliente : null }
         });

@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -27,6 +28,8 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+
+    private static ZoneId fusoHorarioDeSaoPaulo = ZoneId.of("America/Sao_Paulo");
 
 	@Autowired
 	FormaPagamentoDAO formaPagamentoDAO;
@@ -65,7 +68,7 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 				condicaoPagamento.getDesconto(),
 				condicaoPagamento.getSituacao(),
 				condicaoPagamento.getPrazo(),
-				Timestamp.valueOf(LocalDateTime.now()) );
+				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 
 		return id;
 	}
@@ -87,7 +90,7 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 				condicaoPagamento.getDesconto(),
 				condicaoPagamento.getSituacao(),
 				condicaoPagamento.getPrazo(),
-				Timestamp.valueOf(LocalDateTime.now()),
+				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
 				condicaoPagamento.getCodigo());
 	}
 
@@ -177,7 +180,7 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 				condicaoPagamentoParcela.getDias(),
 				condicaoPagamentoParcela.getPorcentagem(),
 				condicaoPagamentoParcela.getParcela(),
-				Timestamp.valueOf( LocalDateTime.now() ),
+				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo) ),
 				condicaoPagamentoParcela.getCodigo());
 	}
 
@@ -197,7 +200,7 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 				condicaoPagamentoParcela.getDias(),
 				condicaoPagamentoParcela.getPorcentagem(),
 				condicaoPagamentoParcela.getParcela(),
-				Timestamp.valueOf( LocalDateTime.now() ) );
+				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo) ) );
 	}
 
 

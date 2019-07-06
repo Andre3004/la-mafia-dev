@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -24,6 +25,8 @@ public class MesaDAO implements IMesaRepository
 {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+
+    private static ZoneId fusoHorarioDeSaoPaulo = ZoneId.of("America/Sao_Paulo");
 
 	@Autowired
 	AmbienteDAO ambienteDAO;
@@ -52,7 +55,7 @@ public class MesaDAO implements IMesaRepository
 				mesa.getAmbiente().getCodigo(),
 				mesa.getQuantidadeLugaresMesa(),
 				mesa.getSituacao(),
-				Timestamp.valueOf( LocalDateTime.now()) );
+				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 	}
 
 	@Override
@@ -68,7 +71,7 @@ public class MesaDAO implements IMesaRepository
 				mesa.getAmbiente().getCodigo(),
 				mesa.getQuantidadeLugaresMesa(),
 				mesa.getSituacao(),
-				Timestamp.valueOf( LocalDateTime.now()),
+				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
 				mesa.getNumeroMesa());
 	}
 

@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -24,6 +25,8 @@ public class FormaPagamentoDAO implements IFormaPagamentoRepository {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+
+    private static ZoneId fusoHorarioDeSaoPaulo = ZoneId.of("America/Sao_Paulo");
 
 	@Override
 	public FormaPagamento findFormaPagamentoById( Long id)
@@ -46,7 +49,7 @@ public class FormaPagamentoDAO implements IFormaPagamentoRepository {
 						"created) VALUES (?, ?, ?)",
 				formaPagamento.getFormaPagamento(),
 				formaPagamento.getSituacao(),
-				Timestamp.valueOf(LocalDateTime.now()));
+				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)));
 	}
 
 	@Override
@@ -58,7 +61,7 @@ public class FormaPagamentoDAO implements IFormaPagamentoRepository {
 						"updated = ?, " +
 						"WHERE codigo = ?",
 				formaPagamento.getFormaPagamento(),
-				Timestamp.valueOf(LocalDateTime.now()),
+				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
 				formaPagamento.getCodigo());
 	}
 

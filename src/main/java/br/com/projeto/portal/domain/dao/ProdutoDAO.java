@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -25,6 +26,8 @@ public class ProdutoDAO implements IProdutoRepository
 {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+
+    private static ZoneId fusoHorarioDeSaoPaulo = ZoneId.of("America/Sao_Paulo");
 
 	@Autowired
 	GrupoProdutoDAO grupoProdutoDAO;
@@ -76,7 +79,7 @@ public class ProdutoDAO implements IProdutoRepository
 				produto.getCodigoBarras(),
 				produto.getUnidadeComercial(),
 				produto.getFornecedor() != null ? produto.getFornecedor().getIdFornecedor() : null,
-				Timestamp.valueOf( LocalDateTime.now()) );
+				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 	}
 
 	@Override
@@ -110,7 +113,7 @@ public class ProdutoDAO implements IProdutoRepository
 				produto.getCodigoBarras(),
 				produto.getUnidadeComercial(),
 				produto.getFornecedor().getIdFornecedor(),
-				Timestamp.valueOf(LocalDateTime.now()),
+				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
 				produto.getCodigo());
 	}
 

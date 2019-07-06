@@ -14,7 +14,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Telefone</mat-label>
-        <input uppercase  maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput name="telefone"
+        <input uppercase maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput name="telefone"
           [(ngModel)]="franquia.telefone" placeholder="Digite o telefone">
       </mat-form-field>
 
@@ -30,10 +30,10 @@
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
-          <mat-label>CNPJ</mat-label>
-          <input uppercase required [textMask]="{mask: maskCnpj, guide: false}" [(ngModel)]="franquia.cnpj" name="cnpj"
-            matInput maxlength="144" placeholder="Digite seu cnpj">
-        </mat-form-field>
+        <mat-label>CNPJ</mat-label>
+        <input uppercase required [textMask]="{mask: maskCnpj, guide: false}" [(ngModel)]="franquia.cnpj" name="cnpj"
+          matInput maxlength="144" placeholder="Digite seu cnpj">
+      </mat-form-field>
     </div>
 
     <div fxLayout="row" fxLayoutGap="30px">
@@ -46,8 +46,8 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Número</mat-label>
-        <input uppercase  [textMask]="{mask: masks.getNumbersOnlyMask(5), guide: false}" matInput name="numero" [(ngModel)]="franquia.numero"
-          placeholder="Digite o número">
+        <input uppercase [textMask]="{mask: masks.getNumbersOnlyMask(5), guide: false}" matInput name="numero"
+          [(ngModel)]="franquia.numero" placeholder="Digite o número">
       </mat-form-field>
 
     </div>
@@ -56,19 +56,19 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Complemento</mat-label>
-        <input uppercase  maxlength="144" matInput name="complemento" [(ngModel)]="franquia.complemento"
+        <input uppercase maxlength="144" matInput name="complemento" [(ngModel)]="franquia.complemento"
           placeholder="Digite o complemento">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Bairro</mat-label>
-        <input uppercase  maxlength="144" matInput name="bairro" [(ngModel)]="franquia.bairro"
+        <input uppercase maxlength="144" matInput name="bairro" [(ngModel)]="franquia.bairro"
           placeholder="Digite o bairro">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>CEP</mat-label>
-        <input uppercase  [textMask]="{mask: masks.cep, guide: false}" matInput name="cep" [(ngModel)]="franquia.cep"
+        <input uppercase [textMask]="{mask: masks.cep, guide: false}" matInput name="cep" [(ngModel)]="franquia.cep"
           placeholder="Digite o cep">
       </mat-form-field>
 
@@ -78,8 +78,8 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Cidade</mat-label>
-        <input required uppercase type="text" matInput [matAutocomplete]="autoCidade" #inputFilterCidade [(ngModel)]="franquia.cidade"
-          name="cidade" (ngModelChange)="onListFranquias(inputFilterCidade.value);">
+        <input required uppercase type="text" matInput [matAutocomplete]="autoCidade" #inputFilterCidade
+          [(ngModel)]="franquia.cidade" name="cidade" (ngModelChange)="onListFranquias(inputFilterCidade.value);">
       </mat-form-field>
 
       <mat-autocomplete [displayWith]="displayFnCidade" #autoCidade="matAutocomplete"
@@ -92,8 +92,8 @@
 
       <mat-form-field fxFlex appearance="outline" class="push-left-md">
         <mat-label>Estado</mat-label>
-        <input required uppercase type="text" matInput [matAutocomplete]="autoEstado" #inputFilterEstado [(ngModel)]="franquia.estado"
-          name="estado" (ngModelChange)="onListEstados(inputFilterEstado.value);">
+        <input required uppercase type="text" matInput [matAutocomplete]="autoEstado" #inputFilterEstado
+          [(ngModel)]="franquia.estado" name="estado" (ngModelChange)="onListEstados(inputFilterEstado.value);">
       </mat-form-field>
 
       <mat-autocomplete [displayWith]="displayFnEstado" #autoEstado="matAutocomplete"
@@ -181,13 +181,25 @@
 
 </mat-dialog-content>
 
-<mat-dialog-actions fxLayoutAlign="end">
-  <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
-    color="primary">
-    SALVAR
-  </button>
-  <button mat-dialog-close mat-raised-button class="white-btn
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+  <div fxLayout="column">
+    <label> <label style="font-weight: bold">Data de criação:</label>
+      {{ franquia.created ? (franquia.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+      {{ franquia.updated ? (franquia.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+  </div>
+
+  <div>
+
+    <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+      color="primary">
+      SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
     push-left-md bgc-grey-800">
-    CANCELAR
-  </button>
+      CANCELAR
+    </button>
+  </div>
+    </div>
 </mat-dialog-actions>

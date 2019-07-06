@@ -112,10 +112,10 @@
 
         <mat-tab label="Mesas">
 
-            <mat-card  style="max-height: 350px;overflow: auto;">
+            <mat-card style="max-height: 350px;overflow: auto;">
 
-                <td-data-table *ngIf="ambiente?.mesas?.length > 0" #dataTable [data]="ambiente.mesas" [columns]="tableColumns"
-                    [clickable]="true">
+                <td-data-table *ngIf="ambiente?.mesas?.length > 0" #dataTable [data]="ambiente.mesas"
+                    [columns]="tableColumns" [clickable]="true">
 
                     <ng-template tdDataTableTemplate="numeroMesa" let-mesa="row">
                         <span class="text-truncate">
@@ -142,13 +142,24 @@
 
 </mat-dialog-content>
 
-<mat-dialog-actions fxLayoutAlign="end">
-    <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
-        color="primary">
-        SALVAR
-    </button>
-    <button mat-dialog-close mat-raised-button class="white-btn
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+    <div fxLayout="column">
+        <label> <label style="font-weight: bold">Data de criação:</label>
+            {{ ambiente.created ? (ambiente.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+        <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+            {{ ambiente.updated ? (ambiente.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    </div>
+
+    <div>
+        <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+            color="primary">
+            SALVAR
+        </button>
+        <button mat-dialog-close mat-raised-button class="white-btn
     push-left-md bgc-grey-800">
-        CANCELAR
-    </button>
+            CANCELAR
+        </button>
+    </div>
+    </div>
 </mat-dialog-actions>

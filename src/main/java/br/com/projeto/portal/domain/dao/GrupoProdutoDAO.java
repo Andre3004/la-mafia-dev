@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -27,6 +28,8 @@ public class GrupoProdutoDAO implements IGrupoProdutoRepository
 {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+
+    private static ZoneId fusoHorarioDeSaoPaulo = ZoneId.of("America/Sao_Paulo");
 
 	@Autowired
 	FranquiaDAO franquiaDAO;
@@ -66,7 +69,7 @@ public class GrupoProdutoDAO implements IGrupoProdutoRepository
 				grupoProduto.getSituacao(),
 				grupoProduto.getAnexoUuid(),
 				grupoProduto.getNomeArquivo(),
-				Timestamp.valueOf( LocalDateTime.now() ) );
+				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo) ) );
 
 		return id;
 	}
@@ -86,7 +89,7 @@ public class GrupoProdutoDAO implements IGrupoProdutoRepository
 				grupoProduto.getExigeAno(),
 				grupoProduto.getAnexoUuid(),
 				grupoProduto.getNomeArquivo(),
-				Timestamp.valueOf( LocalDateTime.now() ),
+				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo) ),
 				grupoProduto.getCodigo() );
 	}
 
@@ -171,7 +174,7 @@ public class GrupoProdutoDAO implements IGrupoProdutoRepository
 						"created) VALUES (?, ?, ?)",
 				grupoProdutoFranquia.getGrupoProduto().getCodigo(),
 				grupoProdutoFranquia.getFranquia().getCodigo(),
-				Timestamp.valueOf( LocalDateTime.now() ) );
+				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo) ) );
 	}
 
 	public void deleteGrupoProdutoFraquia( long franquiaId, long grupoProdutoId )

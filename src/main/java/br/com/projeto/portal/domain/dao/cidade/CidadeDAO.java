@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -29,6 +30,8 @@ public class CidadeDAO implements ICidadeRepository
 {
     @Autowired
     JdbcTemplate jdbcTemplate;
+
+    private static ZoneId fusoHorarioDeSaoPaulo = ZoneId.of("America/Sao_Paulo");
 
     @Autowired
     EstadoDAO estadoDAO;
@@ -60,7 +63,7 @@ public class CidadeDAO implements ICidadeRepository
                 cidade.getDdd(),
                 cidade.getEstado().getIdEstado(),
                 cidade.getSituacao(),
-                Timestamp.valueOf(LocalDateTime.now()) );
+                Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
     }
 
     @Override
@@ -76,7 +79,7 @@ public class CidadeDAO implements ICidadeRepository
                 cidade.getCidade(),
                 cidade.getDdd(),
                 cidade.getEstado().getIdEstado(),
-                Timestamp.valueOf(LocalDateTime.now()),
+                Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
                 cidade.getIdCidade());
     }
 
@@ -89,7 +92,7 @@ public class CidadeDAO implements ICidadeRepository
     @Override
     public Page<Cidade> listCidadesByFilters( String cidade, PageRequest pageable )
     {
-        if(pageable == null) pageable = new PageRequest(0, 10);
+        if(pageable == null) pageable = new PageRequest(0, 100);
 
         String rowCountSql = "SELECT count(1) AS row_count FROM cidade " ;
 
@@ -117,7 +120,7 @@ public class CidadeDAO implements ICidadeRepository
                 e.setCidade(rs.getString(2));
                 e.setDdd(rs.getString(3));
                 e.setSituacao( rs.getBoolean( "situacao" ) );
-
+                e.setEstado( estadoDAO.findEstadoById( rs.getInt( "idEstado" )  ));
                 return e;
             }
         });

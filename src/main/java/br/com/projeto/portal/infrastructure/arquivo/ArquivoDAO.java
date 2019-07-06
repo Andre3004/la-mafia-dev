@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +17,8 @@ public class ArquivoDAO
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+
+    private static ZoneId fusoHorarioDeSaoPaulo = ZoneId.of("America/Sao_Paulo");
 
 	
 	public Arquivo findArquivoById(long id)
@@ -50,7 +53,7 @@ public class ArquivoDAO
 				arquivo.getMimeType(),
 				arquivo.getNomeOriginal(),
 				arquivo.getUuid(),
-				Timestamp.valueOf( LocalDateTime.now() ) );
+				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo) ) );
 	}
 
 	public Long getLastId(){
@@ -71,7 +74,7 @@ public class ArquivoDAO
 				arquivo.getMimeType(),
 				arquivo.getNomeOriginal(),
 				arquivo.getUuid(),
-				Timestamp.valueOf(LocalDateTime.now()),
+				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
 				arquivo.getId());
 	}
 

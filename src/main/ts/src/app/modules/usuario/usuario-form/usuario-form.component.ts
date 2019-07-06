@@ -177,7 +177,7 @@ export class UsuarioFormComponent implements OnInit
   public onListFranquias(filter)
   {
     this.franquiaService.listFranquiasByFilters(filter ? filter : "", "", null).subscribe( franquiaPage => {
-      this.franquias = franquiaPage.content; 
+      this.franquias = franquiaPage.content.filter( c => c.situacao); 
     })
   }
 

@@ -95,7 +95,7 @@ export class FornecedorFormComponent implements OnInit
       this.openSnackBarService.openError('O campo cidade deve ser preenchido.');
       return;
     }
-    
+
     if (!this.fornecedor.estado)
     {
       this.openSnackBarService.openError('O campo estado deve ser preenchido.');
@@ -237,10 +237,12 @@ export class FornecedorFormComponent implements OnInit
 
   public onListCidades(filter)
   {
-    this.cidadeService.listCidadesByFilters(filter ? filter : "", null).subscribe(page =>
-    {
-      this.cidades = page.content;
-    })
+    if (this.fornecedor.estado)
+      this.cidadeService.listCidadesByFilters(filter ? filter : "", null).subscribe(page =>
+      {
+
+        this.cidades = page.content.filter(c => c.situacao && c.estado.idEstado == this.fornecedor.estado.idEstado);
+      })
   }
 
   public displayFnCidade(cidade?: Cidade): string | undefined
@@ -250,10 +252,11 @@ export class FornecedorFormComponent implements OnInit
 
   public onListEstados(filter)
   {
-    this.estadoService.listEstadosByFilters(filter ? filter : "", null).subscribe(page =>
-    {
-      this.estados = page.content;
-    })
+    if (this.fornecedor.pais)
+      this.estadoService.listEstadosByFilters(filter ? filter : "", null).subscribe(page =>
+      {
+        this.estados = page.content.filter(c => c.situacao && c.pais.idPais == this.fornecedor.pais.idPais);
+      })
   }
 
   public displayFnEstado(estado?: Estado): string | undefined
@@ -266,7 +269,7 @@ export class FornecedorFormComponent implements OnInit
   {
     this.paisService.listPaisesByFilters(filter ? filter : "", null).subscribe(page =>
     {
-      this.paises = page.content;
+      this.paises = page.content.filter(c => c.situacao);
     })
   }
 
@@ -280,7 +283,7 @@ export class FornecedorFormComponent implements OnInit
   {
     this.condicaoPagamentoService.listCondicaoPagamentosByFilters(filter ? filter : "", null).subscribe(page =>
     {
-      this.condicoesPagamento = page.content;
+      this.condicoesPagamento = page.content.filter(c => c.situacao);
     })
   }
 

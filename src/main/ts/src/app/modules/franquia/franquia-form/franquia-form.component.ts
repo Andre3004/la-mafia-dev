@@ -116,10 +116,7 @@ export class FranquiaFormComponent implements OnInit
           return;
         }
     }
-    else
-    {
-      this.franquia.telefone = this.franquia.telefone.replace(/\.|-/gi, '');
-    }
+    
 
     let anexoOld = null;
 
@@ -275,7 +272,7 @@ export class FranquiaFormComponent implements OnInit
    public onListCidades(filter)
    {
        this.cidadeService.listCidadesByFilters(filter ? filter : "", null).subscribe( page => {
-          this.cidades = page.content; 
+          this.cidades = page.content.filter( c => c.situacao); 
        })
    }
 
@@ -286,7 +283,7 @@ export class FranquiaFormComponent implements OnInit
    public onListEstados(filter)
    {
        this.estadoService.listEstadosByFilters(filter ? filter : "", null).subscribe( page => {
-       this.estados = page.content; 
+       this.estados = page.content.filter( c => c.situacao); 
        })
    }
 
@@ -298,7 +295,7 @@ export class FranquiaFormComponent implements OnInit
    public onListPaises(filter)
    {
        this.paisService.listPaisesByFilters(filter ?filter : "", null).subscribe( page => {
-       this.paises = page.content; 
+       this.paises = page.content.filter( c => c.situacao); 
        })
    }
 

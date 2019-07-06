@@ -52,7 +52,6 @@ export class EstadoFormComponent implements OnInit {
     else
       this.title = "Inserir estado";
       
-    this.paisService.listPaisesByFilters
   }
 
   /*-------------------------------------------------------------------
@@ -99,7 +98,7 @@ export class EstadoFormComponent implements OnInit {
   public onListPaises(filter)
   {
       this.paisService.listPaisesByFilters(filter ?filter : "", null).subscribe( page => {
-      this.paises = page.content; 
+      this.paises = page.content.filter( c => c.situacao); 
       })
   }
 

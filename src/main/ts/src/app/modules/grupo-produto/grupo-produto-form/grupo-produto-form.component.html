@@ -96,7 +96,16 @@
 
 </mat-dialog-content>
 
-<mat-dialog-actions fxLayoutAlign="end">
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+    <div fxLayout="column">
+        <label> <label style="font-weight: bold">Data de criação:</label>
+            {{ grupoProduto.created ? (grupoProduto.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+        <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+            {{ grupoProduto.updated ? (grupoProduto.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    </div>
+
+    <div>
     <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
         color="primary">
         SALVAR
@@ -105,4 +114,5 @@
     push-left-md bgc-grey-800">
         CANCELAR
     </button>
+    </div>
 </mat-dialog-actions>

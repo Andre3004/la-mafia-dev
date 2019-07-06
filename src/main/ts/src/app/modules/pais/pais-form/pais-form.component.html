@@ -1,5 +1,8 @@
 <mat-dialog-content>
 
+  <h2 mat-dialog-title>{{title}}</h2>
+
+
   <form #qualificadorForm="ngForm" fxLayout="column">
 
 
@@ -7,12 +10,12 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Código</mat-label>
-        <input uppercase  required matInput [(ngModel)]="pais.idPais" name="idPais" [disabled]="true">
+        <input uppercase required matInput [(ngModel)]="pais.idPais" name="idPais" [disabled]="true">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Sigla</mat-label>
-        <input required uppercase  [(ngModel)]="pais.sigla" name="sigla" matInput maxlength="5">
+        <input required uppercase [(ngModel)]="pais.sigla" name="sigla" matInput maxlength="5">
       </mat-form-field>
 
 
@@ -25,12 +28,13 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>DDI</mat-label>
-        <input required uppercase  [(ngModel)]="pais.ddi" name="ddi" matInput [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}" maxlength="4">
+        <input required uppercase [(ngModel)]="pais.ddi" name="ddi" matInput
+          [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}" maxlength="4">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>País</mat-label>
-        <input uppercase  required [(ngModel)]="pais.pais" name="pais" matInput maxlength="144">
+        <input uppercase required [(ngModel)]="pais.pais" name="pais" matInput maxlength="144">
       </mat-form-field>
 
 
@@ -43,7 +47,16 @@
 
 </mat-dialog-content>
 
-<mat-dialog-actions fxLayoutAlign="end">
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+    <div fxLayout="column">
+        <label> <label style="font-weight: bold">Data de criação:</label>
+            {{ pais.created ? (pais.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+        <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+            {{ pais.updated ? (pais.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    </div>
+
+    <div>
   <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
     color="primary">
     SALVAR
@@ -52,4 +65,5 @@
   push-left-md bgc-grey-800">
     CANCELAR
   </button>
+    </div>
 </mat-dialog-actions>

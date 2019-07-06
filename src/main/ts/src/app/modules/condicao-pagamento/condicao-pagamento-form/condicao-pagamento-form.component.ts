@@ -137,7 +137,7 @@ export class CondicaoPagamentoFormComponent implements OnInit
   {
     this.formaPagamentoService.listFormaPagamentoByFilters(filter ? filter : "", null).subscribe(formaPagamentoPage =>
     {
-      this.formasPagamento = formaPagamentoPage.content;
+      this.formasPagamento = formaPagamentoPage.content.filter( c => c.situacao);
     })
   }
 

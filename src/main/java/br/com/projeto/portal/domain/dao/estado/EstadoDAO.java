@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -29,6 +30,8 @@ public class EstadoDAO implements IEstadoRepository
 {
     @Autowired
     JdbcTemplate jdbcTemplate;
+
+    private static ZoneId fusoHorarioDeSaoPaulo = ZoneId.of("America/Sao_Paulo");
 
     @Autowired
     PaisDAO paisDAO;
@@ -59,7 +62,7 @@ public class EstadoDAO implements IEstadoRepository
                 estado.getUf(),
                 estado.getPais().getIdPais(),
                 estado.getSituacao(),
-                Timestamp.valueOf(LocalDateTime.now()) );
+                Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
     }
 
     @Override
@@ -77,7 +80,7 @@ public class EstadoDAO implements IEstadoRepository
                 estado.getUf(),
                 estado.getPais().getIdPais(),
                 estado.getSituacao(),
-                Timestamp.valueOf(LocalDateTime.now()),
+                Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
                 estado.getIdEstado());
     }
 
@@ -90,7 +93,7 @@ public class EstadoDAO implements IEstadoRepository
     @Override
     public Page<Estado> listEstadosByFilters( String estado, PageRequest pageable )
     {
-        if(pageable == null) pageable = new PageRequest(0, 10);
+        if(pageable == null) pageable = new PageRequest(0, 100);
 
         String rowCountSql = "SELECT count(1) AS row_count FROM estado " ;
 
@@ -118,6 +121,7 @@ public class EstadoDAO implements IEstadoRepository
                 e.setEstado(rs.getString(2));
                 e.setUf(rs.getString(3));
                 e.setSituacao( rs.getBoolean( "situacao" ) );
+                e.setPais( paisDAO.findPaisById( rs.getInt( "idpais" )  ));
 
                 return e;
             }

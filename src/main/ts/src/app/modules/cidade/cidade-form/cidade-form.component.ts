@@ -93,7 +93,7 @@ export class CidadeFormComponent implements OnInit {
   public onListEstados(filter)
   {
       this.estadoService.listEstadosByFilters(filter ? filter : "", null).subscribe( page => {
-      this.estados = page.content; 
+      this.estados = page.content.filter( c => c.situacao);
       })
   }
 

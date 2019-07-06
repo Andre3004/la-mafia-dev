@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -33,6 +34,8 @@ public class FornecedorDAO implements IFornecedorRepository
 {
     @Autowired
     JdbcTemplate jdbcTemplate;
+
+    private static ZoneId fusoHorarioDeSaoPaulo = ZoneId.of("America/Sao_Paulo");
 
     @Autowired
     CidadeDAO cidadeDAO;
@@ -99,7 +102,7 @@ public class FornecedorDAO implements IFornecedorRepository
                 fornecedor.getSituacao(),
                 fornecedor.getInscricaoEstadual(),
                 fornecedor.getCondicaoPagamento().getCodigo(),
-                Timestamp.valueOf(LocalDateTime.now()) );
+                Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
     }
 
     @Override
@@ -137,7 +140,7 @@ public class FornecedorDAO implements IFornecedorRepository
                 fornecedor.getCep(),
                 fornecedor.getInscricaoEstadual(),
                 fornecedor.getCondicaoPagamento().getCodigo(),
-                Timestamp.valueOf(LocalDateTime.now()),
+                Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
                 fornecedor.getIdFornecedor());
     }
 

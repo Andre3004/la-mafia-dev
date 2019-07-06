@@ -17,6 +17,7 @@ export class PaisFormComponent implements OnInit {
   
   public textMasks = TextMasks;
 
+  public title = "";
 
 
   constructor(
@@ -34,6 +35,10 @@ export class PaisFormComponent implements OnInit {
 
   ngOnInit()
   {
+    if (this.data.idPais)
+      this.title = "Alterar país";
+    else
+      this.title = "Inserir país";
 
   }
 

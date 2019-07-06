@@ -68,7 +68,7 @@ export class FornecedorListComponent implements OnInit
     public openForm(fornecedor)
     {
         const dialogRef = this.dialog.open(FornecedorFormComponent, {
-            width: '800px',
+            width: '1000px',
             height: 'auto',
             data: { idFornecedor: fornecedor ? fornecedor.idFornecedor : null }
         });

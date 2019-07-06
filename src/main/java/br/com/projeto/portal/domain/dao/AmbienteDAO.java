@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -26,6 +27,8 @@ public class AmbienteDAO implements IAmbienteRepository
 {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
+
+    private static ZoneId fusoHorarioDeSaoPaulo = ZoneId.of("America/Sao_Paulo");
 
 	@Autowired
 	FranquiaDAO franquiaDAO;
@@ -66,7 +69,7 @@ public class AmbienteDAO implements IAmbienteRepository
 				ambiente.getDescricao(),
 				ambiente.getCapacidadeMesas(),
 				ambiente.getSituacao(),
-				Timestamp.valueOf( LocalDateTime.now()) );
+				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 
 		return id;
 	}
@@ -88,7 +91,7 @@ public class AmbienteDAO implements IAmbienteRepository
 				ambiente.getDescricao(),
 				ambiente.getCapacidadeMesas(),
 				ambiente.getSituacao(),
-				Timestamp.valueOf( LocalDateTime.now()),
+				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
 				ambiente.getCodigo());
 	}
 
@@ -170,7 +173,7 @@ public class AmbienteDAO implements IAmbienteRepository
 						ambienteImagem.getAmbiente().getCodigo(),
 						ambienteImagem.getAnexoUuid(),
 						ambienteImagem.getNomeArquivo(),
-						Timestamp.valueOf( LocalDateTime.now()) );
+						Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 	}
 
 	@Override
@@ -186,7 +189,7 @@ public class AmbienteDAO implements IAmbienteRepository
 				ambienteImagem.getAmbiente().getCodigo(),
 				ambienteImagem.getAnexoUuid(),
 				ambienteImagem.getNomeArquivo(),
-				Timestamp.valueOf( LocalDateTime.now()),
+				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
 				ambienteImagem.getCodigo());
 	}
 

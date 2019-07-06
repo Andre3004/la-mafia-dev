@@ -77,7 +77,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Endereço</mat-label>
-        <input uppercase uppercase  [(ngModel)]="cliente.endereco" name="endereco" matInput maxlength="144">
+        <input uppercase uppercase [(ngModel)]="cliente.endereco" name="endereco" matInput maxlength="144">
       </mat-form-field>
 
     </div>
@@ -85,10 +85,58 @@
 
     <div fxLayout="row">
 
-      <mat-form-field fxFlex appearance="outline">
+      <mat-form-field fxFlex appearance="outline" class="push-right-md">
+        <mat-label>País</mat-label>
+        <input required uppercase type="text" matInput [matAutocomplete]="autoPais" #inputFilter
+          [(ngModel)]="cliente.pais" name="pais" (ngModelChange)="onListPaises(inputFilter.value);"
+          [disabled]="cliente?.pais?.idPais">
+
+        <button *ngIf="cliente?.pais?.idPais"
+          (click)="cliente.pais = null; cliente.estado = null; cliente.cidade = null" matTooltip="Remover país"
+          matSuffix mat-icon-button class="tc-grey-700 delete-button-hover">
+          <mat-icon>delete</mat-icon>
+        </button>
+
+      </mat-form-field>
+
+      <mat-autocomplete [displayWith]="displayFnPais" #autoPais="matAutocomplete"
+        (optionSelected)="cliente.pais = $event.option.value; onListPaises(); onListEstados()">
+        <mat-option [value]="null">Nenhum</mat-option>
+        <mat-option *ngFor="let pais of paises" [value]="pais">{{pais?.pais}}</mat-option>
+      </mat-autocomplete>
+
+
+
+
+      <mat-form-field *ngIf="cliente?.pais?.idPais" fxFlex appearance="outline" class="push-right-md">
+        <mat-label>Estado</mat-label>
+        <input required uppercase type="text" matInput [matAutocomplete]="autoEstado" #inputFilterEstado
+          [disabled]="cliente?.estado?.idEstado" [(ngModel)]="cliente.estado" name="estado"
+          (ngModelChange)="onListEstados(inputFilterEstado.value);">
+
+        <button *ngIf="cliente?.estado?.idEstado" (click)="cliente.estado = null; cliente.cidade = null"
+          matTooltip="Remover estado" matSuffix mat-icon-button class="tc-grey-700 delete-button-hover">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-autocomplete [displayWith]="displayFnEstado" #autoEstado="matAutocomplete"
+        (optionSelected)="cliente.estado = $event.option.value; onListEstados(); onListCidades()">
+        <mat-option [value]="null">Nenhum</mat-option>
+        <mat-option *ngFor="let estado of estados" [value]="estado">{{estado?.estado}}</mat-option>
+      </mat-autocomplete>
+
+
+      <mat-form-field *ngIf="cliente?.estado?.idEstado" fxFlex appearance="outline">
         <mat-label>Cidade</mat-label>
         <input required uppercase type="text" matInput [matAutocomplete]="autoCidade" #inputFilterCidade
-          [(ngModel)]="cliente.cidade" name="cidade" (ngModelChange)="onListFranquias(inputFilterCidade.value);">
+          [disabled]="cliente?.cidade?.idCidade" [(ngModel)]="cliente.cidade" name="cidade"
+          (ngModelChange)="onListCidades(inputFilterCidade.value);">
+
+        <button *ngIf="cliente?.cidade?.idCidade" (click)="cliente.cidade = null" matTooltip="Remover cidade"
+          matSuffix mat-icon-button class="tc-grey-700 delete-button-hover">
+          <mat-icon>delete</mat-icon>
+        </button>
       </mat-form-field>
 
       <mat-autocomplete [displayWith]="displayFnCidade" #autoCidade="matAutocomplete"
@@ -96,47 +144,29 @@
         <mat-option [value]="null">Nenhum</mat-option>
         <mat-option *ngFor="let cidade of cidades" [value]="cidade">{{cidade?.cidade}}</mat-option>
       </mat-autocomplete>
-
-
-
-      <mat-form-field fxFlex appearance="outline" class="push-left-md">
-        <mat-label>Estado</mat-label>
-        <input required uppercase type="text" matInput [matAutocomplete]="autoEstado" #inputFilterEstado
-          [(ngModel)]="cliente.estado" name="estado" (ngModelChange)="onListEstados(inputFilterEstado.value);">
-      </mat-form-field>
-
-      <mat-autocomplete [displayWith]="displayFnEstado" #autoEstado="matAutocomplete"
-        (optionSelected)="cliente.estado = $event.option.value; onListEstados();">
-        <mat-option [value]="null">Nenhum</mat-option>
-        <mat-option *ngFor="let estado of estados" [value]="estado">{{estado?.estado}}</mat-option>
-      </mat-autocomplete>
-
-
-
-      <mat-form-field fxFlex appearance="outline" class="push-left-md">
-        <mat-label>País</mat-label>
-        <input required uppercase type="text" matInput [matAutocomplete]="autoPais" #inputFilter [(ngModel)]="cliente.pais"
-          name="pais" (ngModelChange)="onListPaises(inputFilter.value);">
-      </mat-form-field>
-
-      <mat-autocomplete [displayWith]="displayFnPais" #autoPais="matAutocomplete"
-        (optionSelected)="cliente.pais = $event.option.value; onListPaises();">
-        <mat-option [value]="null">Nenhum</mat-option>
-        <mat-option *ngFor="let pais of paises" [value]="pais">{{pais?.pais}}</mat-option>
-      </mat-autocomplete>
     </div>
 
   </form>
 
 </mat-dialog-content>
 
-<mat-dialog-actions fxLayoutAlign="end">
-  <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
-    color="primary">
-    SALVAR
-  </button>
-  <button mat-dialog-close mat-raised-button class="white-btn
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+  <div fxLayout="column">
+    <label> <label style="font-weight: bold">Data de criação:</label>
+      {{ cliente.created ? (cliente.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+      {{ cliente.updated ? (cliente.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+  </div>
+
+  <div>
+    <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+      color="primary">
+      SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
   push-left-md bgc-grey-800">
-    CANCELAR
-  </button>
+      CANCELAR
+    </button>
+  </div>
 </mat-dialog-actions>

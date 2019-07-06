@@ -19,7 +19,7 @@ export class ClienteFormComponent implements OnInit
 
   public title = "";
 
-  public cliente: any = { idCliente: 0 };
+  public cliente: Cliente = { idCliente: 0 };
 
   public maskCpf = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
 
@@ -87,7 +87,7 @@ export class ClienteFormComponent implements OnInit
       this.openSnackBarService.openError('O campo cidade deve ser preenchido.');
       return;
     }
-    
+
     if (!this.cliente.estado)
     {
       this.openSnackBarService.openError('O campo estado deve ser preenchido.');
@@ -114,7 +114,7 @@ export class ClienteFormComponent implements OnInit
 
     if (this.cliente.telefone)
     {
-      var numb = this.cliente.telefone.match(/\d/g);
+      var numb = this.cliente.telefone.match(/\d/g) as any;
       numb = numb.join("").toString();
 
       if (numb.length != 13)
@@ -126,7 +126,7 @@ export class ClienteFormComponent implements OnInit
 
     if (this.cliente.celular) 
     {
-      var numb = this.cliente.celular.match(/\d/g);
+      var numb = this.cliente.celular.match(/\d/g) as any;
       numb = numb.join("").toString();
 
       if (numb.length != 14)
@@ -206,10 +206,12 @@ export class ClienteFormComponent implements OnInit
 
   public onListCidades(filter)
   {
-    this.cidadeService.listCidadesByFilters(filter ? filter : "", null).subscribe(page =>
-    {
-      this.cidades = page.content;
-    })
+    if (this.cliente.estado)
+      this.cidadeService.listCidadesByFilters(filter ? filter : "", null).subscribe(page =>
+      {
+
+        this.cidades = page.content.filter(c => c.situacao && c.estado.idEstado == this.cliente.estado.idEstado);
+      })
   }
 
   public displayFnCidade(cidade?: Cidade): string | undefined
@@ -219,10 +221,11 @@ export class ClienteFormComponent implements OnInit
 
   public onListEstados(filter)
   {
-    this.estadoService.listEstadosByFilters(filter ? filter : "", null).subscribe(page =>
-    {
-      this.estados = page.content;
-    })
+    if (this.cliente.pais)
+      this.estadoService.listEstadosByFilters(filter ? filter : "", null).subscribe(page =>
+      {
+        this.estados = page.content.filter(c => c.situacao && c.pais.idPais == this.cliente.pais.idPais);
+      })
   }
 
   public displayFnEstado(estado?: Estado): string | undefined
@@ -235,7 +238,7 @@ export class ClienteFormComponent implements OnInit
   {
     this.paisService.listPaisesByFilters(filter ? filter : "", null).subscribe(page =>
     {
-      this.paises = page.content;
+      this.paises = page.content.filter(c => c.situacao);
     })
   }
 

@@ -111,7 +111,7 @@ export class ProdutoFormComponent implements OnInit
   public onListGrupoProdutos(filter)
   {
     this.grupoProdutoService.listGrupoProdutosByFilters(filter ? filter : "", isNaN(filter) || filter == null || filter == "" ? null : parseInt(filter.substring(0,9)), null).subscribe( grupoProdutoPage => {
-      this.gruposProdutos = grupoProdutoPage.content; 
+      this.gruposProdutos = grupoProdutoPage.content.filter( c => c.situacao); 
     })
   }
 
