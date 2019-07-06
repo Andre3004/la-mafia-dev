@@ -44,7 +44,7 @@
         <mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
       </button>
 
-      <button *ngIf="formaPagamento.situacao" matTooltip="Desativar forma de pagamento"
+      <button *ngIf="formaPagamento.situacao" matTooltip="Excluir/Desativar forma de pagamento"
         (click)="$event.stopPropagation(); atualizarSituacaoFormaPagamento(formaPagamento)" mat-icon-button>
         <mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
       </button>

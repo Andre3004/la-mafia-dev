@@ -6,7 +6,7 @@ import { TdDialogService, ITdDataTableColumn, IPageChangeEvent } from '@covalent
 import { PaginationService } from 'src/app/common/pagination/pagination.service';
 import { ProdutoService, FranquiaService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
-import { Franquia } from 'src/generated/entities';
+import { Franquia, Produto } from 'src/generated/entities';
 
 
 @Component({
@@ -80,24 +80,65 @@ export class ProdutoListComponent implements OnInit
     }
 
 
-    public atualizarSituacaoProduto(produto)
+    public atualizarSituacaoProduto(produto: Produto)
     {
-        this._dialogService.openConfirm({
-            message: !produto.situacao  ? "Tem certeza que deseja ativar este produto ? " : "Tem certeza que deseja desativar este produto ? ",
-            title: !produto.situacao  ? "Ativar produto" : "Desativar produto",
-            cancelButton: 'CANCELAR',
-            acceptButton: 'CONFIRMAR',
-            width: '500px'
-        }).afterClosed().subscribe(accept =>
+        if(produto.situacao)
         {
-            if (accept)
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja excluir este produto ?",
+                title: "Excluir produto" ,
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
             {
-                this.produtoService.updateSituacaoProduto(produto.codigo, !produto.situacao).subscribe( result => {
-                    this.openSnackBarService.openSuccess(produto.situacao ? 'Produto desativado com sucesso.' : 'Produto ativado com sucesso.');
-                    this.onListProdutos();
-                }, err => this.openSnackBarService.openError(err.message))
-            }
-        });
+                if (accept)
+                {
+                    this.produtoService.deleteProduto(produto.codigo).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Produto excluído com sucesso.');
+                        this.onListProdutos();
+                    }, err => {
+
+
+                        this._dialogService.openConfirm({
+                            message: "Não foi possível excluir este produto pois o mesmo está relacionado a outro registro. Deseja desativar ?",
+                            title: "Desativar produto",
+                            cancelButton: 'CANCELAR',
+                            acceptButton: 'CONFIRMAR',
+                            width: '500px'
+                        }).afterClosed().subscribe((accept: boolean) =>
+                        {
+                            if (accept)
+                            {
+                                this.produtoService.updateSituacaoProduto(produto.codigo, !produto.situacao).subscribe( result => {
+                                    this.openSnackBarService.openSuccess('Produto desativado com sucesso.');
+                                    this.onListProdutos();
+                                }, err => this.openSnackBarService.openError(err.message))
+                            }
+                        });
+                    })
+                }
+            });
+        }
+        else
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja ativar esta produto ?",
+                title: "Ativar produto",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.produtoService.updateSituacaoProduto(produto.codigo, !produto.situacao).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Produto ativado com sucesso.');
+                        this.onListProdutos();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
     }
 
 

@@ -12,7 +12,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Sigla</mat-label>
-        <input uppercase  [(ngModel)]="pais.sigla" name="sigla" matInput maxlength="5">
+        <input required uppercase  [(ngModel)]="pais.sigla" name="sigla" matInput maxlength="5">
       </mat-form-field>
 
 
@@ -25,7 +25,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>DDI</mat-label>
-        <input uppercase  [(ngModel)]="pais.ddi" name="ddi" matInput [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}" maxlength="4">
+        <input required uppercase  [(ngModel)]="pais.ddi" name="ddi" matInput [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}" maxlength="4">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">

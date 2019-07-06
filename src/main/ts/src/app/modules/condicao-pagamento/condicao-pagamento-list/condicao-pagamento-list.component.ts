@@ -5,7 +5,7 @@ import { TdDialogService, ITdDataTableColumn, IPageChangeEvent } from '@covalent
 import { PaginationService } from 'src/app/common/pagination/pagination.service';
 import { CondicaoPagamentoService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
-import { Franquia } from 'src/generated/entities';
+import { Franquia, CondicaoPagamento } from 'src/generated/entities';
 import { TextMasks } from 'src/app/common/mask/text-masks';
 
 
@@ -81,24 +81,65 @@ export class CondicaoPagamentoListComponent implements OnInit
     }
 
 
-    public atualizarSituacaoCondicaoPagamento(condicaoPagamento)
+    public atualizarSituacaoCondicaoPagamento(condicaoPagamento: CondicaoPagamento)
     {
-        this._dialogService.openConfirm({
-            message: !condicaoPagamento.situacao  ? "Tem certeza que deseja ativar esta condição de pagamento ? " : "Tem certeza que deseja desativar esta condição de pagamento ? ",
-            title: !condicaoPagamento.situacao  ? "Ativar condição de pagamento" : "Desativar condição de pagamento",
-            cancelButton: 'CANCELAR',
-            acceptButton: 'CONFIRMAR',
-            width: '500px'
-        }).afterClosed().subscribe((accept: boolean) =>
+        if(condicaoPagamento.situacao)
         {
-            if (accept)
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja excluir esta condição de pagamento ?",
+                title: "Excluir condição de pagamento" ,
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
             {
-                this.condicaoPagamentoService.updateSituacaoCondicaoPagamento(condicaoPagamento.codigo, !condicaoPagamento.situacao).subscribe( result => {
-                    this.openSnackBarService.openSuccess(condicaoPagamento.situacao ? 'Condição de pagamento desativada com sucesso.' : 'Condição de pagamento ativada com sucesso.');
-                    this.onListCondicaoPagamentos();
-                }, err => this.openSnackBarService.openError(err.message))
-            }
-        });
+                if (accept)
+                {
+                    this.condicaoPagamentoService.deleteCondicaoPagamento(condicaoPagamento.codigo).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Condição de pagamento excluído com sucesso.');
+                        this.onListCondicaoPagamentos();
+                    }, err => {
+
+
+                        this._dialogService.openConfirm({
+                            message: "Não foi possível excluir este condição de pagamento pois o mesmo está relacionado a outro registro. Deseja desativar ?",
+                            title: "Desativar condição de pagamento",
+                            cancelButton: 'CANCELAR',
+                            acceptButton: 'CONFIRMAR',
+                            width: '500px'
+                        }).afterClosed().subscribe((accept: boolean) =>
+                        {
+                            if (accept)
+                            {
+                                this.condicaoPagamentoService.updateSituacaoCondicaoPagamento(condicaoPagamento.codigo, !condicaoPagamento.situacao).subscribe( result => {
+                                    this.openSnackBarService.openSuccess('Condição de pagamento desativado com sucesso.');
+                                    this.onListCondicaoPagamentos();
+                                }, err => this.openSnackBarService.openError(err.message))
+                            }
+                        });
+                    })
+                }
+            });
+        }
+        else
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja ativar este condição de pagamento ?",
+                title: "Ativar condição de pagamento",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.condicaoPagamentoService.updateSituacaoCondicaoPagamento(condicaoPagamento.codigo, !condicaoPagamento.situacao).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Condição de pagamento ativado com sucesso.');
+                        this.onListCondicaoPagamentos();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
     }
 
 

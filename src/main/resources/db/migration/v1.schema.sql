@@ -26,7 +26,7 @@ CREATE TABLE cidade(
 	idCidade serial NOT NULL PRIMARY KEY,
 	cidade varchar(144) NOT NULL UNIQUE,
 	ddd varchar(144) NOT NULL,
-	idEstado int  references estado(idEstado),
+	idEstado int  references estado(idEstado) NOT NULL,
 	created TIMESTAMP,
 	updated TIMESTAMP,
   situacao boolean NOT NULL
@@ -133,9 +133,9 @@ CREATE TABLE cliente(
 	celular varchar(144) NOT NULL,
 	email varchar(144) ,
 	endereco varchar(144) ,
-	cidade varchar(144) NOT NULL,
-	estado varchar(144) NOT NULL,
-	pais varchar(144) NOT NULL,
+	cidade_id bigint REFERENCES cidade NOT NULL,
+	estado_id bigint REFERENCES estado NOT NULL,
+	pais_id bigint REFERENCES pais NOT NULL,
 	created TIMESTAMP,
 	updated TIMESTAMP,
 	situacao boolean NOT NULL
@@ -152,13 +152,15 @@ CREATE TABLE fornecedor(
 	numero varchar(144) NOT NULL,
 	bairro varchar(144) NOT NULL,
 	email varchar(144) ,
-	cidade varchar(144) NOT NULL,
-	estado varchar(144) NOT NULL,
-	pais varchar(144) NOT NULL,
+	cidade_id bigint REFERENCES cidade NOT NULL,
+	estado_id bigint REFERENCES estado NOT NULL,
+	pais_id bigint REFERENCES pais NOT NULL,
+	condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
 	cep varchar(144) NOT NULL,
 	created TIMESTAMP,
 	updated TIMESTAMP,
-		situacao boolean NOT NULL
+  situacao boolean NOT NULL,
+  inscricao_estadual varchar(144)
 );
 
 CREATE TABLE produto (

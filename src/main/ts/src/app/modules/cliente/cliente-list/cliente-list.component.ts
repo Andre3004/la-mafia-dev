@@ -82,23 +82,63 @@ export class ClienteListComponent implements OnInit
 
     public atualizarSituacaoCliente(cliente: Cliente)
     {
-        this._dialogService.openConfirm({
-            message: !cliente.situacao ? "Tem certeza que deseja ativar este cliente ? " : "Tem certeza que deseja desativar este cliente ? ",
-            title: !cliente.situacao ? "Ativar cliente" : "Desativar cliente",
-            cancelButton: 'CANCELAR',
-            acceptButton: 'CONFIRMAR',
-            width: '500px'
-        }).afterClosed().subscribe((accept: boolean) =>
+        if(cliente.situacao)
         {
-            if (accept)
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja excluir este cliente ?",
+                title: "Excluir cliente" ,
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
             {
-                this.clienteService.updateSituacaoCliente(cliente.idCliente, !cliente.situacao).subscribe(result =>
+                if (accept)
                 {
-                    this.openSnackBarService.openSuccess(cliente.situacao ? 'Cliente desativado com sucesso.' : 'Cliente ativado com sucesso.');
-                    this.onListClientes();
-                }, err => this.openSnackBarService.openError(err.message))
-            }
-        });
+                    this.clienteService.deleteCliente(cliente.idCliente).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Cliente excluído com sucesso.');
+                        this.onListClientes();
+                    }, err => {
+
+
+                        this._dialogService.openConfirm({
+                            message: "Não foi possível excluir este cliente pois o mesmo está relacionado a outro registro. Deseja desativar ?",
+                            title: "Desativar cliente",
+                            cancelButton: 'CANCELAR',
+                            acceptButton: 'CONFIRMAR',
+                            width: '500px'
+                        }).afterClosed().subscribe((accept: boolean) =>
+                        {
+                            if (accept)
+                            {
+                                this.clienteService.updateSituacaoCliente(cliente.idCliente, !cliente.situacao).subscribe( result => {
+                                    this.openSnackBarService.openSuccess('Cliente desativado com sucesso.');
+                                    this.onListClientes();
+                                }, err => this.openSnackBarService.openError(err.message))
+                            }
+                        });
+                    })
+                }
+            });
+        }
+        else
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja ativar este cliente ?",
+                title: "Ativar cliente",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.clienteService.updateSituacaoCliente(cliente.idCliente, !cliente.situacao).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Cliente ativado com sucesso.');
+                        this.onListClientes();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
     }
 
     public page(pagingEvent: IPageChangeEvent)

@@ -75,7 +75,7 @@
 				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
 			</button>
 
-			<button *ngIf="usuario.situacao" matTooltip="Desativar usuário"
+			<button *ngIf="usuario.situacao" matTooltip="Excluir/Desativar usuário"
 				(click)="$event.stopPropagation(); atualizarSituacaoUsuario(usuario)" stopPropagation mat-icon-button>
 				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
 			</button>

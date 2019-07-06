@@ -89,23 +89,63 @@ export class EstadoListComponent implements OnInit
 
     public atualizarSituacaoEstado(estado: Estado)
     {
-        this._dialogService.openConfirm({
-            message: !estado.situacao ? "Tem certeza que deseja ativar este estado ? " : "Tem certeza que deseja desativar este estado ? ",
-            title: !estado.situacao ? "Ativar estado" : "Desativar estado",
-            cancelButton: 'CANCELAR',
-            acceptButton: 'CONFIRMAR',
-            width: '500px'
-        }).afterClosed().subscribe((accept: boolean) =>
+        if(estado.situacao)
         {
-            if (accept)
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja excluir este estado ?",
+                title: "Excluir estado" ,
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
             {
-                this.estadoService.updateSituacaoEstado(estado.idEstado, !estado.situacao).subscribe(result =>
+                if (accept)
                 {
-                    this.openSnackBarService.openSuccess(estado.situacao ? 'Estado desativado com sucesso.' : 'Estado ativado com sucesso.');
-                    this.onListEstados();
-                }, err => this.openSnackBarService.openError(err.message))
-            }
-        });
+                    this.estadoService.deleteEstado(estado.idEstado).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Estado excluído com sucesso.');
+                        this.onListEstados();
+                    }, err => {
+
+
+                        this._dialogService.openConfirm({
+                            message: "Não foi possível excluir este estado pois o mesmo está relacionado a outro registro. Deseja desativar ?",
+                            title: "Desativar estado",
+                            cancelButton: 'CANCELAR',
+                            acceptButton: 'CONFIRMAR',
+                            width: '500px'
+                        }).afterClosed().subscribe((accept: boolean) =>
+                        {
+                            if (accept)
+                            {
+                                this.estadoService.updateSituacaoEstado(estado.idEstado, !estado.situacao).subscribe( result => {
+                                    this.openSnackBarService.openSuccess('Estado desativado com sucesso.');
+                                    this.onListEstados();
+                                }, err => this.openSnackBarService.openError(err.message))
+                            }
+                        });
+                    })
+                }
+            });
+        }
+        else
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja ativar esta estado ?",
+                title: "Ativar estado",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.estadoService.updateSituacaoEstado(estado.idEstado, !estado.situacao).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Estado ativado com sucesso.');
+                        this.onListEstados();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
     }
 
     public page(pagingEvent: IPageChangeEvent)

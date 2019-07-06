@@ -46,7 +46,7 @@
 				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
 			</button>
 
-			<button *ngIf="grupoProduto.situacao" matTooltip="Desativar grupo de produto"
+			<button *ngIf="grupoProduto.situacao" matTooltip="Excluir/Desativar grupo de produto"
 				(click)="$event.stopPropagation(); atualizarSituacaoGrupoProduto(grupoProduto)" mat-icon-button>
 				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
 			</button>

@@ -6,6 +6,7 @@ import { TdDialogService, ITdDataTableColumn, IPageChangeEvent } from '@covalent
 import { PaginationService } from 'src/app/common/pagination/pagination.service';
 import { UsuarioService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
+import { Usuario } from 'src/generated/entities';
 
 
 @Component({
@@ -113,24 +114,65 @@ export class UsuarioListComponent implements OnInit
     }
 
 
-    public atualizarSituacaoUsuario(usuario)
+    public atualizarSituacaoUsuario(usuario: Usuario)
     {
-        this._dialogService.openConfirm({
-            message: !usuario.situacao  ? "Tem certeza que deseja ativar este usuário ? " : "Tem certeza que deseja desativar este usuário ? ",
-            title: !usuario.situacao  ? "Ativar usuário" : "Desativar usuário",
-            cancelButton: 'CANCELAR',
-            acceptButton: 'CONFIRMAR',
-            width: '500px'
-        }).afterClosed().subscribe((accept: boolean) =>
+        if(usuario.situacao)
         {
-            if (accept)
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja excluir este usuario ?",
+                title: "Excluir usuario" ,
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
             {
-                this.usuarioService.updateSituacaoUsuario(usuario.codigo, !usuario.situacao).subscribe( result => {
-                    this.openSnackBarService.openSuccess(usuario.situacao ? 'Usuário desativado com sucesso.' : 'Usuário ativado com sucesso.');
-                    this.onListUsuarios();
-                }, err => this.openSnackBarService.openError(err.message))
-            }
-        });
+                if (accept)
+                {
+                    this.usuarioService.deleteUsuario(usuario.codigo).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Usuario excluído com sucesso.');
+                        this.onListUsuarios();
+                    }, err => {
+
+
+                        this._dialogService.openConfirm({
+                            message: "Não foi possível excluir este usuario pois o mesmo está relacionado a outro registro. Deseja desativar ?",
+                            title: "Desativar usuario",
+                            cancelButton: 'CANCELAR',
+                            acceptButton: 'CONFIRMAR',
+                            width: '500px'
+                        }).afterClosed().subscribe((accept: boolean) =>
+                        {
+                            if (accept)
+                            {
+                                this.usuarioService.updateSituacaoUsuario(usuario.codigo, !usuario.situacao).subscribe( result => {
+                                    this.openSnackBarService.openSuccess('Usuario desativado com sucesso.');
+                                    this.onListUsuarios();
+                                }, err => this.openSnackBarService.openError(err.message))
+                            }
+                        });
+                    })
+                }
+            });
+        }
+        else
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja ativar esta usuario ?",
+                title: "Ativar usuario",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.usuarioService.updateSituacaoUsuario(usuario.codigo, !usuario.situacao).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Usuario ativado com sucesso.');
+                        this.onListUsuarios();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
     }
 
     public page(pagingEvent: IPageChangeEvent)

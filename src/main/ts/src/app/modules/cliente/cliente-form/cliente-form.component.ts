@@ -1,7 +1,7 @@
-import { Cliente } from './../../../../generated/entities';
+import { Cliente, Cidade, Estado, Pais } from './../../../../generated/entities';
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ClienteService } from 'src/generated/services';
+import { ClienteService, CidadeService, EstadoService, PaisService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
 
 @Component({
@@ -19,7 +19,7 @@ export class ClienteFormComponent implements OnInit
 
   public title = "";
 
-  public cliente: any = { idCliente: 0};
+  public cliente: any = { idCliente: 0 };
 
   public maskCpf = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
 
@@ -28,11 +28,20 @@ export class ClienteFormComponent implements OnInit
   public maskCelular = ['+', /\d/, /\d/, /\d/, ' ', '(', /\d/, /\d/, ')', ' ', /\d/, ' ', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
 
 
+  public cidades: Cidade[];
+
+  public estados: Estado[];
+
+  public paises: Pais[];
+
 
   constructor(
     private clienteService: ClienteService,
     private openSnackBarService: OpenSnackBarService,
     public dialogRef: MatDialogRef<ClienteFormComponent>,
+    private cidadeService: CidadeService,
+    private estadoService: EstadoService,
+    private paisService: PaisService,
     @Inject(MAT_DIALOG_DATA) public data: any
   )
   {
@@ -40,6 +49,10 @@ export class ClienteFormComponent implements OnInit
     {
       this.onFindClienteById(data.idCliente);
     }
+
+    this.onListCidades("");
+    this.onListEstados("");
+    this.onListPaises("");
 
 
   }
@@ -50,7 +63,7 @@ export class ClienteFormComponent implements OnInit
       this.title = "Alterar cliente";
     else
       this.title = "Inserir cliente";
- 
+
   }
 
   /*-------------------------------------------------------------------
@@ -69,6 +82,25 @@ export class ClienteFormComponent implements OnInit
   public onSubmit(): void
   {
 
+    if (!this.cliente.cidade)
+    {
+      this.openSnackBarService.openError('O campo cidade deve ser preenchido.');
+      return;
+    }
+    
+    if (!this.cliente.estado)
+    {
+      this.openSnackBarService.openError('O campo estado deve ser preenchido.');
+      return;
+    }
+
+    if (!this.cliente.pais)
+    {
+      this.openSnackBarService.openError('O campo país deve ser preenchido.');
+      return;
+    }
+
+
     if (typeof this.cliente.cpf == "string")
     {
       this.cliente.cpf = this.cliente.cpf.replace(/\.|-/gi, '');
@@ -79,29 +111,29 @@ export class ClienteFormComponent implements OnInit
         return;
       }
     }
- 
+
     if (this.cliente.telefone)
     {
-        var numb = this.cliente.telefone.match(/\d/g);
-        numb = numb.join("").toString();
+      var numb = this.cliente.telefone.match(/\d/g);
+      numb = numb.join("").toString();
 
-        if(numb.length != 13)
-        {
-          this.openSnackBarService.openError('telefone inválido.');
-          return;
-        }
+      if (numb.length != 13)
+      {
+        this.openSnackBarService.openError('telefone inválido.');
+        return;
+      }
     }
 
     if (this.cliente.celular) 
     {
-        var numb = this.cliente.celular.match(/\d/g);
-        numb = numb.join("").toString();
+      var numb = this.cliente.celular.match(/\d/g);
+      numb = numb.join("").toString();
 
-        if(numb.length != 14)
-        {
-          this.openSnackBarService.openError('celular inválido.');
-          return;
-        }
+      if (numb.length != 14)
+      {
+        this.openSnackBarService.openError('celular inválido.');
+        return;
+      }
     }
     else
     {
@@ -110,7 +142,7 @@ export class ClienteFormComponent implements OnInit
 
     }
 
-   
+
 
     if (!this.cliente.idCliente)
     {
@@ -170,6 +202,48 @@ export class ClienteFormComponent implements OnInit
       return false;
     return true;
   }
+
+
+  public onListCidades(filter)
+  {
+    this.cidadeService.listCidadesByFilters(filter ? filter : "", null).subscribe(page =>
+    {
+      this.cidades = page.content;
+    })
+  }
+
+  public displayFnCidade(cidade?: Cidade): string | undefined
+  {
+    return cidade ? cidade.cidade : undefined;
+  }
+
+  public onListEstados(filter)
+  {
+    this.estadoService.listEstadosByFilters(filter ? filter : "", null).subscribe(page =>
+    {
+      this.estados = page.content;
+    })
+  }
+
+  public displayFnEstado(estado?: Estado): string | undefined
+  {
+    return estado ? estado.estado : undefined;
+  }
+
+
+  public onListPaises(filter)
+  {
+    this.paisService.listPaisesByFilters(filter ? filter : "", null).subscribe(page =>
+    {
+      this.paises = page.content;
+    })
+  }
+
+  public displayFnPais(pais?: Pais): string | undefined
+  {
+    return pais ? pais.pais : undefined;
+  }
+
 
 
 }

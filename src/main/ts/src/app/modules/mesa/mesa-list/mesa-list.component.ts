@@ -122,24 +122,65 @@ export class MesaListComponent implements OnInit
     }
 
 
-    public atualizarSituacaoMesa(mesa)
+    public atualizarSituacaoMesa(mesa: Mesa)
     {
-        this._dialogService.openConfirm({
-            message: !mesa.situacao  ? "Tem certeza que deseja ativar esta mesa ? " : "Tem certeza que deseja desativar esta mesa ? ",
-            title: !mesa.situacao  ? "Ativar mesa" : "Desativar mesa",
-            cancelButton: 'CANCELAR',
-            acceptButton: 'CONFIRMAR',
-            width: '500px'
-        }).afterClosed().subscribe((accept: boolean) =>
+        if(mesa.situacao)
         {
-            if (accept)
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja excluir esta mesa ?",
+                title: "Excluir mesa" ,
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
             {
-                this.mesaService.updateSituacaoMesa(mesa.numeroMesa, !mesa.situacao).subscribe( result => {
-                    this.openSnackBarService.openSuccess(mesa.situacao ? 'Mesa desativada com sucesso.' : 'Mesa ativada com sucesso.');
-                    this.onListMesas();
-                }, err => this.openSnackBarService.openError(err.message))
-            }
-        });
+                if (accept)
+                {
+                    this.mesaService.deleteMesa(mesa.numeroMesa).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Mesa excluída com sucesso.');
+                        this.onListMesas();
+                    }, err => {
+
+
+                        this._dialogService.openConfirm({
+                            message: "Não foi possível excluir esta mesa pois o mesmo está relacionado a outro registro. Deseja desativar ?",
+                            title: "Desativar mesa",
+                            cancelButton: 'CANCELAR',
+                            acceptButton: 'CONFIRMAR',
+                            width: '500px'
+                        }).afterClosed().subscribe((accept: boolean) =>
+                        {
+                            if (accept)
+                            {
+                                this.mesaService.updateSituacaoMesa(mesa.numeroMesa, !mesa.situacao).subscribe( result => {
+                                    this.openSnackBarService.openSuccess('Mesa desativada com sucesso.');
+                                    this.onListMesas();
+                                }, err => this.openSnackBarService.openError(err.message))
+                            }
+                        });
+                    })
+                }
+            });
+        }
+        else
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja ativar esta mesa ?",
+                title: "Ativar mesa",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.mesaService.updateSituacaoMesa(mesa.numeroMesa, !mesa.situacao).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Mesa ativado com sucesso.');
+                        this.onListMesas();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
     }
 
     public page(pagingEvent: IPageChangeEvent)

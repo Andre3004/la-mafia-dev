@@ -6,6 +6,7 @@ import { TdDialogService, ITdDataTableColumn, IPageChangeEvent } from '@covalent
 import { PaginationService } from 'src/app/common/pagination/pagination.service';
 import { FranquiaService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
+import { Franquia } from 'src/generated/entities';
 
 
 @Component({
@@ -93,7 +94,7 @@ export class FranquiaListComponent implements OnInit
             nome: '',
             cnpj: '',
         }
-        
+
         this.onListFranquias();
     }
 
@@ -108,29 +109,74 @@ export class FranquiaListComponent implements OnInit
 
         dialogRef.afterClosed().subscribe(franquiaSaved =>
         {
-            if(franquiaSaved) this.onListFranquias();
+            if (franquiaSaved) this.onListFranquias();
         });
     }
 
 
-    public atualizarSituacaoFranquia(franquia)
+    public atualizarSituacaoFranquia(franquia: Franquia)
     {
-        this._dialogService.openConfirm({
-            message: !franquia.situacao  ? "Tem certeza que deseja ativar esta franquia ? " : "Tem certeza que deseja desativar esta franquia ? ",
-            title: !franquia.situacao  ? "Ativar franquia" : "Desativar franquia",
-            cancelButton: 'CANCELAR',
-            acceptButton: 'CONFIRMAR',
-            width: '500px'
-        }).afterClosed().subscribe((accept: boolean) =>
+        if (franquia.situacao)
         {
-            if (accept)
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja excluir esta franquia ?",
+                title: "Excluir franquia",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
             {
-                this.franquiaService.updateSituacaoFranquia(franquia.codigo, !franquia.situacao).subscribe( result => {
-                    this.openSnackBarService.openSuccess(franquia.situacao ? 'franquia desativada com sucesso.' : 'franquia ativada com sucesso.');
-                    this.onListFranquias();
-                }, err => this.openSnackBarService.openError(err.message))
-            }
-        });
+                if (accept)
+                {
+                    this.franquiaService.deleteFranquia(franquia.codigo).subscribe(result =>
+                    {
+                        this.openSnackBarService.openSuccess('Franquia excluída com sucesso.');
+                        this.onListFranquias();
+                    }, err =>
+                    {
+
+
+                        this._dialogService.openConfirm({
+                            message: "Não foi possível excluir esta franquia pois o mesmo está relacionado a outro registro. Deseja desativar ?",
+                            title: "Desativar franquia",
+                            cancelButton: 'CANCELAR',
+                            acceptButton: 'CONFIRMAR',
+                            width: '500px'
+                        }).afterClosed().subscribe((accept: boolean) =>
+                        {
+                            if (accept)
+                            {
+                                this.franquiaService.updateSituacaoFranquia(franquia.codigo, !franquia.situacao).subscribe(result =>
+                                {
+                                    this.openSnackBarService.openSuccess('Franquia desativada com sucesso.');
+                                    this.onListFranquias();
+                                }, err => this.openSnackBarService.openError(err.message))
+                            }
+                        });
+                    })
+                }
+            });
+        }
+        else
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja ativar esta franquia ?",
+                title: "Ativar franquia",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.franquiaService.updateSituacaoFranquia(franquia.codigo, !franquia.situacao).subscribe(result =>
+                    {
+                        this.openSnackBarService.openSuccess('Franquia ativado com sucesso.');
+                        this.onListFranquias();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
     }
 
     public page(pagingEvent: IPageChangeEvent)

@@ -6,7 +6,7 @@ import { TdDialogService, ITdDataTableColumn, IPageChangeEvent } from '@covalent
 import { PaginationService } from 'src/app/common/pagination/pagination.service';
 import { GrupoProdutoService, FranquiaService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
-import { Franquia } from 'src/generated/entities';
+import { Franquia, GrupoProduto } from 'src/generated/entities';
 
 
 @Component({
@@ -80,29 +80,74 @@ export class GrupoProdutoListComponent implements OnInit
 
         dialogRef.afterClosed().subscribe(grupoProdutoSaved =>
         {
-            if(grupoProdutoSaved) this.onListGrupoProdutos();
+            if (grupoProdutoSaved) this.onListGrupoProdutos();
         });
     }
 
 
-    public atualizarSituacaoGrupoProduto(grupoProduto)
+    public atualizarSituacaoGrupoProduto(grupoProduto: GrupoProduto)
     {
-        this._dialogService.openConfirm({
-            message: !grupoProduto.situacao  ? "Tem certeza que deseja ativar este grupo de produto ? " : "Tem certeza que deseja desativar este grupo de produto ? ",
-            title: !grupoProduto.situacao  ? "Ativar grupo de produto" : "Desativar grupo de produto",
-            cancelButton: 'CANCELAR',
-            acceptButton: 'CONFIRMAR',
-            width: '500px'
-        }).afterClosed().subscribe((accept: boolean) =>
+        if (grupoProduto.situacao)
         {
-            if (accept)
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja excluir esta grupo de produto ?",
+                title: "Excluir grupo de produto",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
             {
-                this.grupoProdutoService.updateSituacaoGrupoProduto(grupoProduto.codigo, !grupoProduto.situacao).subscribe( result => {
-                    this.openSnackBarService.openSuccess(grupoProduto.situacao ? 'Grupo de produto desativado com sucesso.' : 'Grupo de produto ativado com sucesso.');
-                    this.onListGrupoProdutos();
-                }, err => this.openSnackBarService.openError(err.message))
-            }
-        });
+                if (accept)
+                {
+                    this.grupoProdutoService.deleteGrupoProduto(grupoProduto.codigo).subscribe(result =>
+                    {
+                        this.openSnackBarService.openSuccess('Grupo de produto excluído com sucesso.');
+                        this.onListGrupoProdutos();
+                    }, err =>
+                    {
+
+
+                        this._dialogService.openConfirm({
+                            message: "Não foi possível excluir este grupo de produto pois o mesmo está relacionado a outro registro. Deseja desativar ?",
+                            title: "Desativar grupo de produto",
+                            cancelButton: 'CANCELAR',
+                            acceptButton: 'CONFIRMAR',
+                            width: '500px'
+                        }).afterClosed().subscribe((accept: boolean) =>
+                        {
+                            if (accept)
+                            {
+                                this.grupoProdutoService.updateSituacaoGrupoProduto(grupoProduto.codigo, !grupoProduto.situacao).subscribe(result =>
+                                {
+                                    this.openSnackBarService.openSuccess('Grupo de produto desativado com sucesso.');
+                                    this.onListGrupoProdutos();
+                                }, err => this.openSnackBarService.openError(err.message))
+                            }
+                        });
+                    })
+                }
+            });
+        }
+        else
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja ativar este grupo de produto ?",
+                title: "Ativar grupo de produto",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.grupoProdutoService.updateSituacaoGrupoProduto(grupoProduto.codigo, !grupoProduto.situacao).subscribe(result =>
+                    {
+                        this.openSnackBarService.openSuccess('Grupo de produto ativado com sucesso.');
+                        this.onListGrupoProdutos();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
     }
 
 
@@ -132,15 +177,17 @@ export class GrupoProdutoListComponent implements OnInit
 
     public onListFranquias()
     {
-        this.franquiaService.listFranquiasByFilters(this.franquiaFilter ? this.franquiaFilter : "", "", null).subscribe( franquiaPage => {
-        this.franquias = franquiaPage.content; 
+        this.franquiaService.listFranquiasByFilters(this.franquiaFilter ? this.franquiaFilter : "", "", null).subscribe(franquiaPage =>
+        {
+            this.franquias = franquiaPage.content;
         })
     }
 
-    public displayFn(franquia?: Franquia): string | undefined {
+    public displayFn(franquia?: Franquia): string | undefined
+    {
         return franquia ? franquia.franquia : undefined;
     }
-    
+
 
     public clearFilters()
     {
@@ -148,7 +195,7 @@ export class GrupoProdutoListComponent implements OnInit
             nome: '',
             franquia: null
         }
-        
+
         this.franquiaFilter = "";
 
         this.onListGrupoProdutos();

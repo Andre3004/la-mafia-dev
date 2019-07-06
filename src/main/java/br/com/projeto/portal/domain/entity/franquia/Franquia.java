@@ -5,6 +5,7 @@ import java.util.Arrays;
 import br.com.projeto.portal.domain.entity.Cidade;
 import br.com.projeto.portal.domain.entity.Estado;
 import br.com.projeto.portal.domain.entity.Pais;
+import br.com.projeto.portal.domain.entity.pagamento.FormaPagamento;
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -61,6 +62,7 @@ public class Franquia extends AbstractEntity
 
 	//@Transient
 	private int paisId;
+
 	/*-------------------------------------------------------------------
 	 * 		 					CONSTRUCTORS
 	 *-------------------------------------------------------------------*/

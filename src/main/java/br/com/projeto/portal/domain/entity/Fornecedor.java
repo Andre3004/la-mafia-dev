@@ -2,6 +2,8 @@ package br.com.projeto.portal.domain.entity;
 
 import java.util.Arrays;
 
+import br.com.projeto.portal.domain.entity.pagamento.CondicaoPagamento;
+import br.com.projeto.portal.domain.entity.pagamento.FormaPagamento;
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
 import org.directwebremoting.annotations.DataTransferObject;
 
@@ -28,8 +30,6 @@ public class Fornecedor extends AbstractEntity
 
     private String cnpj;
 
-
-
     private String telefone;
 
     private String celular;
@@ -40,23 +40,33 @@ public class Fornecedor extends AbstractEntity
 
     private String bairro;
 
-
     private String email;
 
-
-
-    private String cidade;
-
-    private String estado;
-
-    private String pais;
-
+    private String inscricaoEstadual;
 
     private String cep;
 
     private Boolean situacao;
 
+    private Cidade cidade;
 
+    private Estado estado;
+
+    private Pais pais;
+
+    private CondicaoPagamento condicaoPagamento;
+
+    //@Transient
+    private int cidadeId;
+
+    //@Transient
+    private int estadoId;
+
+    //@Transient
+    private int paisId;
+
+    //@Transient
+    private int condicaoPagamentoId;
 
 
     /*-------------------------------------------------------------------

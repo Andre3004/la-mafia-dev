@@ -40,7 +40,7 @@
 				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
 			</button>
 
-			<button *ngIf="condicaoPagamento.situacao" matTooltip="Desativar condição de pagamento"
+			<button *ngIf="condicaoPagamento.situacao" matTooltip="Excluir/Desativar condição de pagamento"
 				(click)="$event.stopPropagation(); atualizarSituacaoCondicaoPagamento(condicaoPagamento)" mat-icon-button>
 				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
 			</button>

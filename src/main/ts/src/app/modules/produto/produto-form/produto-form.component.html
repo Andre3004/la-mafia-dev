@@ -24,13 +24,13 @@
 
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Unidade comercial</mat-label>
-                <input uppercase required [(ngModel)]="produto.unidadeComercial" name="unidadeComercial" matInput
+                <input uppercase  [(ngModel)]="produto.unidadeComercial" name="unidadeComercial" matInput
                     maxlength="50" placeholder="Digite a unidade comercial do produto">
             </mat-form-field>
 
             <mat-form-field fxFlex appearance="outline" style="margin-left: 30px">
                 <mat-label>Grupo de produto</mat-label>
-                <input type="text" matInput [matAutocomplete]="auto" #inputFilter [(ngModel)]="produto.grupoProduto"
+                <input required type="text" matInput [matAutocomplete]="auto" #inputFilter [(ngModel)]="produto.grupoProduto"
                     name="grupoProduto" (ngModelChange)="onListGrupoProdutos(inputFilter.value);">
             </mat-form-field>
 

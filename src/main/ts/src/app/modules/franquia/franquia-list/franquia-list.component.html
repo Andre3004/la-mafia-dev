@@ -64,7 +64,7 @@
 				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
 			</button>
 
-			<button *ngIf="franquia.situacao" matTooltip="Desativar franquia"
+			<button *ngIf="franquia.situacao" matTooltip="Excluir/Desativar franquia"
 				(click)="$event.stopPropagation(); atualizarSituacaoFranquia(franquia)" stopPropagation mat-icon-button>
 				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
 			</button>

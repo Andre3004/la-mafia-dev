@@ -26,7 +26,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Ambiente</mat-label>
-        <input type="text" matInput [matAutocomplete]="auto" #inputFilter [(ngModel)]="mesa.ambiente"
+        <input required type="text" matInput [matAutocomplete]="auto" #inputFilter [(ngModel)]="mesa.ambiente"
           name="ambiente" (ngModelChange)="onListAmbientes(inputFilter.value);">
       </mat-form-field>
 

@@ -87,6 +87,24 @@ export class FranquiaFormComponent implements OnInit
         return;
     }
 
+    if (!this.franquia.cidade)
+    {
+      this.openSnackBarService.openError('O campo cidade deve ser preenchido.');
+      return;
+    }
+    
+    if (!this.franquia.estado)
+    {
+      this.openSnackBarService.openError('O campo estado deve ser preenchido.');
+      return;
+    }
+
+    if (!this.franquia.pais)
+    {
+      this.openSnackBarService.openError('O campo país deve ser preenchido.');
+      return;
+    }
+
     if (this.franquia.telefone) 
     {
         var numb = this.franquia.telefone.match(/\d/g);

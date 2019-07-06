@@ -60,7 +60,7 @@
 				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
 			</button>
 
-			<button *ngIf="pais.situacao" matTooltip="Desativar pais"
+			<button *ngIf="pais.situacao" matTooltip="Excluir/Desativar pais"
 				(click)="$event.stopPropagation(); atualizarSituacaoPais(pais)" mat-icon-button>
 				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
 			</button>

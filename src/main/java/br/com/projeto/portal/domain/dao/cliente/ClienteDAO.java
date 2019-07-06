@@ -8,6 +8,9 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.projeto.portal.domain.dao.cidade.CidadeDAO;
+import br.com.projeto.portal.domain.dao.estado.EstadoDAO;
+import br.com.projeto.portal.domain.dao.pais.PaisDAO;
 import br.com.projeto.portal.domain.entity.Cliente;
 import br.com.projeto.portal.domain.repository.IClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,15 @@ public class ClienteDAO implements IClienteRepository
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    CidadeDAO cidadeDAO;
+
+    @Autowired
+    EstadoDAO estadoDAO;
+
+    @Autowired
+    PaisDAO paisDAO;
+
     @Override
     public Cliente findClienteById(int id)
     {
@@ -36,6 +48,10 @@ public class ClienteDAO implements IClienteRepository
 
         Cliente cliente = (Cliente) jdbcTemplate.queryForObject(sql,
                 new Object[] { id }, new BeanPropertyRowMapper(Cliente.class));
+
+        cliente.setEstado( estadoDAO.findEstadoById(cliente.getEstadoId()) );
+        cliente.setCidade( cidadeDAO.findCidadeById( cliente.getCidadeId()) );
+        cliente.setPais( paisDAO.findPaisById( cliente.getPaisId()) );
 
         return cliente;
     }
@@ -53,9 +69,9 @@ public class ClienteDAO implements IClienteRepository
                         "celular, " +
                         "email, " +
                         "endereco, " +
-                        "cidade, " +
-                        "estado, " +
-                        "pais, " +
+                        "cidade_id, " +
+                        "estado_id, " +
+                        "pais_id, " +
                         "situacao, " +
                         "created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 cliente.getCliente(),
@@ -66,9 +82,10 @@ public class ClienteDAO implements IClienteRepository
                 cliente.getCelular(),
                 cliente.getEmail(),
                 cliente.getEndereco(),
-                cliente.getCidade(),
-                cliente.getEstado(),
-                cliente.getPais(),
+                cliente.getCidade().getIdCidade(),
+                cliente.getEstado().getIdEstado(),
+                cliente.getPais().getIdPais(),
+                cliente.getSituacao(),
                 Timestamp.valueOf(LocalDateTime.now()) );
     }
 
@@ -85,9 +102,9 @@ public class ClienteDAO implements IClienteRepository
                         "celular= ?, " +
                         "email= ?, " +
                         "endereco= ?, " +
-                        "cidade= ?, " +
-                        "estado= ?, " +
-                        "pais= ?," +
+                        "cidade_id = ?, " +
+                        "estado_id = ?, " +
+                        "pais_id = ?, " +
                         "updated = ? " +
                         "WHERE idCliente = ?",
                 cliente.getCliente(),
@@ -98,9 +115,9 @@ public class ClienteDAO implements IClienteRepository
                 cliente.getCelular(),
                 cliente.getEmail(),
                 cliente.getEndereco(),
-                cliente.getCidade(),
-                cliente.getEstado(),
-                cliente.getPais(),
+                cliente.getCidade().getIdCidade(),
+                cliente.getEstado().getIdEstado(),
+                cliente.getPais().getIdPais(),
                 Timestamp.valueOf(LocalDateTime.now()),
                 cliente.getIdCliente());
     }

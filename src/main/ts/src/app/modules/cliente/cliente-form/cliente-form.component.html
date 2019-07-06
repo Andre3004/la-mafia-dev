@@ -1,5 +1,5 @@
 <mat-dialog-content>
-    <h2 mat-dialog-title>{{title}}</h2>
+  <h2 mat-dialog-title>{{title}}</h2>
 
 
   <form #qualificadorForm="ngForm" fxLayout="column">
@@ -9,12 +9,12 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Código</mat-label>
-        <input uppercase  uppercase required matInput [(ngModel)]="cliente.idCliente" name="idCliente" [disabled]="true">
+        <input uppercase uppercase required matInput [(ngModel)]="cliente.idCliente" name="idCliente" [disabled]="true">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Cliente</mat-label>
-        <input uppercase  uppercase required [(ngModel)]="cliente.cliente" name="cliente" matInput maxlength="144">
+        <input uppercase uppercase required [(ngModel)]="cliente.cliente" name="cliente" matInput maxlength="144">
       </mat-form-field>
     </div>
 
@@ -22,7 +22,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Apelido</mat-label>
-        <input uppercase  uppercase [(ngModel)]="cliente.apelido" name="apelido" matInput maxlength="144">
+        <input uppercase uppercase [(ngModel)]="cliente.apelido" name="apelido" matInput maxlength="144">
       </mat-form-field>
 
       <mat-radio-group required [(ngModel)]="cliente.sexo" name="sexo" aria-label="Sexo">
@@ -38,8 +38,8 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>CPF</mat-label>
-        <input uppercase  uppercase required [textMask]="{mask: maskCpf, guide: false}" [(ngModel)]="cliente.cpf" name="cpf" matInput
-          maxlength="144">
+        <input uppercase uppercase required [textMask]="{mask: maskCpf, guide: false}" [(ngModel)]="cliente.cpf"
+          name="cpf" matInput maxlength="144">
       </mat-form-field>
     </div>
 
@@ -49,14 +49,14 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Celular</mat-label>
-        <input uppercase  uppercase required [textMask]="{mask: maskCelular, guide: false}" [(ngModel)]="cliente.celular" matInput
-          name="celular">
+        <input uppercase uppercase required [textMask]="{mask: maskCelular, guide: false}" [(ngModel)]="cliente.celular"
+          matInput name="celular">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Telefone</mat-label>
-        <input uppercase  uppercase maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput name="telefone"
-          [(ngModel)]="cliente.telefone">
+        <input uppercase uppercase maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput
+          name="telefone" [(ngModel)]="cliente.telefone">
       </mat-form-field>
 
     </div>
@@ -65,7 +65,8 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>E-mail</mat-label>
-        <input uppercase  uppercase [(ngModel)]="cliente.email" email="true" name="email" type="email" matInput maxlength="144">
+        <input uppercase uppercase [(ngModel)]="cliente.email" email="true" name="email" type="email" matInput
+          maxlength="144">
       </mat-form-field>
 
     </div>
@@ -76,37 +77,54 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Endereço</mat-label>
-        <input uppercase  uppercase required [(ngModel)]="cliente.endereco" name="endereco" matInput maxlength="144">
+        <input uppercase uppercase  [(ngModel)]="cliente.endereco" name="endereco" matInput maxlength="144">
       </mat-form-field>
 
     </div>
 
 
-    <div fxLayout="row" fxLayoutGap="30px">
-
-      <mat-form-field fxFlex appearance="outline">
-        <mat-label>País</mat-label>
-        <input uppercase  uppercase required [(ngModel)]="cliente.pais" name="pais" matInput maxlength="144">
-      </mat-form-field>
-
-    </div>
-    <div fxLayout="row" fxLayoutGap="30px">
-
-      <mat-form-field fxFlex appearance="outline">
-        <mat-label>Estado</mat-label>
-        <input uppercase  uppercase required [(ngModel)]="cliente.estado" name="estado" matInput maxlength="144">
-      </mat-form-field>
-
-    </div>
-    <div fxLayout="row" fxLayoutGap="30px">
+    <div fxLayout="row">
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Cidade</mat-label>
-        <input uppercase  uppercase required [(ngModel)]="cliente.cidade" name="cidade" matInput maxlength="144">
+        <input required uppercase type="text" matInput [matAutocomplete]="autoCidade" #inputFilterCidade
+          [(ngModel)]="cliente.cidade" name="cidade" (ngModelChange)="onListFranquias(inputFilterCidade.value);">
       </mat-form-field>
 
-    </div>
+      <mat-autocomplete [displayWith]="displayFnCidade" #autoCidade="matAutocomplete"
+        (optionSelected)="cliente.cidade = $event.option.value; onListCidades();">
+        <mat-option [value]="null">Nenhum</mat-option>
+        <mat-option *ngFor="let cidade of cidades" [value]="cidade">{{cidade?.cidade}}</mat-option>
+      </mat-autocomplete>
 
+
+
+      <mat-form-field fxFlex appearance="outline" class="push-left-md">
+        <mat-label>Estado</mat-label>
+        <input required uppercase type="text" matInput [matAutocomplete]="autoEstado" #inputFilterEstado
+          [(ngModel)]="cliente.estado" name="estado" (ngModelChange)="onListEstados(inputFilterEstado.value);">
+      </mat-form-field>
+
+      <mat-autocomplete [displayWith]="displayFnEstado" #autoEstado="matAutocomplete"
+        (optionSelected)="cliente.estado = $event.option.value; onListEstados();">
+        <mat-option [value]="null">Nenhum</mat-option>
+        <mat-option *ngFor="let estado of estados" [value]="estado">{{estado?.estado}}</mat-option>
+      </mat-autocomplete>
+
+
+
+      <mat-form-field fxFlex appearance="outline" class="push-left-md">
+        <mat-label>País</mat-label>
+        <input required uppercase type="text" matInput [matAutocomplete]="autoPais" #inputFilter [(ngModel)]="cliente.pais"
+          name="pais" (ngModelChange)="onListPaises(inputFilter.value);">
+      </mat-form-field>
+
+      <mat-autocomplete [displayWith]="displayFnPais" #autoPais="matAutocomplete"
+        (optionSelected)="cliente.pais = $event.option.value; onListPaises();">
+        <mat-option [value]="null">Nenhum</mat-option>
+        <mat-option *ngFor="let pais of paises" [value]="pais">{{pais?.pais}}</mat-option>
+      </mat-autocomplete>
+    </div>
 
   </form>
 

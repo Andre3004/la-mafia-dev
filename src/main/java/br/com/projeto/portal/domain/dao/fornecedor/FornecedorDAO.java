@@ -8,6 +8,11 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.projeto.portal.domain.dao.CondicaoPagamentoDAO;
+import br.com.projeto.portal.domain.dao.FormaPagamentoDAO;
+import br.com.projeto.portal.domain.dao.cidade.CidadeDAO;
+import br.com.projeto.portal.domain.dao.estado.EstadoDAO;
+import br.com.projeto.portal.domain.dao.pais.PaisDAO;
 import br.com.projeto.portal.domain.entity.Fornecedor;
 import br.com.projeto.portal.domain.repository.IFornecedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +34,19 @@ public class FornecedorDAO implements IFornecedorRepository
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    CidadeDAO cidadeDAO;
+
+    @Autowired
+    EstadoDAO estadoDAO;
+
+    @Autowired
+    PaisDAO paisDAO;
+
+    @Autowired
+    CondicaoPagamentoDAO condicaoPagamentoDAO;
+
+
     @Override
     public Fornecedor findFornecedorById(int id)
     {
@@ -36,6 +54,11 @@ public class FornecedorDAO implements IFornecedorRepository
 
         Fornecedor fornecedor = (Fornecedor) jdbcTemplate.queryForObject(sql,
                 new Object[] { id }, new BeanPropertyRowMapper(Fornecedor.class));
+
+        fornecedor.setEstado( estadoDAO.findEstadoById(fornecedor.getEstadoId()) );
+        fornecedor.setCidade( cidadeDAO.findCidadeById( fornecedor.getCidadeId()) );
+        fornecedor.setPais( paisDAO.findPaisById( fornecedor.getPaisId()) );
+        fornecedor.setCondicaoPagamento( condicaoPagamentoDAO.findCondicaoPagamentoById( fornecedor.getCondicaoPagamentoId()) );
 
         return fornecedor;
     }
@@ -53,12 +76,14 @@ public class FornecedorDAO implements IFornecedorRepository
                         "numero, " +
                         "bairro, " +
                         "email, " +
-                        "cidade, " +
-                        "estado, " +
-                        "pais, " +
+                        "cidade_id, " +
+                        "estado_id, " +
+                        "pais_id, " +
                         "cep, " +
                         "situacao, " +
-                        "created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                        "inscricao_estadual, " +
+                        "condicao_pagamento_id, " +
+                        "created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                 fornecedor.getRazaoSocial(),
                 fornecedor.getCnpj(),
                 fornecedor.getTelefone(),
@@ -67,11 +92,13 @@ public class FornecedorDAO implements IFornecedorRepository
                 fornecedor.getNumero(),
                 fornecedor.getBairro(),
                 fornecedor.getEmail(),
-                fornecedor.getCidade(),
-                fornecedor.getEstado(),
-                fornecedor.getPais(),
+                fornecedor.getCidade().getIdCidade(),
+                fornecedor.getEstado().getIdEstado(),
+                fornecedor.getPais().getIdPais(),
                 fornecedor.getCep(),
                 fornecedor.getSituacao(),
+                fornecedor.getInscricaoEstadual(),
+                fornecedor.getCondicaoPagamento().getCodigo(),
                 Timestamp.valueOf(LocalDateTime.now()) );
     }
 
@@ -88,11 +115,12 @@ public class FornecedorDAO implements IFornecedorRepository
                         "numero = ?, " +
                         "bairro = ?, " +
                         "email = ?, " +
-                        "cidade = ?, " +
-                        "estado = ?, " +
-                        "pais = ?, " +
+                        "cidade_id = ?, " +
+                        "estado_id = ?, " +
+                        "pais_id = ?, " +
                         "cep = ?, " +
-
+                        "inscricao_estadual = ?, " +
+                        "condicao_pagamento_id = ?, " +
                         "updated = ? " +
                         "WHERE idFornecedor = ?",
                 fornecedor.getRazaoSocial(),
@@ -103,11 +131,12 @@ public class FornecedorDAO implements IFornecedorRepository
                 fornecedor.getNumero(),
                 fornecedor.getBairro(),
                 fornecedor.getEmail(),
-                fornecedor.getCidade(),
-                fornecedor.getEstado(),
-                fornecedor.getPais(),
+                fornecedor.getCidade().getIdCidade(),
+                fornecedor.getEstado().getIdEstado(),
+                fornecedor.getPais().getIdPais(),
                 fornecedor.getCep(),
-
+                fornecedor.getInscricaoEstadual(),
+                fornecedor.getCondicaoPagamento().getCodigo(),
                 Timestamp.valueOf(LocalDateTime.now()),
                 fornecedor.getIdFornecedor());
     }

@@ -73,7 +73,7 @@ export class FormaPagamentoListComponent implements OnInit
         const dialogRef = this.dialog.open(FormaPagamentoFormComponent, {
             width: '600px',
             height: 'auto',
-            data: { idFormaPagamento: formaPagamento ? formaPagamento.codigo : null }
+            data: { codigo: formaPagamento ? formaPagamento.codigo : null }
         });
 
         dialogRef.afterClosed().subscribe(formaPagamentoSaved =>
@@ -83,26 +83,71 @@ export class FormaPagamentoListComponent implements OnInit
     }
 
 
-    public atualizarSituacaoFormaPagamento(formaPagamento)
+    public atualizarSituacaoFormaPagamento(formaPagamento: FormaPagamento)
     {
-        this._dialogService.openConfirm({
-            message: !formaPagamento.situacao ? "Tem certeza que deseja ativar esta forma de pagamento ? " : "Tem certeza que deseja desativar esta forma de pagamento ? ",
-            title: !formaPagamento.situacao ? "Ativar forma de pagamento" : "Desativar forma de pagamento",
-            cancelButton: 'CANCELAR',
-            acceptButton: 'CONFIRMAR',
-            width: '500px'
-        }).afterClosed().subscribe((accept: boolean) =>
+        if (formaPagamento.situacao)
         {
-            if (accept)
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja excluir esta forma de pagamento ?",
+                title: "Excluir forma de pagamento",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
             {
-                this.formaPagamentoService.updateSituacaoFormaPagamento(formaPagamento.codigo, !formaPagamento.situacao).subscribe(result =>
+                if (accept)
                 {
-                    this.openSnackBarService.openSuccess(formaPagamento.situacao ? 'Forma de pagamento desativada com sucesso.' : 'Forma de pagamento ativada com sucesso.');
-                    this.onListFormaPagamentos();
-                }, err => this.openSnackBarService.openError(err.message))
-            }
-        });
+                    this.formaPagamentoService.deleteFormaPagamento(formaPagamento.codigo).subscribe(result =>
+                    {
+                        this.openSnackBarService.openSuccess('Forma de pagamento excluída com sucesso.');
+                        this.onListFormaPagamentos();
+                    }, err =>
+                        {
+
+
+                            this._dialogService.openConfirm({
+                                message: "Não foi possível excluir esta forma de pagamento pois o mesmo está relacionado a outro registro. Deseja desativar ?",
+                                title: "Desativar forma de pagamento",
+                                cancelButton: 'CANCELAR',
+                                acceptButton: 'CONFIRMAR',
+                                width: '500px'
+                            }).afterClosed().subscribe((accept: boolean) =>
+                            {
+                                if (accept)
+                                {
+                                    this.formaPagamentoService.updateSituacaoFormaPagamento(formaPagamento.codigo, !formaPagamento.situacao).subscribe(result =>
+                                    {
+                                        this.openSnackBarService.openSuccess('Forma de pagamento desativada com sucesso.');
+                                        this.onListFormaPagamentos();
+                                    }, err => this.openSnackBarService.openError(err.message))
+                                }
+                            });
+                        })
+                }
+            });
+        }
+        else
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja ativar este forma de pagamento ?",
+                title: "Ativar forma de pagamento",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.formaPagamentoService.updateSituacaoFormaPagamento(formaPagamento.codigo, !formaPagamento.situacao).subscribe(result =>
+                    {
+                        this.openSnackBarService.openSuccess('Forma de pagamento ativado com sucesso.');
+                        this.onListFormaPagamentos();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
     }
+
 
     public page(pagingEvent: IPageChangeEvent)
     {

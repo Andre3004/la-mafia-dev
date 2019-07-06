@@ -87,23 +87,63 @@ export class CidadeListComponent implements OnInit
 
     public atualizarSituacaoCidade(cidade: Cidade)
     {
-        this._dialogService.openConfirm({
-            message: !cidade.situacao ? "Tem certeza que deseja ativar esta cidade ? " : "Tem certeza que deseja desativar esta cidade ? ",
-            title: !cidade.situacao ? "Ativar cidade" : "Desativar cidade",
-            cancelButton: 'CANCELAR',
-            acceptButton: 'CONFIRMAR',
-            width: '500px'
-        }).afterClosed().subscribe((accept: boolean) =>
+        if(cidade.situacao)
         {
-            if (accept)
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja excluir esta cidade ?",
+                title: "Excluir cidade" ,
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
             {
-                this.cidadeService.updateSituacaoCidade(cidade.idCidade, !cidade.situacao).subscribe(result =>
+                if (accept)
                 {
-                    this.openSnackBarService.openSuccess(cidade.situacao ? 'Cidade desativada com sucesso.' : 'Cidade ativada com sucesso.');
-                    this.onListCidades();
-                }, err => this.openSnackBarService.openError(err.message))
-            }
-        });
+                    this.cidadeService.deleteCidade(cidade.idCidade).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Cidade excluída com sucesso.');
+                        this.onListCidades();
+                    }, err => {
+
+
+                        this._dialogService.openConfirm({
+                            message: "Não foi possível excluir esta cidade pois o mesmo está relacionado a outro registro. Deseja desativar ?",
+                            title: "Desativar cidade",
+                            cancelButton: 'CANCELAR',
+                            acceptButton: 'CONFIRMAR',
+                            width: '500px'
+                        }).afterClosed().subscribe((accept: boolean) =>
+                        {
+                            if (accept)
+                            {
+                                this.cidadeService.updateSituacaoCidade(cidade.idCidade, !cidade.situacao).subscribe( result => {
+                                    this.openSnackBarService.openSuccess('Cidade desativada com sucesso.');
+                                    this.onListCidades();
+                                }, err => this.openSnackBarService.openError(err.message))
+                            }
+                        });
+                    })
+                }
+            });
+        }
+        else
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja ativar esta cidade ?",
+                title: "Ativar cidade",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.cidadeService.updateSituacaoCidade(cidade.idCidade, !cidade.situacao).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Cidade ativado com sucesso.');
+                        this.onListCidades();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
     }
 
     public page(pagingEvent: IPageChangeEvent)

@@ -40,14 +40,24 @@ public class Cliente extends AbstractEntity
 
     private String endereco;
 
-
-    private String cidade;
-
-    private String estado;
-
-    private String pais;
-
     private Boolean situacao;
+
+    private Cidade cidade;
+
+    private Estado estado;
+
+    private Pais pais;
+
+    //@Transient
+    private int cidadeId;
+
+    //@Transient
+    private int estadoId;
+
+    //@Transient
+    private int paisId;
+
+
 
 
     /*-------------------------------------------------------------------

@@ -63,7 +63,7 @@
 				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
 			</button>
 
-			<button *ngIf="ambiente.situacao" matTooltip="Desativar ambiente"
+			<button *ngIf="ambiente.situacao" matTooltip="Excluir/Desativar ambiente"
 				(click)="$event.stopPropagation(); atualizarSituacaoAmbiente(ambiente)" mat-icon-button>
 				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
 			</button>

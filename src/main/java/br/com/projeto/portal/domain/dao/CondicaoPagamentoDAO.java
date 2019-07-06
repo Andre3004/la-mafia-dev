@@ -106,6 +106,8 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 	{
 		if(pageable == null) pageable = new PageRequest(0, 10);
 
+
+
 		String rowCountSql = "SELECT count(1) AS row_count FROM condicao_pagamento " ;
 
 		int total =

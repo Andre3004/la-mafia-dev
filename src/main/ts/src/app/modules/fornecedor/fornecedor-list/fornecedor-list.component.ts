@@ -81,23 +81,63 @@ export class FornecedorListComponent implements OnInit
 
     public atualizarSituacaoFornecedor(fornecedor: Fornecedor)
     {
-        this._dialogService.openConfirm({
-            message: !fornecedor.situacao ? "Tem certeza que deseja ativar este fornecedor ? " : "Tem certeza que deseja desativar este fornecedor ? ",
-            title: !fornecedor.situacao ? "Ativar fornecedor" : "Desativar fornecedor",
-            cancelButton: 'CANCELAR',
-            acceptButton: 'CONFIRMAR',
-            width: '500px'
-        }).afterClosed().subscribe((accept: boolean) =>
+        if(fornecedor.situacao)
         {
-            if (accept)
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja excluir este fornecedor ?",
+                title: "Excluir fornecedor" ,
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
             {
-                this.fornecedorService.updateSituacaoFornecedor(fornecedor.idFornecedor, !fornecedor.situacao).subscribe(result =>
+                if (accept)
                 {
-                    this.openSnackBarService.openSuccess(fornecedor.situacao ? 'Fornecedor desativado com sucesso.' : 'Fornecedor ativado com sucesso.');
-                    this.onListFornecedores();
-                }, err => this.openSnackBarService.openError(err.message))
-            }
-        });
+                    this.fornecedorService.deleteFornecedor(fornecedor.idFornecedor).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Fornecedor excluído com sucesso.');
+                        this.onListFornecedores();
+                    }, err => {
+
+
+                        this._dialogService.openConfirm({
+                            message: "Não foi possível excluir este fornecedor pois o mesmo está relacionado a outro registro. Deseja desativar ?",
+                            title: "Desativar fornecedor",
+                            cancelButton: 'CANCELAR',
+                            acceptButton: 'CONFIRMAR',
+                            width: '500px'
+                        }).afterClosed().subscribe((accept: boolean) =>
+                        {
+                            if (accept)
+                            {
+                                this.fornecedorService.updateSituacaoFornecedor(fornecedor.idFornecedor, !fornecedor.situacao).subscribe( result => {
+                                    this.openSnackBarService.openSuccess('Fornecedor desativado com sucesso.');
+                                    this.onListFornecedores();
+                                }, err => this.openSnackBarService.openError(err.message))
+                            }
+                        });
+                    })
+                }
+            });
+        }
+        else
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja ativar este fornecedor ?",
+                title: "Ativar fornecedor",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.fornecedorService.updateSituacaoFornecedor(fornecedor.idFornecedor, !fornecedor.situacao).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Fornecedor ativado com sucesso.');
+                        this.onListFornecedores();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
     }
 
     public page(pagingEvent: IPageChangeEvent)

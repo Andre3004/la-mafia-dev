@@ -89,23 +89,63 @@ constructor(public dialog: MatDialog,
 
   public atualizarSituacaoPais(pais: Pais)
     {
-        this._dialogService.openConfirm({
-            message: !pais.situacao ? "Tem certeza que deseja ativar este pais ? " : "Tem certeza que deseja desativar este pais ? ",
-            title: !pais.situacao ? "Ativar pais" : "Desativar pais",
-            cancelButton: 'CANCELAR',
-            acceptButton: 'CONFIRMAR',
-            width: '500px'
-        }).afterClosed().subscribe((accept: boolean) =>
+        if(pais.situacao)
         {
-            if (accept)
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja excluir este país ?",
+                title: "Excluir país" ,
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
             {
-                this.paisService.updateSituacaoPais(pais.idPais, !pais.situacao).subscribe(result =>
+                if (accept)
                 {
-                    this.openSnackBarService.openSuccess(pais.situacao ? 'Pais desativado com sucesso.' : 'Pais ativado com sucesso.');
-                    this.onListPaises();
-                }, err => this.openSnackBarService.openError(err.message))
-            }
-        });
+                    this.paisService.deletePais(pais.idPais).subscribe( result => {
+                        this.openSnackBarService.openSuccess('País excluído com sucesso.');
+                        this.onListPaises();
+                    }, err => {
+
+
+                        this._dialogService.openConfirm({
+                            message: "Não foi possível excluir este país pois o mesmo está relacionado a outro registro. Deseja desativar ?",
+                            title: "Desativar país",
+                            cancelButton: 'CANCELAR',
+                            acceptButton: 'CONFIRMAR',
+                            width: '500px'
+                        }).afterClosed().subscribe((accept: boolean) =>
+                        {
+                            if (accept)
+                            {
+                                this.paisService.updateSituacaoPais(pais.idPais, !pais.situacao).subscribe( result => {
+                                    this.openSnackBarService.openSuccess('País desativado com sucesso.');
+                                    this.onListPaises();
+                                }, err => this.openSnackBarService.openError(err.message))
+                            }
+                        });
+                    })
+                }
+            });
+        }
+        else
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja ativar esta país ?",
+                title: "Ativar país",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.paisService.updateSituacaoPais(pais.idPais, !pais.situacao).subscribe( result => {
+                        this.openSnackBarService.openSuccess('País ativado com sucesso.');
+                        this.onListPaises();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
     }
 
     public page(pagingEvent: IPageChangeEvent)

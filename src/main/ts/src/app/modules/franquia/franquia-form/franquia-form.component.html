@@ -14,7 +14,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Telefone</mat-label>
-        <input uppercase required maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput name="telefone"
+        <input uppercase  maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput name="telefone"
           [(ngModel)]="franquia.telefone" placeholder="Digite o telefone">
       </mat-form-field>
 
@@ -46,7 +46,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Número</mat-label>
-        <input uppercase required [textMask]="{mask: masks.getNumbersOnlyMask(5), guide: false}" matInput name="numero" [(ngModel)]="franquia.numero"
+        <input uppercase  [textMask]="{mask: masks.getNumbersOnlyMask(5), guide: false}" matInput name="numero" [(ngModel)]="franquia.numero"
           placeholder="Digite o número">
       </mat-form-field>
 
@@ -56,19 +56,19 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Complemento</mat-label>
-        <input uppercase required maxlength="144" matInput name="complemento" [(ngModel)]="franquia.complemento"
+        <input uppercase  maxlength="144" matInput name="complemento" [(ngModel)]="franquia.complemento"
           placeholder="Digite o complemento">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Bairro</mat-label>
-        <input uppercase required maxlength="144" matInput name="bairro" [(ngModel)]="franquia.bairro"
+        <input uppercase  maxlength="144" matInput name="bairro" [(ngModel)]="franquia.bairro"
           placeholder="Digite o bairro">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>CEP</mat-label>
-        <input uppercase required [textMask]="{mask: masks.cep, guide: false}" matInput name="cep" [(ngModel)]="franquia.cep"
+        <input uppercase  [textMask]="{mask: masks.cep, guide: false}" matInput name="cep" [(ngModel)]="franquia.cep"
           placeholder="Digite o cep">
       </mat-form-field>
 
@@ -78,7 +78,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Cidade</mat-label>
-        <input uppercase type="text" matInput [matAutocomplete]="autoCidade" #inputFilterCidade [(ngModel)]="franquia.cidade"
+        <input required uppercase type="text" matInput [matAutocomplete]="autoCidade" #inputFilterCidade [(ngModel)]="franquia.cidade"
           name="cidade" (ngModelChange)="onListFranquias(inputFilterCidade.value);">
       </mat-form-field>
 
@@ -92,7 +92,7 @@
 
       <mat-form-field fxFlex appearance="outline" class="push-left-md">
         <mat-label>Estado</mat-label>
-        <input uppercase type="text" matInput [matAutocomplete]="autoEstado" #inputFilterEstado [(ngModel)]="franquia.estado"
+        <input required uppercase type="text" matInput [matAutocomplete]="autoEstado" #inputFilterEstado [(ngModel)]="franquia.estado"
           name="estado" (ngModelChange)="onListEstados(inputFilterEstado.value);">
       </mat-form-field>
 
@@ -106,7 +106,7 @@
 
       <mat-form-field fxFlex appearance="outline" class="push-left-md">
         <mat-label>País</mat-label>
-        <input  type="text" matInput [matAutocomplete]="autoPais" #inputFilter [(ngModel)]="franquia.pais"
+        <input required type="text" matInput [matAutocomplete]="autoPais" #inputFilter [(ngModel)]="franquia.pais"
           name="pais" (ngModelChange)="onListPaises(inputFilter.value);">
       </mat-form-field>
 

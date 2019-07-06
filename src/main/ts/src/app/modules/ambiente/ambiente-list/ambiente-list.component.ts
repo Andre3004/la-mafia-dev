@@ -6,7 +6,7 @@ import { TdDialogService, ITdDataTableColumn, IPageChangeEvent } from '@covalent
 import { PaginationService } from 'src/app/common/pagination/pagination.service';
 import { AmbienteService, FranquiaService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
-import { Franquia } from 'src/generated/entities';
+import { Franquia, Ambiente } from 'src/generated/entities';
 import { ActivatedRoute } from '@angular/router';
 
 
@@ -88,24 +88,65 @@ export class AmbienteListComponent implements OnInit
     }
 
 
-    public atualizarSituacaoAmbiente(ambiente)
+    public atualizarSituacaoAmbiente(ambiente: Ambiente)
     {
-        this._dialogService.openConfirm({
-            message: !ambiente.situacao  ? "Tem certeza que deseja ativar este ambiente ? " : "Tem certeza que deseja desativar este ambiente ? ",
-            title: !ambiente.situacao  ? "Ativar ambiente" : "Desativar ambiente",
-            cancelButton: 'CANCELAR',
-            acceptButton: 'CONFIRMAR',
-            width: '500px'
-        }).afterClosed().subscribe((accept: boolean) =>
+        if(ambiente.situacao)
         {
-            if (accept)
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja excluir este ambiente ?",
+                title: "Excluir ambiente" ,
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
             {
-                this.ambienteService.updateSituacaoAmbiente(ambiente.codigo, !ambiente.situacao).subscribe( result => {
-                    this.openSnackBarService.openSuccess(ambiente.situacao ? 'Ambiente desativado com sucesso.' : 'Ambiente ativado com sucesso.');
-                    this.onListAmbientes();
-                }, err => this.openSnackBarService.openError(err.message))
-            }
-        });
+                if (accept)
+                {
+                    this.ambienteService.deleteAmbiente(ambiente.codigo).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Ambiente excluído com sucesso.');
+                        this.onListAmbientes();
+                    }, err => {
+
+
+                        this._dialogService.openConfirm({
+                            message: "Não foi possível excluir este ambiente pois o mesmo está relacionado a outro registro. Deseja desativar ?",
+                            title: "Desativar ambiente",
+                            cancelButton: 'CANCELAR',
+                            acceptButton: 'CONFIRMAR',
+                            width: '500px'
+                        }).afterClosed().subscribe((accept: boolean) =>
+                        {
+                            if (accept)
+                            {
+                                this.ambienteService.updateSituacaoAmbiente(ambiente.codigo, !ambiente.situacao).subscribe( result => {
+                                    this.openSnackBarService.openSuccess('Ambiente desativado com sucesso.');
+                                    this.onListAmbientes();
+                                }, err => this.openSnackBarService.openError(err.message))
+                            }
+                        });
+                    })
+                }
+            });
+        }
+        else
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja ativar este ambiente ?",
+                title: "Ativar ambiente",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.ambienteService.updateSituacaoAmbiente(ambiente.codigo, !ambiente.situacao).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Ambiente ativado com sucesso.');
+                        this.onListAmbientes();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
     }
 
 
