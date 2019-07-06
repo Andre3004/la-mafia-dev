@@ -18,7 +18,7 @@ public class Pais extends AbstractEntity
      *				 		     ATTRIBUTES
      *-------------------------------------------------------------------*/
 
-    private int idPais;
+    private Integer idPais;
 
     private String pais;
 

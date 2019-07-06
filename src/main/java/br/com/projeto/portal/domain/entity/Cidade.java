@@ -19,7 +19,7 @@ public class Cidade extends AbstractEntity
      *				 		     ATTRIBUTES
      *-------------------------------------------------------------------*/
 
-    private int idCidade;
+    private Integer idCidade;
 
     private String cidade;
 
@@ -29,7 +29,7 @@ public class Cidade extends AbstractEntity
 
     private Boolean situacao;
 
-    private int idEstado;
+    private Integer idEstado;
 
 
     /*-------------------------------------------------------------------

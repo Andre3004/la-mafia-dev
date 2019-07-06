@@ -36,6 +36,7 @@ export class UsuarioListComponent implements OnInit
         { name: 'codigo', label: 'CÓDIGO', sortable: false },
         { name: 'nome', label: 'USUÁRIO', sortable: false },
         { name: 'email', label: 'E-MAIL', sortable: false },
+        { name: 'telefone', label: 'TELEFONE', sortable: false },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
         { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 150 }
     ];

@@ -22,7 +22,7 @@ public class Cliente extends AbstractEntity
      *				 		     ATTRIBUTES
      *-------------------------------------------------------------------*/
 
-    private int idCliente;
+    private Integer idCliente;
 
     private String cliente;
 
@@ -49,13 +49,13 @@ public class Cliente extends AbstractEntity
     private Pais pais;
 
     //@Transient
-    private int cidadeId;
+    private Integer cidadeId;
 
     //@Transient
-    private int estadoId;
+    private Integer estadoId;
 
     //@Transient
-    private int paisId;
+    private Integer paisId;
 
 
 

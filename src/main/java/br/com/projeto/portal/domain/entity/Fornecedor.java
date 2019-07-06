@@ -24,7 +24,7 @@ public class Fornecedor extends AbstractEntity
      *				 		     ATTRIBUTES
      *-------------------------------------------------------------------*/
 
-    private int idFornecedor;
+    private Integer idFornecedor;
 
     private String razaoSocial;
 
@@ -57,16 +57,16 @@ public class Fornecedor extends AbstractEntity
     private CondicaoPagamento condicaoPagamento;
 
     //@Transient
-    private int cidadeId;
+    private Integer cidadeId;
 
     //@Transient
-    private int estadoId;
+    private Integer estadoId;
 
     //@Transient
-    private int paisId;
+    private Integer paisId;
 
     //@Transient
-    private int condicaoPagamentoId;
+    private Integer condicaoPagamentoId;
 
 
     /*-------------------------------------------------------------------

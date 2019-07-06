@@ -58,7 +58,7 @@ public class Produto extends AbstractEntity
 	private Long grupoProdutoId;
 
 	//@Transient
-	private int fornecedorId;
+	private Integer fornecedorId;
 
 	/*-------------------------------------------------------------------
 	 * 		 					CONSTRUCTORS

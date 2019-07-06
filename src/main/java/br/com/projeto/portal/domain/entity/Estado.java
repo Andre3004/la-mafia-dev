@@ -19,7 +19,7 @@ public class Estado extends AbstractEntity
      *				 		     ATTRIBUTES
      *-------------------------------------------------------------------*/
 
-    private int idEstado;
+    private Integer idEstado;
 
     private String estado;
 
@@ -30,7 +30,7 @@ public class Estado extends AbstractEntity
     private Boolean situacao;
 
     //@Transient
-    private int idPais;
+    private Integer idPais;
 
 
     /*-------------------------------------------------------------------

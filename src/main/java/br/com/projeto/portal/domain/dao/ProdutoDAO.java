@@ -44,7 +44,7 @@ public class ProdutoDAO implements IProdutoRepository
 				new Object[] { id }, new BeanPropertyRowMapper(Produto.class));
 
 		produto.setGrupoProduto( grupoProdutoDAO.findGrupoProdutoById( produto.getGrupoProdutoId() ) );
-		produto.setFornecedor( fornecedorDAO.findFornecedorById( produto.getFornecedorId() ) );
+		if(produto.getFornecedorId() != null) produto.setFornecedor( fornecedorDAO.findFornecedorById( produto.getFornecedorId() ) );
 
 		return produto;
 	}

@@ -25,16 +25,16 @@ export class FormaPagamentoFormComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   )
   {
-    if (data.idFormaPagamento != null)
+    if (data.codigo != null)
     {
-      this.onFindFormaPagamentoById(data.idFormaPagamento);
+      this.onFindFormaPagamentoById(data.codigo);
     }
   }
 
   ngOnInit()
   {
 
-    if (this.data.idFormaPagamento)
+    if (this.data.codigo)
       this.title = "Alterar forma de pagamento";
     else
       this.title = "Inserir forma de pagamento";
@@ -58,7 +58,7 @@ export class FormaPagamentoFormComponent implements OnInit {
   {
 
 
-    if (!this.formaPagamento.idFormaPagamento)
+    if (!this.formaPagamento.codigo)
     {
       this.formaPagamentoService.insertFormaPagamento(this.formaPagamento).subscribe(formaPagamento =>
       {

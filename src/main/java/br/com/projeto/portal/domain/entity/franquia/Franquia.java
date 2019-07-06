@@ -55,13 +55,13 @@ public class Franquia extends AbstractEntity
 	private FileTransfer anexo;
 
 	//@Transient
-	private int cidadeId;
+	private Integer cidadeId;
 
 	//@Transient
-	private int estadoId;
+	private Integer estadoId;
 
 	//@Transient
-	private int paisId;
+	private Integer paisId;
 
 	/*-------------------------------------------------------------------
 	 * 		 					CONSTRUCTORS
