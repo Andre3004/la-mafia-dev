@@ -183,6 +183,6 @@ export class CondicaoPagamentoListComponent implements OnInit
         this.pageRequest.pageable.page = pagingEvent.page - 1;
         this.pageRequest.pageable.size = pagingEvent.pageSize;
 
-        this.onListCondicaoPagamentos();
+        this.onListCondicaoPagamentos(false);
     }
 }

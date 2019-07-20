@@ -213,14 +213,15 @@ CREATE TABLE condicao_pagamento (
 );
 
 CREATE TABLE condicao_pagamento_parcela (
-	codigo serial PRIMARY KEY,
 	created TIMESTAMP NOT NULL,
 	updated TIMESTAMP,
 	condicao_pagamento_id  bigint REFERENCES condicao_pagamento NOT NULL,
   forma_pagamento_id  bigint REFERENCES forma_pagamento NOT NULL,
   dias int NOT NULL,
   porcentagem decimal NOT NULL,
-  parcela int NOT NULL
+  parcela int NOT NULL,
+  PRIMARY KEY(condicao_pagamento_id, parcela)
+
 );
 
 

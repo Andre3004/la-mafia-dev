@@ -168,20 +168,16 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 	{
 		jdbcTemplate.update("UPDATE condicao_pagamento_parcela " +
 						"SET " +
-						"condicao_pagamento_id = ?, " +
 						"forma_pagamento_id = ?, " +
 						"dias = ?, " +
 						"porcentagem = ?, " +
-						"parcela = ?, " +
 						"created = ? " +
-						"WHERE codigo = ?",
-				condicaoPagamentoParcela.getCondicaoPagamento().getCodigo(),
+						"WHERE parcela = ? AND condicao_pagamento_id = ?",
 				condicaoPagamentoParcela.getFormaPagamento().getCodigo(),
 				condicaoPagamentoParcela.getDias(),
 				condicaoPagamentoParcela.getPorcentagem(),
-				condicaoPagamentoParcela.getParcela(),
 				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo) ),
-				condicaoPagamentoParcela.getCodigo());
+				condicaoPagamentoParcela.getParcela(), condicaoPagamentoParcela.getCondicaoPagamento().getCodigo());
 	}
 
 
@@ -204,8 +200,8 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 	}
 
 
-	public void deleteCondicaoPagamentoParcela( long condicaoPagamentoParcelaId)
+	public void deleteCondicaoPagamentoParcela( long condicaoPagamentoParcelaId, long condicaoPagamentoId)
 	{
-		jdbcTemplate.update( "DELETE from condicao_pagamento_parcela WHERE codigo = " + condicaoPagamentoParcelaId +" ;"  );
+		jdbcTemplate.update( "DELETE from condicao_pagamento_parcela WHERE parcela = " + condicaoPagamentoParcelaId +" AND "+ " condicao_pagamento_id = " + condicaoPagamentoId +";"   );
 	}
 }

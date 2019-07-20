@@ -99,12 +99,38 @@ export class CondicaoPagamentoFormComponent implements OnInit
 
     }
 
-    if (this.totalPorcentagem > 100)
+    if (this.totalPorcentagem != 100)
     {
-      this.openSnackBarService.openError("A porcentagem de parcelas não pode ser maior que 100%.");
+      this.openSnackBarService.openError("A porcentagem de parcelas deve ser igual a 100%.");
       return;
     }
 
+    this.condicaoPagamento.parcelas = this.condicaoPagamento.parcelas.sort();
+
+    var found = false;
+    for (let i = 0; i < this.condicaoPagamento.parcelas.length-1 && !found; i++) {
+
+      const parcela = this.condicaoPagamento.parcelas[i];
+
+      for (let j = i+1; j < this.condicaoPagamento.parcelas.length; j++) {
+
+        const proxParcela = this.condicaoPagamento.parcelas[j];
+        
+        if(parseInt(parcela.dias as any) > parseInt(proxParcela.dias as any))
+        {
+          found = true;
+          break;
+        }
+      }
+    }
+
+    if(found)
+    {
+      this.openSnackBarService.openError("Não pode haver uma parcela com os dias maior que a parcela anterior.");
+      return;
+    }
+
+    
 
     if (!this.condicaoPagamento.codigo)
     {
@@ -153,13 +179,13 @@ export class CondicaoPagamentoFormComponent implements OnInit
 
   public addParcela()
   {
-    this.condicaoPagamento.parcelas.push({});
+    this.condicaoPagamento.parcelas.push({parcela: this.condicaoPagamento.parcelas.length + 1});
   }
 
   public removeParcela(index)
   {
     if (this.condicaoPagamento.parcelas[index].created)
-      this.condicaoPagamentoParcelasToRemoved.push(this.condicaoPagamento.parcelas[index].codigo)
+      this.condicaoPagamentoParcelasToRemoved.push(this.condicaoPagamento.parcelas[index].parcela)
 
     this.condicaoPagamento.parcelas.splice(index, 1);
   }

@@ -87,8 +87,8 @@
                                 <mat-form-field fxFlex appearance="outline">
                                     <mat-label>Parcela</mat-label>
                                     <input required uppercase [(ngModel)]="parcela.parcela" name="parcela{{i}}" matInput
-                                        [textMask]="{mask: masks.getNumbersOnlyMask(4), guide: false}"
-                                        placeholder="Digite a parcela">
+                                        [textMask]="{mask: masks.getNumbersOnlyMask(4), guide: false}" [disabled]="true"
+                                        >
                                 </mat-form-field>
 
                                 <mat-form-field fxFlex appearance="outline" class="push-left-md">

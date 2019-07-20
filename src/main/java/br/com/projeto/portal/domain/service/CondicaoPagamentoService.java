@@ -70,7 +70,7 @@ public class CondicaoPagamentoService implements ICondicaoPagamentoRepository
 		{
 			for ( Long condicaoPagamentoParcelaId : condicaoPagamentoParcelasIds )
 			{
-				condicaoPagamentoDao.deleteCondicaoPagamentoParcela(condicaoPagamentoParcelaId);
+				condicaoPagamentoDao.deleteCondicaoPagamentoParcela(condicaoPagamentoParcelaId, condicaoPagamento.getCodigo());
 			}
 		}
 
@@ -114,7 +114,7 @@ public class CondicaoPagamentoService implements ICondicaoPagamentoRepository
 		{
 			for ( CondicaoPagamentoParcela condicaoPagamentoParcela : condicaoPagamentoSaved.getParcelas() )
 			{
-				condicaoPagamentoDao.deleteCondicaoPagamentoParcela(condicaoPagamentoParcela.getCodigo());
+				condicaoPagamentoDao.deleteCondicaoPagamentoParcela(condicaoPagamentoParcela.getParcela(), condicaoPagamentoSaved.getCodigo());
 			}
 		}
 

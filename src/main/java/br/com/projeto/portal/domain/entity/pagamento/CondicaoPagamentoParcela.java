@@ -20,8 +20,6 @@ public class CondicaoPagamentoParcela implements Serializable
 	 *				 		     ATTRIBUTES
 	 *-------------------------------------------------------------------*/
 
-	private Long codigo;
-
 	private Integer dias;
 
 	private Double porcentagem;
