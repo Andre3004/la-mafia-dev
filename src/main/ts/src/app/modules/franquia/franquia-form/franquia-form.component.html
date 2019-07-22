@@ -74,47 +74,37 @@
 
     </div>
 
-    <div>
+    <div fxLayout="row" fxLayoutAlign=" center">
 
-      <mat-form-field fxFlex appearance="outline">
+
+      <div *ngIf="franquia.cidade" fxLayoutAlign=" start" fxLayout="column">
+        <label style="margin-bottom: 5px;font-weight: bold;">País</label>
+        <label>{{franquia?.cidade?.estado?.pais?.pais}}</label>
+      </div>
+
+      <div *ngIf="franquia.cidade" fxLayoutAlign=" start" fxLayout="column" class="push-left-md push-right-md">
+        <label style="margin-bottom: 5px;font-weight: bold;">Estado</label>
+        <label>{{franquia?.cidade?.estado?.estado}}</label>
+      </div>
+      
+      <mat-form-field  fxFlex appearance="outline">
         <mat-label>Cidade</mat-label>
         <input required uppercase type="text" matInput [matAutocomplete]="autoCidade" #inputFilterCidade
-          [(ngModel)]="franquia.cidade" name="cidade" (ngModelChange)="onListFranquias(inputFilterCidade.value);">
+          [disabled]="franquia?.cidade?.idCidade" [(ngModel)]="franquia.cidade" name="cidade"
+          (ngModelChange)="onListCidades(inputFilterCidade.value);">
+
+        <button *ngIf="franquia?.cidade?.idCidade" (click)="franquia.cidade = null;  onListCidades('');" matTooltip="Remover cidade"
+          matSuffix mat-icon-button class="tc-grey-700 delete-button-hover">
+          <mat-icon>delete</mat-icon>
+        </button>
       </mat-form-field>
 
       <mat-autocomplete [displayWith]="displayFnCidade" #autoCidade="matAutocomplete"
-        (optionSelected)="franquia.cidade = $event.option.value; onListCidades();">
+        (optionSelected)="franquia.cidade = $event.option.value; onListCidades('');">
         <mat-option [value]="null">Nenhum</mat-option>
         <mat-option *ngFor="let cidade of cidades" [value]="cidade">{{cidade?.cidade}}</mat-option>
       </mat-autocomplete>
 
-
-
-      <mat-form-field fxFlex appearance="outline" class="push-left-md">
-        <mat-label>Estado</mat-label>
-        <input required uppercase type="text" matInput [matAutocomplete]="autoEstado" #inputFilterEstado
-          [(ngModel)]="franquia.estado" name="estado" (ngModelChange)="onListEstados(inputFilterEstado.value);">
-      </mat-form-field>
-
-      <mat-autocomplete [displayWith]="displayFnEstado" #autoEstado="matAutocomplete"
-        (optionSelected)="franquia.estado = $event.option.value; onListEstados();">
-        <mat-option [value]="null">Nenhum</mat-option>
-        <mat-option *ngFor="let estado of estados" [value]="estado">{{estado?.estado}}</mat-option>
-      </mat-autocomplete>
-
-
-
-      <mat-form-field fxFlex appearance="outline" class="push-left-md">
-        <mat-label>País</mat-label>
-        <input required type="text" matInput [matAutocomplete]="autoPais" #inputFilter [(ngModel)]="franquia.pais"
-          name="pais" (ngModelChange)="onListPaises(inputFilter.value);">
-      </mat-form-field>
-
-      <mat-autocomplete [displayWith]="displayFnPais" #autoPais="matAutocomplete"
-        (optionSelected)="franquia.pais = $event.option.value; onListPaises();">
-        <mat-option [value]="null">Nenhum</mat-option>
-        <mat-option *ngFor="let pais of paises" [value]="pais">{{pais?.pais}}</mat-option>
-      </mat-autocomplete>
     </div>
 
     <div>
@@ -151,30 +141,7 @@
 
         <input uppercase hidden type="file" #fotoInput (change)="setFranquiaAnexo($event)">
       </div>
-      <!-- <div fxLayout="column" class="push-left">
-          <span class="tc-grey-500 mat-caption" *ngIf="!fotoImage">ADICIONAR ANEXO</span>
 
-          <span class="tc-grey-500 mat-caption" *ngIf="franquia?.nomeArquivo">{{franquia?.nomeArquivo}}</span>
-
-
-
-          <button type="button" (click)="fotoInput.click()" style="color: whitesmoke; background: #001f3f" mat-button
-            class="push-bottom">
-            <span matTooltip="Selecionar Anexo" *ngIf="!fotoImage">SELECIONAR ANEXO</span>
-            <span matTooltip="Alterar abexi" *ngIf="fotoImage">ALTERAR ANEXO</span>
-          </button>
-          <input uppercase hidden type="file" #fotoInput (change)="setFranquiaAnexo($event)">
-
-
-          <button type="button" matTooltip="Remover anexo" *ngIf="fotoImage || franquia?.anexoUuid"
-            (click)="removeAnexo()" mat-button style="color: whitesmoke; background: #FF4136" class="push-bottom  ">
-            REMOVER
-          </button>
-          
-          <button mat-button (click)="downloadFile()" *ngIf="franquia.anexoUuid"
-            style="color: whitesmoke; background: #3D9970" class="push-bottom  ">DOWNLOAD</button>
-
-      </div> -->
     </div>
 
   </form>

@@ -93,12 +93,12 @@ public class ProdutoDAO implements IProdutoRepository
 						"situacao = ?, " +
 						"anexo_uuid = ?, " +
 						"nome_arquivo = ?, " +
-						"grupo_produto_id = ? "+
-						"preco_custo = ? " +
-						"preco_venda = ? " +
-						"codigo_barras, " +
-						"unidade_comercial, " +
-						"fornecedor_id, " +
+						"grupo_produto_id = ?, "+
+						"preco_custo = ?, " +
+						"preco_venda = ?, " +
+						"codigo_barras  = ?, " +
+						"unidade_comercial  = ?, " +
+						"fornecedor_id  = ?, " +
 						"updated = ? " +
 						"WHERE codigo = ?",
 				produto.getProduto(),
@@ -112,7 +112,7 @@ public class ProdutoDAO implements IProdutoRepository
 				produto.getPrecoVenda(),
 				produto.getCodigoBarras(),
 				produto.getUnidadeComercial(),
-				produto.getFornecedor().getIdFornecedor(),
+				produto.getFornecedor() != null ? produto.getFornecedor().getIdFornecedor() : null,
 				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
 				produto.getCodigo());
 	}

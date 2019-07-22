@@ -35,10 +35,6 @@ export class FornecedorFormComponent implements OnInit
 
   public cidades: Cidade[];
 
-  public estados: Estado[];
-
-  public paises: Pais[];
-
   public condicoesPagamento: CondicaoPagamento[];
 
 
@@ -47,8 +43,6 @@ export class FornecedorFormComponent implements OnInit
     private openSnackBarService: OpenSnackBarService,
     public dialogRef: MatDialogRef<FornecedorFormComponent>,
     private cidadeService: CidadeService,
-    private estadoService: EstadoService,
-    private paisService: PaisService,
     private condicaoPagamentoService: CondicaoPagamentoService,
     @Inject(MAT_DIALOG_DATA) public data: any
   )
@@ -59,8 +53,6 @@ export class FornecedorFormComponent implements OnInit
     }
 
     this.onListCidades("");
-    this.onListEstados("");
-    this.onListPaises("");
     this.onListCondicoesPagamento("");
 
   }
@@ -96,17 +88,8 @@ export class FornecedorFormComponent implements OnInit
       return;
     }
 
-    if (!this.fornecedor.estado)
-    {
-      this.openSnackBarService.openError('O campo estado deve ser preenchido.');
-      return;
-    }
-
-    if (!this.fornecedor.pais)
-    {
-      this.openSnackBarService.openError('O campo país deve ser preenchido.');
-      return;
-    }
+    this.fornecedor.estado = this.fornecedor.cidade.estado;
+    this.fornecedor.pais = this.fornecedor.cidade.estado.pais;
 
     if (!this.fornecedor.condicaoPagamento)
     {
@@ -237,47 +220,17 @@ export class FornecedorFormComponent implements OnInit
 
   public onListCidades(filter)
   {
-    if (this.fornecedor.estado)
-      this.cidadeService.listCidadesByFilters(filter ? filter : "", null).subscribe(page =>
-      {
+    this.cidadeService.listCidadesByFilters(filter ? filter : "", null).subscribe(page =>
+    {
 
-        this.cidades = page.content.filter(c => c.situacao && c.estado.idEstado == this.fornecedor.estado.idEstado);
-      })
+      this.cidades = page.content.filter(c => c.situacao);
+    })
   }
 
   public displayFnCidade(cidade?: Cidade): string | undefined
   {
     return cidade ? cidade.cidade : undefined;
   }
-
-  public onListEstados(filter)
-  {
-    if (this.fornecedor.pais)
-      this.estadoService.listEstadosByFilters(filter ? filter : "", null).subscribe(page =>
-      {
-        this.estados = page.content.filter(c => c.situacao && c.pais.idPais == this.fornecedor.pais.idPais);
-      })
-  }
-
-  public displayFnEstado(estado?: Estado): string | undefined
-  {
-    return estado ? estado.estado : undefined;
-  }
-
-
-  public onListPaises(filter)
-  {
-    this.paisService.listPaisesByFilters(filter ? filter : "", null).subscribe(page =>
-    {
-      this.paises = page.content.filter(c => c.situacao);
-    })
-  }
-
-  public displayFnPais(pais?: Pais): string | undefined
-  {
-    return pais ? pais.pais : undefined;
-  }
-
 
   public onListCondicoesPagamento(filter)
   {

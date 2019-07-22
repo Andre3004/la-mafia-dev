@@ -83,64 +83,33 @@
     </div>
 
 
-    <div fxLayout="row">
-
-      <mat-form-field fxFlex appearance="outline" class="push-right-md">
-        <mat-label>País</mat-label>
-        <input required uppercase type="text" matInput [matAutocomplete]="autoPais" #inputFilter
-          [(ngModel)]="cliente.pais" name="pais" (ngModelChange)="onListPaises(inputFilter.value);"
-          [disabled]="cliente?.pais?.idPais">
-
-        <button *ngIf="cliente?.pais?.idPais"
-          (click)="cliente.pais = null; cliente.estado = null; cliente.cidade = null" matTooltip="Remover país"
-          matSuffix mat-icon-button class="tc-grey-700 delete-button-hover">
-          <mat-icon>delete</mat-icon>
-        </button>
-
-      </mat-form-field>
-
-      <mat-autocomplete [displayWith]="displayFnPais" #autoPais="matAutocomplete"
-        (optionSelected)="cliente.pais = $event.option.value; onListPaises(); onListEstados()">
-        <mat-option [value]="null">Nenhum</mat-option>
-        <mat-option *ngFor="let pais of paises" [value]="pais">{{pais?.pais}}</mat-option>
-      </mat-autocomplete>
+    <div fxLayout="row" fxLayoutAlign=" center">
 
 
+      <div *ngIf="cliente.cidade" fxLayoutAlign=" start" fxLayout="column">
+        <label style="margin-bottom: 5px;font-weight: bold;">País</label>
+        <label>{{cliente?.cidade?.estado?.pais?.pais}}</label>
+      </div>
 
+      <div *ngIf="cliente.cidade" fxLayoutAlign=" start" fxLayout="column" class="push-left-md push-right-md">
+        <label style="margin-bottom: 5px;font-weight: bold;">Estado</label>
+        <label>{{cliente?.cidade?.estado?.estado}}</label>
+      </div>
 
-      <mat-form-field *ngIf="cliente?.pais?.idPais" fxFlex appearance="outline" class="push-right-md">
-        <mat-label>Estado</mat-label>
-        <input required uppercase type="text" matInput [matAutocomplete]="autoEstado" #inputFilterEstado
-          [disabled]="cliente?.estado?.idEstado" [(ngModel)]="cliente.estado" name="estado"
-          (ngModelChange)="onListEstados(inputFilterEstado.value);">
-
-        <button *ngIf="cliente?.estado?.idEstado" (click)="cliente.estado = null; cliente.cidade = null"
-          matTooltip="Remover estado" matSuffix mat-icon-button class="tc-grey-700 delete-button-hover">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-form-field>
-
-      <mat-autocomplete [displayWith]="displayFnEstado" #autoEstado="matAutocomplete"
-        (optionSelected)="cliente.estado = $event.option.value; onListEstados(); onListCidades()">
-        <mat-option [value]="null">Nenhum</mat-option>
-        <mat-option *ngFor="let estado of estados" [value]="estado">{{estado?.estado}}</mat-option>
-      </mat-autocomplete>
-
-
-      <mat-form-field *ngIf="cliente?.estado?.idEstado" fxFlex appearance="outline">
+      <mat-form-field fxFlex appearance="outline" >
         <mat-label>Cidade</mat-label>
         <input required uppercase type="text" matInput [matAutocomplete]="autoCidade" #inputFilterCidade
           [disabled]="cliente?.cidade?.idCidade" [(ngModel)]="cliente.cidade" name="cidade"
           (ngModelChange)="onListCidades(inputFilterCidade.value);">
 
-        <button *ngIf="cliente?.cidade?.idCidade" (click)="cliente.cidade = null" matTooltip="Remover cidade"
-          matSuffix mat-icon-button class="tc-grey-700 delete-button-hover">
+        <button *ngIf="cliente?.cidade?.idCidade" (click)="cliente.cidade = null;  onListCidades('');"
+          matTooltip="Remover cidade" matSuffix mat-icon-button class="tc-grey-700 delete-button-hover">
           <mat-icon>delete</mat-icon>
         </button>
       </mat-form-field>
 
       <mat-autocomplete [displayWith]="displayFnCidade" #autoCidade="matAutocomplete"
-        (optionSelected)="cliente.cidade = $event.option.value; onListCidades();">
+        (optionSelected)="cliente.cidade = $event.option.value; onListCidades('');">
         <mat-option [value]="null">Nenhum</mat-option>
         <mat-option *ngFor="let cidade of cidades" [value]="cidade">{{cidade?.cidade}}</mat-option>
       </mat-autocomplete>

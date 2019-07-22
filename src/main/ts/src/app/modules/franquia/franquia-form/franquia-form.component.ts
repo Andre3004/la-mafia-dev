@@ -30,10 +30,6 @@ export class FranquiaFormComponent implements OnInit
 
   public cidades: Cidade[];
 
-  public estados: Estado[];
-
-  public paises: Pais[];
-
   public masks = TextMasks;
 
   constructor(
@@ -42,8 +38,6 @@ export class FranquiaFormComponent implements OnInit
     public dialogRef: MatDialogRef<FranquiaFormComponent>,
     private arquivoService: ArquivoService,
     private cidadeService: CidadeService,
-    private estadoService: EstadoService,
-    private paisService: PaisService,
     @Inject(MAT_DIALOG_DATA) public data: any
   )
   {
@@ -61,8 +55,6 @@ export class FranquiaFormComponent implements OnInit
       this.title = "Inserir franquia";
 
     this.onListCidades("");
-    this.onListEstados("");
-    this.onListPaises("");
   }
 
   /*-------------------------------------------------------------------
@@ -92,18 +84,9 @@ export class FranquiaFormComponent implements OnInit
       this.openSnackBarService.openError('O campo cidade deve ser preenchido.');
       return;
     }
-    
-    if (!this.franquia.estado)
-    {
-      this.openSnackBarService.openError('O campo estado deve ser preenchido.');
-      return;
-    }
-
-    if (!this.franquia.pais)
-    {
-      this.openSnackBarService.openError('O campo país deve ser preenchido.');
-      return;
-    }
+ 
+    this.franquia.estado = this.franquia.cidade.estado;
+    this.franquia.pais = this.franquia.cidade.estado.pais;
 
     if (this.franquia.telefone) 
     {
@@ -279,29 +262,4 @@ export class FranquiaFormComponent implements OnInit
    public displayFnCidade(cidade?: Cidade): string | undefined {
        return cidade ? cidade.cidade : undefined;
    }
-
-   public onListEstados(filter)
-   {
-       this.estadoService.listEstadosByFilters(filter ? filter : "", null).subscribe( page => {
-       this.estados = page.content.filter( c => c.situacao); 
-       })
-   }
-
-   public displayFnEstado(estado?: Estado): string | undefined {
-       return estado ? estado.estado : undefined;
-   }
-
-
-   public onListPaises(filter)
-   {
-       this.paisService.listPaisesByFilters(filter ?filter : "", null).subscribe( page => {
-       this.paises = page.content.filter( c => c.situacao); 
-       })
-   }
-
-   public displayFnPais(pais?: Pais): string | undefined {
-       return pais ? pais.pais : undefined;
-   }
-   
-
 }
