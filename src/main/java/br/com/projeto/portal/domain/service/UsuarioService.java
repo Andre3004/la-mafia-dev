@@ -6,12 +6,14 @@ package br.com.projeto.portal.domain.service;
 import java.time.LocalDateTime;
 
 //import br.com.projeto.portal.domain.repository.usuario.UsuarioDao;
+import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.dao.UsuarioDAO;
 import br.com.projeto.portal.domain.entity.usuario.PerfilUsuario;
 import br.com.projeto.portal.domain.repository.IUsuarioRepository;
 import br.com.projeto.portal.infrastructure.arquivo.Arquivo;
 import br.com.projeto.portal.infrastructure.arquivo.ArquivoService;
 import br.com.projeto.portal.infrastructure.arquivo.IArquivoRepository;
+
 import org.directwebremoting.annotations.RemoteProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -69,25 +71,38 @@ public class UsuarioService implements IUsuarioRepository
 	@Override
 	public void insertUsuario( Usuario usuario )
 	{
-		if(usuario.getAnexo() != null)
-			this.insertArquivo( usuario );
+		try
+		{
+			if ( usuario.getAnexo() != null )
+			{
+				this.insertArquivo( usuario );
+			}
 
-		usuario.setSituacao( true );
+			usuario.setSituacao( true );
 
-		usuario.setPerfilUsuario( PerfilUsuario.USUARIO ); //FIXME deixa no front-end;
+			usuario.setPerfilUsuario( PerfilUsuario.USUARIO ); //FIXME deixa no front-end;
 
-		this.usuarioDao.insertUsuario( usuario );
+			this.usuarioDao.insertUsuario( usuario );
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			System.out.println( "Ocorreu um erro ao executar o insert: "
+					+ e.getMessage() );
+		}
 	}
 
 	@Override
 	public void updateUsuario( Usuario usuario )
 	{
-		if(usuario.getAnexoUuid() == null && usuario.getAnexo() != null)
+		if ( usuario.getAnexoUuid() == null && usuario.getAnexo() != null )
+		{
 			this.insertArquivo( usuario );
+		}
 
 		Usuario usuarioSaved = this.usuarioDao.findUsuarioById( usuario.getCodigo() );
 
-		if(usuario.getSenha() == null || usuario.getSenha().isEmpty())
+		if ( usuario.getSenha() == null || usuario.getSenha().isEmpty() )
 		{
 			usuario.setSenha( usuarioSaved.getSenha() );
 		}
@@ -108,9 +123,17 @@ public class UsuarioService implements IUsuarioRepository
 	{
 		//TODO validar se existe registros relacionados, se existe só desativa
 		Usuario usuario = this.findUsuarioById( id );
-		if(usuario.getAnexoUuid() != null) this.removeArquivo( usuario.getAnexoUuid() );
+		if ( usuario.getAnexoUuid() != null )
+		{
+			this.removeArquivo( usuario.getAnexoUuid() );
+		}
 
 		this.usuarioDao.deleteUsuario( id );
+	}
+
+	public Usuario getAuthenticatedUser()
+	{
+		return ContextHolder.getAuthenticatedUser();
 	}
 
 	/*-------------------------------------------------------------------
@@ -118,14 +141,14 @@ public class UsuarioService implements IUsuarioRepository
 	 *-------------------------------------------------------------------*/
 
 
-	public void insertArquivo(Usuario usuario)
+	public void insertArquivo( Usuario usuario )
 	{
 		Arquivo arquivo = this.arquivoRepository.insert( usuario.getAnexo() );
 		usuario.setAnexoUuid( arquivo.getUuid() );
 		usuario.setNomeArquivo( arquivo.getNomeOriginal() );
 	}
 
-	public void removeArquivo(String uuid)
+	public void removeArquivo( String uuid )
 	{
 		this.arquivoService.deleteArquivo( uuid );
 	}

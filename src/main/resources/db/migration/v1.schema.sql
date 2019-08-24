@@ -7,7 +7,7 @@ CREATE TABLE pais(
 	ddi varchar(144) NOT NULL unique,
 	created TIMESTAMP,
 	updated TIMESTAMP,
-  situacao boolean NOT NULL
+    situacao boolean NOT NULL
 );
 
 
@@ -18,7 +18,7 @@ CREATE TABLE estado(
 	idPais int  references pais(idPais),
 	created TIMESTAMP,
 	updated TIMESTAMP,
-  situacao boolean NOT NULL
+     situacao boolean NOT NULL
 );
 
 
@@ -168,18 +168,16 @@ CREATE TABLE produto (
 	created TIMESTAMP NOT NULL,
 	updated TIMESTAMP,
 	produto character varying(144) NOT NULL,
-  descricao character varying(144),
-  ano int,
+    descricao character varying(144),
+    ano int,
 	situacao boolean NOT NULL,
 	anexo_uuid varchar(144),
 	nome_arquivo varchar(144),
-	estoque int,
-	preco_custo decimal NOT NULL,
-	preco_venda decimal,
 	unidade_comercial varchar(144),
 	codigo_barras varchar(144),
 	grupo_produto_id bigint REFERENCES grupo_produto NOT NULL,
-	fornecedor_id bigint REFERENCES fornecedor
+	fornecedor_id bigint REFERENCES fornecedor,
+	estoque_id bigint REFERENCES estoque
 );
 
 
@@ -224,5 +222,58 @@ CREATE TABLE condicao_pagamento_parcela (
 
 );
 
+
+
+CREATE TABLE compra(
+    created TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+    modelo character varying(144) NOT NULL,
+    serie character varying(144) NOT NULL,
+    numero_nota character varying(144) NOT NULL,
+    fornecedor_id bigint REFERENCES fornecedor NOT NULL,
+    usuario_id bigint REFERENCES usuario,
+    condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
+    data_chegada TIMESTAMP NOT NULL,
+    tipo_frete character varying(144) NOT NULL,
+    frete character varying(144) NOT NULL,
+    seguro character varying(144) NOT NULL,
+    despesa character varying(144) NOT NULL,
+    situacao boolean NOT NULL,
+	PRIMARY KEY(modelo, serie, numero_nota, fornecedor_id )
+);
+
+CREATE TABLE contas_a_pagar(
+    created TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+    modelo character varying(3) NOT NULL,
+    serie character varying(2) NOT NULL,
+    numero_nota int NOT NULL,
+    fornecedor_id bigint REFERENCES fornecedor NOT NULL,
+	numero_parcela int NOT NULL,
+	data_vencimento TIMESTAMP NOT NULL,
+	valor_parcela decimal NOT NULL,
+    situacao boolean NOT NULL,
+	PRIMARY KEY(modelo, serie, numero_nota,fornecedor_id, numero_parcela)
+);
+
+CREATE TABLE item_compra(
+    modelo character varying(144) NOT NULL,
+    serie character varying(144) NOT NULL,
+	numero_nota character varying(144) NOT NULL,
+	fornecedor_id bigint REFERENCES fornecedor NOT NULL,
+	produto_id  bigint REFERENCES produto NOT NULL,
+	quantidade decimal NOT NULL,
+	valor_unitario decimal NOT NULL,
+	PRIMARY KEY( modelo, serie, numero_nota, fornecedor_id, produto_id)
+);
+
+CREATE TABLE estoque(
+    franquia_id bigint REFERENCES franquia,
+    produto_id bigint REFERENCES produto,
+	saldo int,
+	preco_custo decimal NOT NULL,
+	preco_venda decimal,
+	PRIMARY KEY (franquia_id, produto_id)
+);
 
 SET search_path = public, pg_catalog;

@@ -1,0 +1,249 @@
+<h2 mat-dialog-title>{{title}}</h2>
+
+
+<mat-dialog-content>
+
+  <mat-tab-group>
+    <mat-tab label="INFORMAÇÕES">
+      <form #qualificadorForm="ngForm" fxLayout="column">
+
+        <div class="push-top-md" fxLayout="row" fxLayoutGap="30px">
+
+          <mat-form-field fxFlex="20" appearance="outline">
+            <mat-label>Modelo</mat-label>
+            <input matInput [(ngModel)]="compra.modelo" name="modelo" maxlength="144">
+          </mat-form-field>
+
+          <mat-form-field fxFlex="25" appearance="outline">
+            <mat-label>Serie</mat-label>
+            <input matInput  [(ngModel)]="compra.serie" name="serie" maxlength="144">
+          </mat-form-field>
+
+          <mat-form-field fxFlex appearance="outline">
+            <mat-label>Número da nota</mat-label>
+            <input matInput  [(ngModel)]="compra.numeroNota" name="numeroNota" maxlength="144">
+          </mat-form-field>
+
+        </div>
+
+
+
+        <div fxLayout="row" fxLayoutGap="30px">
+
+          <mat-form-field fxFlex appearance="outline">
+            <mat-label>Fornecedor</mat-label>
+            <input  uppercase type="text" matInput [matAutocomplete]="autoFornecedor" #inputFilterFornecedor
+              [disabled]="compra?.fornecedor?.idFornecedor" [(ngModel)]="compra.fornecedor" name="fornecedor"
+              (ngModelChange)="onListFornecedores(inputFilterFornecedor.value);">
+      
+            <button *ngIf="compra?.fornecedor?.idFornecedor"
+              (click)="compra.fornecedor = null;  onListFornecedores('');" matTooltip="Remover fornecedor" matSuffix
+              mat-icon-button class="tc-grey-700 delete-button-hover">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-form-field>
+      
+          <mat-autocomplete [displayWith]="displayFnFornecedor" #autoFornecedor="matAutocomplete"
+            (optionSelected)="compra.fornecedor = $event.option.value; onListFornecedores('');">
+            <mat-option [value]="null">Nenhum</mat-option>
+            <mat-option *ngFor="let fornecedor of fornecedores" [value]="fornecedor">{{fornecedor?.razaoSocial}}
+            </mat-option>
+          </mat-autocomplete>
+
+          <mat-form-field fxFlex="20" appearance="outline">
+            <mat-label>Data emissão</mat-label>
+            <input matInput [disabled]="true" [value]="compra.created ? (compra.created | date:'dd/MM/yyyy hh:mm:ss') : '-'">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" >
+            <mat-label>Data Chegada</mat-label>
+            <input matInput required [matDatepicker]="startDate" [(ngModel)]="compra.dataChegada" name="dataChegada">
+            <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+            <mat-datepicker #startDate></mat-datepicker>
+          </mat-form-field>
+
+        </div>
+
+        <div fxFlex fxLayout="row" fxLayoutGap="30px">
+
+          <mat-form-field appearance="outline" >
+            <mat-label>Tipo de frete</mat-label>
+            <mat-select [(ngModel)]="compra.tipoFrete" name="tipoFrete">
+              <mat-option [value]="'DESTINATARIO'">
+                Pago pelo destinatário
+              </mat-option>
+              <mat-option [value]="'FORNECEDOR'">
+                Pago pelo fornecedor
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+          <mat-form-field fxFlex appearance="outline">
+            <mat-label>Frete</mat-label>
+            <input matInput [(ngModel)]="compra.frete" name="frete">
+          </mat-form-field>
+
+          <mat-form-field fxFlex appearance="outline">
+            <mat-label>Seguro</mat-label>
+            <input matInput [(ngModel)]="compra.seguro" name="seguro">
+          </mat-form-field>
+
+          <mat-form-field fxFlex appearance="outline">
+            <mat-label>Despesa</mat-label>
+            <input matInput [(ngModel)]="compra.despesa" name="despesa">
+          </mat-form-field>
+        </div>
+
+      </form>
+    </mat-tab>
+
+    <mat-tab label="ITENS DA COMPRA">
+
+      <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="30px" class="pad-sm push-bottom-sm">
+
+        <div fxLayout="column">
+          <label class="bold">ITENS DA COMPRA</label>
+        </div>
+
+        <div fxFlex></div>
+
+        <div fxLayout="column" fxLayoutAlign=" center">
+          <label class="bold">TOTAL DE ITENS</label>
+          <label>3</label>
+        </div>
+
+        <div fxLayout="column" fxLayoutAlign=" center">
+          <label class="bold">TOTAL DA COMPRA</label>
+          <label>R$ 0</label>
+        </div>
+
+        <button color="accent" class="white-btn" (click)="addImagemButton()" mat-raised-button>ADICIONAR ITEM</button>
+
+      </div>
+
+      <mat-expansion-panel *ngFor="let item of [1, 2, 3]; let i = index" class="push-sm">
+        <mat-expansion-panel-header>
+          <mat-panel-title fxLayoutGap="20px">
+            <div fxLayout="column">
+              <label class="bold">{{item}} -</label>
+            </div>
+
+            <div fxLayout="column">
+              <label class="bold">Item {{item}}</label>
+            </div>
+          </mat-panel-title>
+
+        </mat-expansion-panel-header>
+
+        <div fxLayout="row" fxLayoutGap="30px">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Produto</mat-label>
+            <input matInput>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Quantidade</mat-label>
+            <input matInput>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Unidade de medida</mat-label>
+            <input matInput [disabled]="true">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Custo unitário</mat-label>
+            <input matInput [disabled]="true">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Valor unitário</mat-label>
+            <input matInput [disabled]="true">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Valor total</mat-label>
+            <input matInput [disabled]="true">
+          </mat-form-field>
+
+        </div>
+      </mat-expansion-panel>
+    </mat-tab>
+
+    <mat-tab label="CONTAS Á PAGAR">
+
+
+      <div fxFlex fxLayout="row" class="push-top-md">
+        <mat-form-field fxFlex appearance="outline">
+          <mat-label>Condição de pagamento</mat-label>
+          <input matInput>
+        </mat-form-field>
+      </div>
+
+      <div fxLayout="column" class="pad-sm">
+        <label class="bold">CONTAS À PAGAR</label>
+      </div>
+
+      <mat-expansion-panel *ngFor="let item of [1, 2, 3]; let i = index" class="push-sm">
+        <mat-expansion-panel-header>
+          <mat-panel-title fxLayoutGap="20px">
+            <div fxLayout="column">
+              <label class="bold">{{item}} -</label>
+            </div>
+
+            <div fxLayout="column">
+              <label class="bold">Parcela {{item}}</label>
+            </div>
+          </mat-panel-title>
+
+        </mat-expansion-panel-header>
+
+        <div fxLayout="row" fxLayoutGap="30px">
+          <mat-form-field appearance="outline">
+            <mat-label>Data de vencimento</mat-label>
+            <input matInput [disabled]="true">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Número do documento</mat-label>
+            <input matInput [disabled]="true">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Valor da parcela</mat-label>
+            <input matInput [disabled]="true">
+          </mat-form-field>
+
+        </div>
+      </mat-expansion-panel>
+
+    </mat-tab>
+
+
+
+  </mat-tab-group>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+  <div fxLayout="column">
+    <label> <label style="font-weight: bold">Data de criação:</label>
+      {{ compra?.created ? (compra?.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+      {{ compra?.updated ? (compra?.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+  </div>
+
+  <div>
+    <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+      color="primary">
+      SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
+    push-left-md bgc-grey-800">
+      CANCELAR
+    </button>
+  </div>
+</mat-dialog-actions>

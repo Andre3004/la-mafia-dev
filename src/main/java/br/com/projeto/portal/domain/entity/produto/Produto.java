@@ -39,10 +39,6 @@ public class Produto extends AbstractEntity
 
 	private GrupoProduto grupoProduto;
 
-	private Double precoCusto = new Double(0);
-
-	private Double precoVenda;
-
 	private String unidadeComercial;
 
 	private String codigoBarras;

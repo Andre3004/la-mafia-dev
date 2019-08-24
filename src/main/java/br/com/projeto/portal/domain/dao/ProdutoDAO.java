@@ -60,8 +60,6 @@ public class ProdutoDAO implements IProdutoRepository
 						"situacao, " +
 						"anexo_uuid, " +
 						"nome_arquivo, " +
-						"preco_custo, " +
-						"preco_venda, " +
 						"grupo_produto_id, " +
 						"codigo_barras, " +
 						"unidade_comercial, " +
@@ -73,8 +71,6 @@ public class ProdutoDAO implements IProdutoRepository
 				produto.getSituacao(),
 				produto.getAnexoUuid(),
 				produto.getNomeArquivo(),
-				produto.getPrecoCusto(),
-				produto.getPrecoVenda(),
 				produto.getGrupoProduto().getCodigo(),
 				produto.getCodigoBarras(),
 				produto.getUnidadeComercial(),
@@ -94,8 +90,6 @@ public class ProdutoDAO implements IProdutoRepository
 						"anexo_uuid = ?, " +
 						"nome_arquivo = ?, " +
 						"grupo_produto_id = ?, "+
-						"preco_custo = ?, " +
-						"preco_venda = ?, " +
 						"codigo_barras  = ?, " +
 						"unidade_comercial  = ?, " +
 						"fornecedor_id  = ?, " +
@@ -108,8 +102,6 @@ public class ProdutoDAO implements IProdutoRepository
 				produto.getAnexoUuid(),
 				produto.getNomeArquivo(),
 				produto.getGrupoProduto().getCodigo(),
-				produto.getPrecoCusto(),
-				produto.getPrecoVenda(),
 				produto.getCodigoBarras(),
 				produto.getUnidadeComercial(),
 				produto.getFornecedor() != null ? produto.getFornecedor().getIdFornecedor() : null,
