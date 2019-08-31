@@ -61,7 +61,7 @@
 <mat-card>
 
 	<td-data-table #dataTable [data]="pageRequest.content" [columns]="tableColumns" [clickable]="true">
-<!-- 
+
 		<ng-template fxLayoutAlign="end" tdDataTableTemplate="situacao" let-compra="row">
 			<mat-icon *ngIf="compra?.situacao" class="tc-green-700" matTooltip="Ativado">check_circle</mat-icon>
 			<mat-icon *ngIf="!compra?.situacao" matTooltip="Desativado" class="tc-red-700">block</mat-icon>
@@ -69,9 +69,9 @@
 
 		<ng-template fxLayoutAlign="end" tdDataTableTemplate="opcoes" let-compra="row">
 
-			<button matTooltip="Editar compra" stopPropagation (click)="$event.stopPropagation(); openForm(compra)"
+			<button matTooltip="Visualizar compra" stopPropagation (click)="$event.stopPropagation(); openForm(compra, true)"
 				mat-icon-button>
-				<mat-icon class="tc-grey-700 edit-button-hover">edit</mat-icon>
+				<mat-icon class="tc-grey-700 edit-button-hover">visibility</mat-icon>
 			</button>
 
 			<button *ngIf="!compra.situacao" matTooltip="Ativar compra"
@@ -79,12 +79,12 @@
 				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
 			</button>
 
-			<button *ngIf="compra.situacao" matTooltip="Excluir/Desativar compra"
+			<button *ngIf="compra.situacao" matTooltip="Desativar compra"
 				(click)="$event.stopPropagation(); atualizarSituacaoCompra(compra)" stopPropagation mat-icon-button>
 				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
 			</button>
 
-		</ng-template> -->
+		</ng-template>
 
 	</td-data-table>
 

@@ -71,7 +71,7 @@ logging.level:
   org.springframework.web: INFO
   org.springframework.context.support: INFO
   org.springframework.security: INFO
-  org.springframework.jdbc.core: TRACE
+#  org.springframework.jdbc.core: TRACE
 
 #FLYWAY
 flyway:

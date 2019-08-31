@@ -24,6 +24,7 @@
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Unidade comercial</mat-label>
                 <input uppercase  [(ngModel)]="produto.unidadeComercial" name="unidadeComercial" matInput
+                    required
                     maxlength="50" placeholder="Digite a unidade comercial do produto">
             </mat-form-field>
 
@@ -54,19 +55,19 @@
         <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign=" center">
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Estoque</mat-label>
-                <input value="-" matInput [disabled]="true">
+                <input [value]="produto?.currentEstoque?.saldo || '-'" matInput [disabled]="true">
             </mat-form-field>
 
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Preço de custo</mat-label>
-                <input [(ngModel)]="produto.precoCusto" name="precoCusto" matInput required
+                <input [(ngModel)]="produto.currentEstoque.precoCusto" name="precoCusto" matInput required
                     [textMask]="{mask: textMasks.getDecimalNumberMask(5, 2), guide: false}"
-                    placeholder="Digite o preço de custo do produto" [disabled]="true">
+                    placeholder="Digite o preço de custo do produto" >
             </mat-form-field>
 
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Preço de venda</mat-label>
-                <input [(ngModel)]="produto.precoVenda" name="precoVenda" matInput
+                <input [(ngModel)]="produto.currentEstoque.precoVenda" name="precoVenda" matInput required
                     [textMask]="{mask: textMasks.getDecimalNumberMask(5, 2), guide: false}"
                     placeholder="Digite o preço de venda do produto">
             </mat-form-field>

@@ -1,5 +1,8 @@
 package br.com.projeto.portal.domain.entity.produto;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
 import org.directwebremoting.annotations.DataTransferObject;
 
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
@@ -11,19 +14,27 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode
 @DataTransferObject(javascript = "Estoque")
-public class Estoque extends AbstractEntity
+public class Estoque implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private Franquia franquia;
 
 	private Produto produto;
 
 	private Double precoCusto = new Double(0);
 
-	private Double precoVenda;
+	private Double precoVenda = new Double(0);
+
+	private Integer saldo;
 
 	//@Transient
 	private Long franquiaId;
 
 	//@Transient
 	private Long produtoId;
+
+	protected LocalDateTime created;
+
+	protected LocalDateTime updated;
 }

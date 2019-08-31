@@ -5,23 +5,23 @@
 
   <mat-tab-group>
     <mat-tab label="INFORMAÇÕES">
-      <form #qualificadorForm="ngForm" fxLayout="column">
+      <form #informacoesForm="ngForm" fxLayout="column">
 
         <div class="push-top-md" fxLayout="row" fxLayoutGap="30px">
 
           <mat-form-field fxFlex="20" appearance="outline">
             <mat-label>Modelo</mat-label>
-            <input matInput [(ngModel)]="compra.modelo" name="modelo" maxlength="144">
+            <input matInput required [(ngModel)]="compra.modelo" name="modelo" maxlength="144" [disabled]="isDetail" >
           </mat-form-field>
 
           <mat-form-field fxFlex="25" appearance="outline">
             <mat-label>Serie</mat-label>
-            <input matInput  [(ngModel)]="compra.serie" name="serie" maxlength="144">
+            <input matInput required [(ngModel)]="compra.serie" name="serie" maxlength="144" [disabled]="isDetail" >
           </mat-form-field>
 
           <mat-form-field fxFlex appearance="outline">
             <mat-label>Número da nota</mat-label>
-            <input matInput  [(ngModel)]="compra.numeroNota" name="numeroNota" maxlength="144">
+            <input matInput required [(ngModel)]="compra.numeroNota" name="numeroNota" maxlength="144" [disabled]="isDetail" >
           </mat-form-field>
 
         </div>
@@ -32,17 +32,17 @@
 
           <mat-form-field fxFlex appearance="outline">
             <mat-label>Fornecedor</mat-label>
-            <input  uppercase type="text" matInput [matAutocomplete]="autoFornecedor" #inputFilterFornecedor
-              [disabled]="compra?.fornecedor?.idFornecedor" [(ngModel)]="compra.fornecedor" name="fornecedor"
+            <input required uppercase type="text" matInput [matAutocomplete]="autoFornecedor" #inputFilterFornecedor
+              [disabled]="compra?.fornecedor?.idFornecedor || isDetail" [(ngModel)]="compra.fornecedor" name="fornecedor"
               (ngModelChange)="onListFornecedores(inputFilterFornecedor.value);">
-      
-            <button *ngIf="compra?.fornecedor?.idFornecedor"
+
+            <button *ngIf="compra?.fornecedor?.idFornecedor && !isDetail"
               (click)="compra.fornecedor = null;  onListFornecedores('');" matTooltip="Remover fornecedor" matSuffix
               mat-icon-button class="tc-grey-700 delete-button-hover">
               <mat-icon>delete</mat-icon>
             </button>
           </mat-form-field>
-      
+
           <mat-autocomplete [displayWith]="displayFnFornecedor" #autoFornecedor="matAutocomplete"
             (optionSelected)="compra.fornecedor = $event.option.value; onListFornecedores('');">
             <mat-option [value]="null">Nenhum</mat-option>
@@ -52,12 +52,13 @@
 
           <mat-form-field fxFlex="20" appearance="outline">
             <mat-label>Data emissão</mat-label>
-            <input matInput [disabled]="true" [value]="compra.created ? (compra.created | date:'dd/MM/yyyy hh:mm:ss') : '-'">
+            <input matInput [disabled]="true"
+              [value]="compra.created ? (compra.created | date:'dd/MM/yyyy hh:mm:ss') : '-'">
           </mat-form-field>
 
-          <mat-form-field appearance="outline" >
+          <mat-form-field appearance="outline">
             <mat-label>Data Chegada</mat-label>
-            <input matInput required [matDatepicker]="startDate" [(ngModel)]="compra.dataChegada" name="dataChegada">
+            <input matInput required [matDatepicker]="startDate" [(ngModel)]="compra.dataChegada" [disabled]="isDetail"  name="dataChegada">
             <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
             <mat-datepicker #startDate></mat-datepicker>
           </mat-form-field>
@@ -66,13 +67,13 @@
 
         <div fxFlex fxLayout="row" fxLayoutGap="30px">
 
-          <mat-form-field appearance="outline" >
+          <mat-form-field appearance="outline">
             <mat-label>Tipo de frete</mat-label>
-            <mat-select [(ngModel)]="compra.tipoFrete" name="tipoFrete">
-              <mat-option [value]="'DESTINATARIO'">
+            <mat-select required [(ngModel)]="compra.tipoFrete" name="tipoFrete" [disabled]="isDetail" >
+              <mat-option [value]="'PAGO_PELO_DESTINATARIO'">
                 Pago pelo destinatário
               </mat-option>
-              <mat-option [value]="'FORNECEDOR'">
+              <mat-option [value]="'PAGO_PELO_FORNECEDOR'">
                 Pago pelo fornecedor
               </mat-option>
             </mat-select>
@@ -81,24 +82,45 @@
 
           <mat-form-field fxFlex appearance="outline">
             <mat-label>Frete</mat-label>
-            <input matInput [(ngModel)]="compra.frete" name="frete">
+            <input matInput required [(ngModel)]="compra.frete" name="frete" currencyMask [options]="{
+              align: 'left',
+              prefix: '',
+              thousands: '.',
+              decimal: ',',
+              precision: 2,
+              allowNegative: false
+            }" maxlength="9" [disabled]="isDetail" >
           </mat-form-field>
 
           <mat-form-field fxFlex appearance="outline">
             <mat-label>Seguro</mat-label>
-            <input matInput [(ngModel)]="compra.seguro" name="seguro">
+            <input matInput required [(ngModel)]="compra.seguro" name="seguro" currencyMask [options]="{
+              align: 'left',
+              prefix: '',
+              thousands: '.',
+              decimal: ',',
+              precision: 2,
+              allowNegative: false
+            }" maxlength="9" [disabled]="isDetail" >
           </mat-form-field>
 
           <mat-form-field fxFlex appearance="outline">
             <mat-label>Despesa</mat-label>
-            <input matInput [(ngModel)]="compra.despesa" name="despesa">
+            <input matInput required [(ngModel)]="compra.despesa" name="despesa" currencyMask [options]="{
+              align: 'left',
+              prefix: '',
+              thousands: '.',
+              decimal: ',',
+              precision: 2,
+              allowNegative: false
+            }" maxlength="9" [disabled]="isDetail" >
           </mat-form-field>
         </div>
 
       </form>
     </mat-tab>
 
-    <mat-tab label="ITENS DA COMPRA">
+    <mat-tab label="ITENS DA COMPRA" [disabled]="informacoesForm?.invalid">
 
       <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="30px" class="pad-sm push-bottom-sm">
 
@@ -110,91 +132,158 @@
 
         <div fxLayout="column" fxLayoutAlign=" center">
           <label class="bold">TOTAL DE ITENS</label>
-          <label>3</label>
+          <label>{{compra.itensCompra.length}}</label>
         </div>
 
         <div fxLayout="column" fxLayoutAlign=" center">
           <label class="bold">TOTAL DA COMPRA</label>
-          <label>R$ 0</label>
+          <label>R$ {{getValorTotalCompra | number:'.2':'pt'}}</label>
         </div>
-
-        <button color="accent" class="white-btn" (click)="addImagemButton()" mat-raised-button>ADICIONAR ITEM</button>
 
       </div>
 
-      <mat-expansion-panel *ngFor="let item of [1, 2, 3]; let i = index" class="push-sm">
+      <div fxLayout="row wrap" fxLayoutGap="30px" fxLayoutAlign=" center" *ngIf="!isDetail">
+
+        <mat-form-field fxFlex="20" appearance="outline">
+          <mat-label>Produto</mat-label>
+          <input required uppercase type="text" matInput [matAutocomplete]="autoProduto" #inputFilterFornecedor
+            [disabled]="itemCompra.codigo" [(ngModel)]="itemCompra" name="produto"
+            (ngModelChange)="onListProdutos(inputFilterFornecedor.value);" [disabled]="isDetail" >
+
+          <button *ngIf="itemCompra.codigo && !isDetail" (click)="$event.stopPropagation(); itemCompra = {};  onListProdutos('');"
+            matTooltip="Remover produto" matSuffix mat-icon-button class="tc-grey-700 delete-button-hover">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-autocomplete [displayWith]="displayFnProduto" #autoProduto="matAutocomplete"
+          (optionSelected)="onSelectProduto($event.option.value)">
+          <mat-option [value]="null">Nenhum</mat-option>
+          <mat-option *ngFor="let produto of produtos" [value]="produto">{{produto?.produto}}
+          </mat-option>
+        </mat-autocomplete>
+
+        <mat-form-field appearance="outline" fxFlex="15">
+          <mat-label>Unidade de medida</mat-label>
+          <input matInput [disabled]="true" [(ngModel)]="itemCompra.unidadeComercial" name="unidadeComercial">
+        </mat-form-field>
+
+
+
+        <mat-form-field appearance="outline" fxFlex="11">
+          <mat-label>Quantidade</mat-label>
+          <input matInput [(ngModel)]="itemCompra.quantidade" [disabled]="isDetail"  name="quantidade" required currencyMask [options]="{
+            align: 'left',
+            prefix: '',
+            thousands: '.',
+            precision: 0,
+            allowNegative: false
+          }" maxlength="4">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" fxFlex="10">
+          <mat-label>Custo unitário</mat-label>
+          <input matInput [disabled]="true" [value]="itemCompra?.currentEstoque?.precoCusto" name="custoUnitario">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" fxFlex="12">
+          <mat-label>Valor unitário</mat-label>
+          <input matInput [(ngModel)]="itemCompra.valorUnitario" [disabled]="isDetail"  name="valorUnitario" required currencyMask [options]="{
+            align: 'left',
+            prefix: '',
+            thousands: '.',
+            decimal: ',',
+            precision: 2,
+            allowNegative: false
+          }" maxlength="9">
+        </mat-form-field>
+
+
+        <mat-form-field appearance="outline" fxFlex="10">
+          <mat-label>Valor total</mat-label>
+          <input matInput [value]="getValorTotal(itemCompra)" [disabled]="true">
+        </mat-form-field>
+
+        <button *ngIf="!isDetail" (click)="addItemCompra()" [disabled]="!itemCompraIsValid" mat-mini-fab color="warn"
+          matTooltip="Adicionar item na compra">
+          <mat-icon>
+            add
+          </mat-icon>
+        </button>
+
+      </div>
+
+      <div *ngFor="let item of compra.itensCompra; let i = index" class="push-md" fxLayout="row" fxLayoutGap="20px">
+        <detail-field label="Item" value="{{i+1}}"></detail-field>
+        <detail-field label="Produto" value="{{item?.produto}}"></detail-field>
+        <detail-field label="Unidade de medida" value="{{item?.unidadeComercial}}"></detail-field>
+        <detail-field label="Quantidade" value="{{item?.quantidade}}"></detail-field>
+        <detail-field matTooltip="Valor com a conversão das despesas" label="Custo unitário"
+          value="{{getCustoUnitario(item) | number:'.2':'pt'}}"></detail-field>
+        <detail-field label="Valor unitário" value="{{item?.valorUnitario | number:'.2':'pt'}} "></detail-field>
+        <detail-field label="Valor total" value="{{getValorTotal(item) | number:'.2':'pt'}}"></detail-field>
+
+        <button *ngIf="!isDetail" (click)="removeItemCompra(i)" matTooltip="Remover item da compra" matSuffix mat-icon-button
+          class="tc-grey-700 delete-button-hover">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+      <!-- <mat-expansion-panel *ngFor="let item of compra.itensCompra; let i = index" class="push-sm" >
         <mat-expansion-panel-header>
           <mat-panel-title fxLayoutGap="20px">
             <div fxLayout="column">
-              <label class="bold">{{item}} -</label>
+              <label class="bold">{{i}} -</label>
             </div>
 
             <div fxLayout="column">
-              <label class="bold">Item {{item}}</label>
+              <label class="bold">Item {{i}}</label>
             </div>
           </mat-panel-title>
 
         </mat-expansion-panel-header>
 
-        <div fxLayout="row" fxLayoutGap="30px">
-
-          <mat-form-field appearance="outline">
-            <mat-label>Produto</mat-label>
-            <input matInput>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Quantidade</mat-label>
-            <input matInput>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Unidade de medida</mat-label>
-            <input matInput [disabled]="true">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Custo unitário</mat-label>
-            <input matInput [disabled]="true">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Valor unitário</mat-label>
-            <input matInput [disabled]="true">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Valor total</mat-label>
-            <input matInput [disabled]="true">
-          </mat-form-field>
-
-        </div>
-      </mat-expansion-panel>
+        
+      </mat-expansion-panel> -->
     </mat-tab>
 
-    <mat-tab label="CONTAS Á PAGAR">
+    <mat-tab [disabled]="informacoesForm?.invalid || !compra.itensCompra.length" label="CONTAS Á PAGAR">
 
 
-      <div fxFlex fxLayout="row" class="push-top-md">
-        <mat-form-field fxFlex appearance="outline">
-          <mat-label>Condição de pagamento</mat-label>
-          <input matInput>
-        </mat-form-field>
-      </div>
+      <mat-form-field fxFlex style="width: 100%" appearance="outline">
+        <mat-label>Condição de pagamento</mat-label>
+        <input fxFlex required uppercase type="text" matInput [matAutocomplete]="autoCondicaoPagamento"
+          #inputFilterCondicaoPagamento [disabled]="compra?.condicaoPagamento?.codigo || isDetail"
+          [(ngModel)]="compra.condicaoPagamento" name="condicaoPagamento"
+          (ngModelChange)="onListCondicaoPagamentos(inputFilterCondicaoPagamento.value);">
+
+        <button *ngIf="compra?.condicaoPagamento?.codigo && !isDetail"
+          (click)="compra.condicaoPagamento = null;  onListCondicaoPagamentos('');"
+          matTooltip="Remover condição de pagamento" matSuffix mat-icon-button class="tc-grey-700 delete-button-hover">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-autocomplete [displayWith]="displayFnCondicaoPagamento" #autoCondicaoPagamento="matAutocomplete"
+        (optionSelected)="onSelectCondicaoPagamento($event.option.value)">
+        <mat-option [value]="null">Nenhum</mat-option>
+        <mat-option *ngFor="let condicaoPagamento of condicoesPagamentos" [value]="condicaoPagamento">
+          {{condicaoPagamento?.codigo}}
+        </mat-option>
+      </mat-autocomplete>
 
       <div fxLayout="column" class="pad-sm">
         <label class="bold">CONTAS À PAGAR</label>
       </div>
 
-      <mat-expansion-panel *ngFor="let item of [1, 2, 3]; let i = index" class="push-sm">
+      <mat-expansion-panel *ngFor="let contaAPagar of compra.contasAPagar; let i = index" class="push-sm">
         <mat-expansion-panel-header>
           <mat-panel-title fxLayoutGap="20px">
             <div fxLayout="column">
-              <label class="bold">{{item}} -</label>
+              <label class="bold">{{i+1}} -</label>
             </div>
 
             <div fxLayout="column">
-              <label class="bold">Parcela {{item}}</label>
+              <label class="bold">Parcela {{i+1}}</label>
             </div>
           </mat-panel-title>
 
@@ -203,17 +292,17 @@
         <div fxLayout="row" fxLayoutGap="30px">
           <mat-form-field appearance="outline">
             <mat-label>Data de vencimento</mat-label>
-            <input matInput [disabled]="true">
+            <input matInput [disabled]="true" [value]="contaAPagar.dataVencimento | date:'dd/MM/yyyy'">
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Número do documento</mat-label>
-            <input matInput [disabled]="true">
+            <input matInput [disabled]="true" [value]="getNumeroDocumento(i)">
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Valor da parcela</mat-label>
-            <input matInput [disabled]="true">
+            <input matInput [disabled]="true" value="{{getValorParcela(i) | number:'.2':'pt'}}">
           </mat-form-field>
 
         </div>
@@ -237,13 +326,14 @@
   </div>
 
   <div>
-    <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
-      color="primary">
+
+    <button *ngIf="!isDetail" [disabled]="!validForm(informacoesForm)" (click)="onSubmit(informacoesForm)" mat-raised-button
+      class="white-btn" color="primary">
       SALVAR
     </button>
     <button mat-dialog-close mat-raised-button class="white-btn
     push-left-md bgc-grey-800">
-      CANCELAR
+      {{!isDetail ? 'CANCELAR' : 'FECHAR'}}
     </button>
   </div>
 </mat-dialog-actions>

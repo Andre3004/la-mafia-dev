@@ -1,6 +1,8 @@
 package br.com.projeto.portal.domain.entity.produto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.projeto.portal.domain.entity.Fornecedor;
 import br.com.projeto.portal.domain.entity.grupoProduto.GrupoProduto;
@@ -55,6 +57,12 @@ public class Produto extends AbstractEntity
 
 	//@Transient
 	private Integer fornecedorId;
+
+	//@Transient
+	private List<Estoque> estoques = new ArrayList<Estoque>(  );
+
+	//@Transient
+	private Estoque currentEstoque;
 
 	/*-------------------------------------------------------------------
 	 * 		 					CONSTRUCTORS

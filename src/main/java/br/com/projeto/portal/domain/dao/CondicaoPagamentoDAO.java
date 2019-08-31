@@ -138,6 +138,7 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 				e.setMulta(rs.getDouble("multa"));
 				e.setDesconto(rs.getDouble("desconto"));
 				e.setSituacao(rs.getBoolean("situacao"));
+				e.setParcelas( findCondicaoPagamentoParcelaById( rs.getLong("codigo") ) );
 				return e;
 			}
 		});

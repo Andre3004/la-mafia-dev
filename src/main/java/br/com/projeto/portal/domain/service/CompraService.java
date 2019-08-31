@@ -4,9 +4,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.dao.CompraDAO;
+import br.com.projeto.portal.domain.dao.EstoqueDAO;
 import br.com.projeto.portal.domain.entity.compra.Compra;
 import br.com.projeto.portal.domain.entity.compra.ItemCompra;
+import br.com.projeto.portal.domain.entity.contasApagar.ContasAPagar;
 import br.com.projeto.portal.domain.repository.ICompraRepository;
 
 import org.directwebremoting.annotations.RemoteProxy;
@@ -28,6 +31,9 @@ public class CompraService implements ICompraRepository
 	@Autowired
 	private CompraDAO compraDao;
 
+	@Autowired
+	private EstoqueDAO estoqueDAO;
+
 	/*-------------------------------------------------------------------
 	 *				 		     SERVICES
 	 *-------------------------------------------------------------------*/
@@ -46,18 +52,37 @@ public class CompraService implements ICompraRepository
 	}
 
 	@Override
-	@Transactional
 	public void insertCompra( Compra compra )
 	{
 		compra.setSituacao( true );
+		compra.setUsuario( ContextHolder.getAuthenticatedUser() );
 		this.compraDao.insertCompra( compra );
 
-		if ( compra.getItemCompra() != null && compra.getItemCompra().size() > 0 )
+		if ( compra.getItensCompra() != null && compra.getItensCompra().size() > 0 )
 		{
-			for ( ItemCompra itemCompra : compra.getItemCompra() )
+			for ( ItemCompra itemCompra : compra.getItensCompra() )
 			{
 				itemCompra.setCompra( compra );
 				compraDao.insertItemCompra( itemCompra );
+
+				if(itemCompra.getCurrentEstoque().getCreated() == null)
+				{
+					itemCompra.getCurrentEstoque().setSaldo( itemCompra.getCurrentEstoque().getSaldo().intValue() +  itemCompra.getQuantidade().intValue() );
+					estoqueDAO.insertEstoque(itemCompra.getCurrentEstoque());
+				}
+				else
+				{
+					itemCompra.getCurrentEstoque().setSaldo( itemCompra.getCurrentEstoque().getSaldo().intValue() +  itemCompra.getQuantidade().intValue() );
+					estoqueDAO.updateEstoque(itemCompra.getCurrentEstoque());
+				}
+			}
+		}
+
+		if ( compra.getContasAPagar() != null && compra.getContasAPagar().size() > 0 )
+		{
+			for ( ContasAPagar contasAPagar : compra.getContasAPagar() )
+			{
+				compraDao.insertContaAPagar( contasAPagar );
 			}
 		}
 	}
@@ -65,6 +90,15 @@ public class CompraService implements ICompraRepository
 	@Override
 	public void updateSituacaoCompra( String modelo, String serie, String numNota, Long idFornecedor, boolean situacao )
 	{
+		Compra compra = this.findCompraById( modelo, serie, numNota, idFornecedor );
+		compra.getItensCompra().forEach( itemCompra -> {
+			if(situacao)
+				itemCompra.getCurrentEstoque().setSaldo( itemCompra.getCurrentEstoque().getSaldo().intValue() +  itemCompra.getQuantidade().intValue() );
+			else
+				itemCompra.getCurrentEstoque().setSaldo( itemCompra.getCurrentEstoque().getSaldo().intValue() -  itemCompra.getQuantidade().intValue() );
+			estoqueDAO.updateEstoque(itemCompra.getCurrentEstoque());
+		});
+
 		this.compraDao.updateSituacaoCompra( modelo, serie, numNota, idFornecedor, situacao );
 	}
 

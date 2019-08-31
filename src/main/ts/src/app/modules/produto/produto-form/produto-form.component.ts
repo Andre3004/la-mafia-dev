@@ -17,7 +17,7 @@ export class ProdutoFormComponent implements OnInit
     *-------------------------------------------------------------------*/
   public title = "";
 
-  public produto: Produto = {codigo: 0};
+  public produto: Produto = {codigo: 0, currentEstoque:{}};
 
   public fotoImage: any;
 

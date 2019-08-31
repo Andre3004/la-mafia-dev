@@ -245,9 +245,9 @@ CREATE TABLE compra(
 CREATE TABLE contas_a_pagar(
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
-    modelo character varying(3) NOT NULL,
-    serie character varying(2) NOT NULL,
-    numero_nota int NOT NULL,
+    modelo character varying(144) NOT NULL,
+    serie character varying(144) NOT NULL,
+    numero_nota character varying(144) NOT NULL,
     fornecedor_id bigint REFERENCES fornecedor NOT NULL,
 	numero_parcela int NOT NULL,
 	data_vencimento TIMESTAMP NOT NULL,
@@ -257,6 +257,8 @@ CREATE TABLE contas_a_pagar(
 );
 
 CREATE TABLE item_compra(
+    created TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
     modelo character varying(144) NOT NULL,
     serie character varying(144) NOT NULL,
 	numero_nota character varying(144) NOT NULL,
@@ -268,6 +270,8 @@ CREATE TABLE item_compra(
 );
 
 CREATE TABLE estoque(
+    created TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
     franquia_id bigint REFERENCES franquia,
     produto_id bigint REFERENCES produto,
 	saldo int,

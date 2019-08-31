@@ -7,6 +7,7 @@ import java.util.List;
 import org.directwebremoting.annotations.DataTransferObject;
 
 import br.com.projeto.portal.domain.entity.Fornecedor;
+import br.com.projeto.portal.domain.entity.contasApagar.ContasAPagar;
 import br.com.projeto.portal.domain.entity.pagamento.CondicaoPagamento;
 import br.com.projeto.portal.domain.entity.usuario.Usuario;
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
@@ -54,7 +55,9 @@ public class Compra extends AbstractEntity
 
 	private Usuario usuario;
 
-	private List<ItemCompra> itemCompra = new ArrayList<>();
+	private List<ItemCompra> itensCompra = new ArrayList<>();
+
+	private List<ContasAPagar> contasAPagar = new ArrayList<>();
 
 	public Compra()
 	{

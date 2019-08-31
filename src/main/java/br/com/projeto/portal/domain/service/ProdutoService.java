@@ -2,6 +2,7 @@ package br.com.projeto.portal.domain.service;
 
 import java.time.LocalDateTime;
 
+import br.com.projeto.portal.domain.dao.EstoqueDAO;
 import br.com.projeto.portal.domain.dao.ProdutoDAO;
 import br.com.projeto.portal.domain.entity.produto.Produto;
 import br.com.projeto.portal.domain.repository.IProdutoRepository;
@@ -26,6 +27,9 @@ public class ProdutoService implements IProdutoRepository
 
 	@Autowired
 	private ProdutoDAO produtoDao;
+
+	@Autowired
+	private EstoqueDAO estoqueDAO;
 
 	@Autowired
 	private IArquivoRepository arquivoRepository;
@@ -61,6 +65,12 @@ public class ProdutoService implements IProdutoRepository
 		if(produto.getAnexo() != null)
 			this.insertArquivo( produto );
 
+		if(produto.getCurrentEstoque().getCreated() == null)
+			this.estoqueDAO.insertEstoque( produto.getCurrentEstoque() );
+		else
+			this.estoqueDAO.updateEstoque( produto.getCurrentEstoque() );
+
+
 		produto.setSituacao( true );
 
 		this.produtoDao.insertProduto( produto );
@@ -72,7 +82,10 @@ public class ProdutoService implements IProdutoRepository
 		if(produto.getAnexoUuid() == null && produto.getAnexo() != null)
 			this.insertArquivo( produto );
 
-		Produto produtoSaved = this.produtoDao.findProdutoById( produto.getCodigo() );
+		if(produto.getCurrentEstoque().getCreated() == null)
+			this.estoqueDAO.insertEstoque( produto.getCurrentEstoque() );
+		else
+			this.estoqueDAO.updateEstoque( produto.getCurrentEstoque() );
 
 		produto.setUpdated( LocalDateTime.now() );
 

@@ -38,6 +38,8 @@ public class ItemCompra extends Produto
 	///////Transient values///////
 	private Compra compra;
 
+	private Long produtoId;
+
 	public ItemCompra()
 	{
 	}

@@ -13,6 +13,8 @@ import br.com.projeto.portal.domain.dao.fornecedor.FornecedorDAO;
 
 import br.com.projeto.portal.domain.entity.compra.Compra;
 import br.com.projeto.portal.domain.entity.compra.ItemCompra;
+import br.com.projeto.portal.domain.entity.contasApagar.ContasAPagar;
+import br.com.projeto.portal.domain.entity.produto.Produto;
 import br.com.projeto.portal.domain.repository.ICompraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,6 +46,9 @@ public class CompraDAO implements ICompraRepository {
 	@Autowired
 	CondicaoPagamentoDAO condicaoPagamentoDAO;
 
+	@Autowired
+	ProdutoDAO produtoDAO;
+
 	@Override
 	public void insertCompra( Compra compra )
 	{
@@ -60,7 +65,7 @@ public class CompraDAO implements ICompraRepository {
 						"seguro, " +
 						"despesa, " +
 						"frete, " +
-						"situação, " +
+						"situacao, " +
 						"created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
 				compra.getModelo(),
 				compra.getSerie(),
@@ -68,8 +73,8 @@ public class CompraDAO implements ICompraRepository {
 				compra.getFornecedor().getIdFornecedor(),
 				compra.getUsuario().getCodigo(),
 				compra.getCondicaoPagamento().getCodigo(),
-				compra.getDataChegada(),
-				compra.getTipoFrete(),
+				Timestamp.valueOf(compra.getDataChegada()),
+				compra.getTipoFrete().toString(),
 				compra.getSeguro(),
 				compra.getDespesa(),
 				compra.getFrete(),
@@ -85,8 +90,21 @@ public class CompraDAO implements ICompraRepository {
 		Compra compra = (Compra) jdbcTemplate.queryForObject(sql,
 				new Object[] { modelo,serie,numNota,fornecedorId }, new BeanPropertyRowMapper(Compra.class));
 
-		//   compra.setItemCompra(this.findItemCompraById(modelo,serie,numNota,idFornecedor,idProduto));
+		compra.setFornecedor( this.fornecedorDAO.findFornecedorById( compra.getFornecedorId() ) );
+		compra.setCondicaoPagamento( this.condicaoPagamentoDAO.findCondicaoPagamentoById( compra.getCondicaoPagamentoId() ) );
+
+		compra.setItensCompra(this.findItemCompraById(modelo,serie,numNota,fornecedorId));
+		compra.setContasAPagar(this.findContasAPagar(modelo,serie,numNota,fornecedorId));
 		return compra;
+	}
+
+	private List<ContasAPagar> findContasAPagar( String modelo, String serie, String numNota, Long fornecedorId )
+	{
+		String querySql = "SELECT * FROM contas_a_pagar WHERE modelo = '" + modelo + "' AND  serie = '" + serie + "' AND numero_nota = '" + numNota + "' AND fornecedor_id = " + fornecedorId + " ;" ;
+
+		List<ContasAPagar> contasApagar = jdbcTemplate.query(querySql, new BeanPropertyRowMapper(ContasAPagar.class));
+
+		return contasApagar;
 	}
 
 	public void updateSituacaoCompra( String modelo, String serie, String numNota, Long fornecedorId, boolean situacao )
@@ -135,15 +153,20 @@ public class CompraDAO implements ICompraRepository {
 		return new PageImpl<>(compras, pageable, total);
 	}
 
-	public List<ItemCompra> findItemCompraById( String modelo, String serie, String numNota, Long fornecedorId, Long produtoId )
+	public List<ItemCompra> findItemCompraById( String modelo, String serie, String numNota, Long fornecedorId )
 	{
-		String querySql = "SELECT * FROM item_produto WHERE modelo = " + modelo + " AND  serie = " + serie + " AND numero_nota = " + numNota + " AND fornecedor_id = " + fornecedorId + " AND produto_id = " + produtoId +";" ;
+		String querySql = "SELECT * FROM item_compra WHERE modelo = '" + modelo + "' AND  serie = '" + serie + "' AND numero_nota = '" + numNota + "' AND fornecedor_id = " + fornecedorId + " ;" ;
 
 		List<ItemCompra> itemCompras = jdbcTemplate.query(querySql, new BeanPropertyRowMapper(ItemCompra.class));
 
-//		itemCompras.forEach( itemCompra -> { itemCompra.setFornecedor( fornecedorDAO.findFornecedorById( itemCompra.getIdFornecedor() ) );
-//		});
-
+		for ( ItemCompra itemCompra : itemCompras )
+		{
+			Produto produto = this.produtoDAO.findProdutoById( itemCompra.getProdutoId() );
+			itemCompra.setProduto( produto.getProduto() );
+			itemCompra.setCodigo( produto.getCodigo() );
+			itemCompra.setUnidadeComercial( produto.getUnidadeComercial() );
+			itemCompra.setCurrentEstoque( produto.getCurrentEstoque() );
+		}
 		return itemCompras;
 	}
 
@@ -158,7 +181,7 @@ public class CompraDAO implements ICompraRepository {
 						"produto_id, " +
 						"quantidade, " +
 						"valor_unitario, " +
-						"created) VALUES (?, ?, ?, ?, ?, ?, ?)",
+						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
 				itemCompra.getCompra().getModelo(),
 				itemCompra.getCompra().getSerie(),
 				itemCompra.getCompra().getNumeroNota(),
@@ -189,6 +212,30 @@ public class CompraDAO implements ICompraRepository {
 				itemCompra.getCompra().getNumeroNota(),
 				itemCompra.getCompra().getFornecedor().getIdFornecedor(),
 				itemCompra.getCodigo());
+	}
+
+	public void insertContaAPagar( ContasAPagar contasAPagar )
+	{
+		jdbcTemplate.update(
+				"INSERT INTO contas_a_pagar " +
+						"(modelo, " +
+						"serie, " +
+						"numero_nota, " +
+						"fornecedor_id, " +
+						"numero_parcela, " +
+						"data_vencimento, " +
+						"valor_parcela, " +
+						"situacao, " +
+						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				contasAPagar.getModelo(),
+				contasAPagar.getSerie(),
+				contasAPagar.getNumeroNota(),
+				contasAPagar.getFornecedor().getIdFornecedor(),
+				contasAPagar.getNumero_parcela(),
+				Timestamp.valueOf(contasAPagar.getDataVencimento().atTime( 0,0,0 )),
+				contasAPagar.getValorParcela(),
+				true,
+				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)));
 	}
 
 }

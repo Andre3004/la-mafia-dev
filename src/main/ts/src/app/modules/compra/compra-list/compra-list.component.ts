@@ -6,7 +6,7 @@ import { TdDialogService, ITdDataTableColumn, IPageChangeEvent } from '@covalent
 import { PaginationService } from 'src/app/common/pagination/pagination.service';
 import { AmbienteService, FornecedorService, CompraService } from 'src/generated/services'; //CompraService, 
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
-import { Ambiente, Usuario, Fornecedor } from 'src/generated/entities'; //Compra, 
+import { Ambiente, Usuario, Fornecedor, Compra } from 'src/generated/entities'; //Compra, 
 import { TextMasks } from 'src/app/common/mask/text-masks';
 
 
@@ -40,7 +40,7 @@ export class CompraListComponent implements OnInit
         { name: 'serie', label: 'SERIE', sortable: false },
         { name: 'numeroNota', label: 'NUMERO DA NOTA', sortable: false },
         { name: 'fornecedor.razaoSocial', label: 'FORNECEDOR', sortable: false },
-        // { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 150 }
+        { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 150 }
     ];
 
     public fornecedores: Fornecedor[] = [];
@@ -48,6 +48,7 @@ export class CompraListComponent implements OnInit
     constructor(public dialog: MatDialog, private compraService: CompraService,
         private paginationService: PaginationService,
         private openSnackBarService: OpenSnackBarService,
+        private _dialogService: TdDialogService,
         private fornecedorService: FornecedorService) 
     {
         this.pageRequest = paginationService.pageRequest('modelo', 'ASC', 10);
@@ -64,17 +65,17 @@ export class CompraListComponent implements OnInit
     *-------------------------------------------------------------------*/
 
 
-    public openForm(compra: any) //compra
+    public openForm(compra: Compra, isDetail: boolean = false)
     {
         const dialogRef = this.dialog.open(CompraFormComponent, {
-            width: '1000px',
+            width: '1200px',
             height: 'auto',
-            data: { compraId: compra ? compra.numeroCompra : null }
+            data: { isDetail, compra }
         });
 
-        dialogRef.afterClosed().subscribe(compraSaved =>
+        dialogRef.afterClosed().subscribe(() =>
         {
-            //    if(compraSaved) this.onListCompras();
+            this.onListComprasByFilters();
         });
     }
 
@@ -119,6 +120,48 @@ export class CompraListComponent implements OnInit
         this.pageRequest.pageable.size = pagingEvent.pageSize;
 
         this.onListComprasByFilters();
+    }
+
+    public atualizarSituacaoCompra(compra: Compra)
+    {
+        if(compra.situacao)
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja desativar esta compra ?",
+                title: "Desativar compra",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.compraService.updateSituacaoCompra(compra.modelo, compra.serie, compra.numeroNota, compra.fornecedor.idFornecedor, !compra.situacao).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Compra desativada com sucesso.');
+                        this.onListComprasByFilters();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
+        else
+        {
+            this._dialogService.openConfirm({
+                message: "Tem certeza que deseja ativar esta compra ?",
+                title: "Ativar compra",
+                cancelButton: 'CANCELAR',
+                acceptButton: 'CONFIRMAR',
+                width: '500px'
+            }).afterClosed().subscribe((accept: boolean) =>
+            {
+                if (accept)
+                {
+                    this.compraService.updateSituacaoCompra(compra.modelo, compra.serie, compra.numeroNota, compra.fornecedor.idFornecedor, !compra.situacao).subscribe( result => {
+                        this.openSnackBarService.openSuccess('Compra ativada com sucesso.');
+                        this.onListComprasByFilters();
+                    }, err => this.openSnackBarService.openError(err.message))
+                }
+            });
+        }
     }
 
 
