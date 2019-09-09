@@ -62,19 +62,30 @@ public class CompraService implements ICompraRepository
 		{
 			for ( ItemCompra itemCompra : compra.getItensCompra() )
 			{
-				itemCompra.setCompra( compra );
-				compraDao.insertItemCompra( itemCompra );
-
 				if(itemCompra.getCurrentEstoque().getCreated() == null)
 				{
 					itemCompra.getCurrentEstoque().setSaldo( itemCompra.getCurrentEstoque().getSaldo().intValue() +  itemCompra.getQuantidade().intValue() );
-					estoqueDAO.insertEstoque(itemCompra.getCurrentEstoque());
 				}
 				else
 				{
 					itemCompra.getCurrentEstoque().setSaldo( itemCompra.getCurrentEstoque().getSaldo().intValue() +  itemCompra.getQuantidade().intValue() );
+				}
+
+				itemCompra.setCompra( compra );
+				itemCompra.calculeCustoUnitario();
+
+				if(itemCompra.getCurrentEstoque().getCreated() == null)
+				{
+					itemCompra.getCurrentEstoque().setPrecoCusto( itemCompra.getCustoUnitario() ); //insere o preco de custo atualizado
+					estoqueDAO.insertEstoque(itemCompra.getCurrentEstoque());
+				}
+				else
+				{
+					itemCompra.getCurrentEstoque().setPrecoCusto( itemCompra.getCustoUnitario() ); //atualiza o preco de custo atualizado
 					estoqueDAO.updateEstoque(itemCompra.getCurrentEstoque());
 				}
+
+				compraDao.insertItemCompra( itemCompra );
 			}
 		}
 

@@ -40,7 +40,7 @@ export class CompraFormComponent implements OnInit
 
   public masks = TextMasks;
 
-  public isDetail : boolean = true;
+  public isDetail : boolean = false;
 
   constructor(
     private openSnackBarService: OpenSnackBarService,
@@ -84,8 +84,6 @@ export class CompraFormComponent implements OnInit
 
   public onSubmit(): void
   {
-
-
     this.compra.contasAPagar.forEach((conta, i) =>
     {
       conta.valorParcela = this.getValorParcela(i);
@@ -96,16 +94,18 @@ export class CompraFormComponent implements OnInit
       conta.numero_parcela = i + 1;
     })
 
-    console.log(this.compra)
+    this.compra.itensCompra.forEach((itemCompra, i) =>
+    {
+      itemCompra.custoUnitario = itemCompra.valorUnitario + this.getValorRateio(itemCompra); // TODO validar valor de rateio
+    })
+
     this.compraService.insertCompra(this.compra).subscribe(compra =>
     {
       this.openSnackBarService.openSuccess("Compra salva com sucesso.");
       this.dialogRef.close(this.compra);
     }, err =>
     {
-
       this.openSnackBarService.openError(err.message)
-
     })
 
   }
@@ -159,7 +159,6 @@ export class CompraFormComponent implements OnInit
 
       this.compra.condicaoPagamento.parcelas = this.compra.condicaoPagamento.parcelas.sort();
 
-      console.log(this.compra.condicaoPagamento.parcelas)
       this.compra.contasAPagar = [];
       for (let i = 0; i < this.compra.condicaoPagamento.parcelas.length; i++) 
       {
@@ -200,41 +199,38 @@ export class CompraFormComponent implements OnInit
   public onSelectProduto(produto: Produto)
   {
     this.itemCompra = produto;
-    this.itemCompra.valorUnitario = produto.currentEstoque.precoVenda;
-    this.itemCompra.custoUnitario = produto.currentEstoque.precoCusto;
+    this.itemCompra.valorUnitario = 0;
     this.onListProdutos('');
   }
 
   public getValorTotal(itemProduto: ItemCompra)
   {
-    var valorTotal = this.getCustoUnitario(itemProduto) * itemProduto.quantidade;
+    var valorTotal = itemProduto.valorUnitario * itemProduto.quantidade;
     return isNaN(valorTotal) ? 0 : valorTotal;
   }
 
-  public getCustoUnitario(itemCompra: ItemCompra)
+
+  public getValorRateio(itemCompra: ItemCompra)
   {
-    var valorFinal = itemCompra.custoUnitario;
+    var valorFinal = 0;
 
 
     if( this.compra.itensCompra.length > 0)
     {
+
       ///Soma o valor unitario de todos os itens da compra
-      var total = this.compra.itensCompra.map(item => item.valorUnitario).reduce( (item1, item2) => item1 + item2);
+      var total = this.compra.itensCompra.map(item => item.valorUnitario * item.quantidade).reduce( (item1, item2) => item1 + item2);
   
       //Soma toda as despesas
       var totalDespesas = this.compra.frete + this.compra.despesa + this.compra.seguro; 
       
       //Pega a porcentagem que representa o valor unitario do item do produto referente ao total
-      var porcentagemItem = itemCompra.valorUnitario / total;
+      var porcentagemItem = (itemCompra.valorUnitario * itemCompra.quantidade) / total;
   
       //Pega o valor total que o item vai ter de despesa
-      var valorItems = totalDespesas * porcentagemItem;
-  
-      //Divide pela quantidade para saber o valor da despesa de um único item
-      var valorItem = valorItems / itemCompra.quantidade;
-  
-      //Soma o valor do item e o custo unitario 
-      valorFinal = valorItem + itemCompra.valorUnitario;
+      valorFinal = totalDespesas * porcentagemItem;
+
+      valorFinal /= itemCompra.quantidade;
     }
 
 

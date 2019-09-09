@@ -17,6 +17,7 @@ import { DetailFieldComponent } from './detail-field/detail-field.component';
 
 import { CurrencyMaskModule } from "ng2-currency-mask";
 import localePt from '@angular/common/locales/pt';
+import { AutoCompleteWithRedirectComponent } from './auto-complete-with-redirect/auto-complete-with-redirect.component';
 
 
 registerLocaleData(localePt);
@@ -25,7 +26,8 @@ registerLocaleData(localePt);
     declarations: [
         HeaderComponent,
         UppercaseDirective,
-        DetailFieldComponent
+        DetailFieldComponent,
+        AutoCompleteWithRedirectComponent
     ],
     imports: [
         CommonModule,
@@ -97,6 +99,7 @@ registerLocaleData(localePt);
         HeaderComponent,
         UppercaseDirective,
         DetailFieldComponent,
+        AutoCompleteWithRedirectComponent,
       
         CommonModule,
         FormsModule,

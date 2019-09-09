@@ -1,0 +1,28 @@
+<div fxLayoutAlign=" center">
+
+<mat-form-field fxFlex appearance="outline">
+    <mat-label>{{title}}</mat-label>
+    <input uppercase required #inputFilter type="text" matInput [matAutocomplete]="auto"
+        [disabled]="(itemSelected.selected && itemSelected.selected[key]) || isDetail"
+        [value]="displayFn(itemSelected.selected)" name="seleted"
+        (keyup)="filterChange(inputFilter.value);">
+
+    <button *ngIf="itemSelected.selected && itemSelected.selected[key] && !isDetail" (click)="onDeleteEntity($event)"
+        matTooltip="Remover {{title}}" matSuffix mat-icon-button class="tc-grey-700 delete-button-hover">
+        <mat-icon>delete</mat-icon>
+    </button>
+</mat-form-field>
+
+
+<button (click)="redirect()" mat-mini-fab color="primary" style="margin: 0 0 22px 13px;" matTooltip="Ir para {{title}}">
+    <mat-icon>
+        launch
+    </mat-icon>
+</button>
+
+<mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelectEntity($event.option.value)">
+    <mat-option [value]="null">Nenhum</mat-option>
+    <mat-option *ngFor="let value of list.values" [value]="value">{{displayFn(value)}}
+    </mat-option>
+</mat-autocomplete>
+</div>

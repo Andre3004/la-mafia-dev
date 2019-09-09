@@ -45,4 +45,12 @@ public class ItemCompra extends Produto
 	}
 
 
+	public void calculeCustoUnitario()
+	{
+		Double saldo = this.getCurrentEstoque().getSaldo() != null ? this.getCurrentEstoque().getSaldo() : 0.0;
+		Double precoCusto = this.getCurrentEstoque().getPrecoCusto() != null ? this.getCurrentEstoque().getPrecoCusto() : 0.0;
+		Double custoUnitario = this.custoUnitario != null ? this.custoUnitario : 0.0;
+
+		this.custoUnitario = ( saldo * precoCusto + quantidade * custoUnitario ) / (saldo + quantidade);
+	}
 }
