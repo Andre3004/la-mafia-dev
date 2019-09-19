@@ -62,6 +62,9 @@ public class CompraService implements ICompraRepository
 		{
 			for ( ItemCompra itemCompra : compra.getItensCompra() )
 			{
+				itemCompra.setCompra( compra );
+				itemCompra.calculeCustoUnitario();
+
 				if(itemCompra.getCurrentEstoque().getCreated() == null)
 				{
 					itemCompra.getCurrentEstoque().setSaldo( itemCompra.getCurrentEstoque().getSaldo().intValue() +  itemCompra.getQuantidade().intValue() );
@@ -70,9 +73,6 @@ public class CompraService implements ICompraRepository
 				{
 					itemCompra.getCurrentEstoque().setSaldo( itemCompra.getCurrentEstoque().getSaldo().intValue() +  itemCompra.getQuantidade().intValue() );
 				}
-
-				itemCompra.setCompra( compra );
-				itemCompra.calculeCustoUnitario();
 
 				if(itemCompra.getCurrentEstoque().getCreated() == null)
 				{

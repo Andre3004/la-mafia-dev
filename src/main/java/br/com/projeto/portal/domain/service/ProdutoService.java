@@ -2,6 +2,7 @@ package br.com.projeto.portal.domain.service;
 
 import java.time.LocalDateTime;
 
+import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.dao.EstoqueDAO;
 import br.com.projeto.portal.domain.dao.ProdutoDAO;
 import br.com.projeto.portal.domain.entity.produto.Produto;
@@ -19,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RemoteProxy
 @Transactional
-public class ProdutoService implements IProdutoRepository
+public class ProdutoService
 {
 	/*-------------------------------------------------------------------
 	 *				 		     ATTRIBUTES
@@ -41,13 +42,13 @@ public class ProdutoService implements IProdutoRepository
 	 *				 		     SERVICES
 	 *-------------------------------------------------------------------*/
 
-	@Override
+	
 	public Page<Produto> listProdutosByFilters( String nome, PageRequest pageable )
 	{
 		return this.produtoDao.listProdutosByFilters( nome, pageable );
 	}
 
-	@Override
+	
 	public Produto findProdutoById( long id )
 	{
 		Produto produto = this.produtoDao.findProdutoById( id );
@@ -59,24 +60,31 @@ public class ProdutoService implements IProdutoRepository
 		return produto;
 	}
 
-	@Override
+	
 	public void insertProduto( Produto produto )
 	{
 		if(produto.getAnexo() != null)
 			this.insertArquivo( produto );
 
-		if(produto.getCurrentEstoque().getCreated() == null)
-			this.estoqueDAO.insertEstoque( produto.getCurrentEstoque() );
-		else
-			this.estoqueDAO.updateEstoque( produto.getCurrentEstoque() );
-
-
 		produto.setSituacao( true );
 
-		this.produtoDao.insertProduto( produto );
+		Long idProduto = this.produtoDao.insertProduto( produto );
+
+		produto.setCodigo( idProduto );
+		produto.getCurrentEstoque().setProduto( produto );
+		produto.getCurrentEstoque().setFranquia( ContextHolder.getAuthenticatedUser().getFranquia() );
+
+		if(produto.getCurrentEstoque().getCreated() == null)
+		{
+			this.estoqueDAO.insertEstoque( produto.getCurrentEstoque() );
+		}
+		else
+		{
+			this.estoqueDAO.updateEstoque( produto.getCurrentEstoque() );
+		}
 	}
 
-	@Override
+	
 	public void updateProduto( Produto produto )
 	{
 		if(produto.getAnexoUuid() == null && produto.getAnexo() != null)
@@ -92,13 +100,13 @@ public class ProdutoService implements IProdutoRepository
 		this.produtoDao.updateProduto( produto );
 	}
 
-	@Override
+	
 	public void updateSituacaoProduto( long id, boolean situacao )
 	{
 		this.produtoDao.updateSituacaoProduto( id, situacao );
 	}
 
-	@Override
+	
 	public void deleteProduto( long id )
 	{
 		//TODO validar se existe registros relacionados, se existe só desativa

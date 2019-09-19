@@ -212,7 +212,7 @@ export class CondicaoPagamentoFormComponent implements OnInit
     if (this.condicaoPagamento.parcelas && this.condicaoPagamento.parcelas.length)
     {
       var array = this.condicaoPagamento.parcelas.filter(p => p.porcentagem).map(p => p.porcentagem);
-      var result = array.length > 0 ? array.reduce((anterior, atual) => parseInt(anterior as any) + parseInt(atual as any)) : 0;
+      var result = array.length > 0 ? array.reduce((anterior, atual) => parseFloat(anterior as any) + parseFloat(atual as any)) : 0;
       return isNaN(result) ? 0 : result;
     }
     else

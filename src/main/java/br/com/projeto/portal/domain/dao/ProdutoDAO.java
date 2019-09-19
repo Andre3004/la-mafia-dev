@@ -26,7 +26,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Qualifier("ProdutoDAO")
-public class ProdutoDAO implements IProdutoRepository
+public class ProdutoDAO
 {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -42,7 +42,6 @@ public class ProdutoDAO implements IProdutoRepository
 	@Autowired
 	EstoqueDAO estoqueDAO;
 
-	@Override
 	public Produto findProdutoById( long id )
 	{
 		String sql = "SELECT * FROM produto WHERE codigo = ?";
@@ -59,9 +58,12 @@ public class ProdutoDAO implements IProdutoRepository
 		return produto;
 	}
 
-	@Override
-	public void insertProduto( Produto produto )
+	public Long insertProduto( Produto produto )
 	{
+		String sqlId = "SELECT max(codigo) FROM produto";
+		Long returnQuery = jdbcTemplate.queryForObject( sqlId, Long.class );
+		Long id = returnQuery == null ? 1 : returnQuery+1;
+
 		jdbcTemplate.update(
 				"INSERT INTO produto " +
 						"(produto, " +
@@ -86,9 +88,10 @@ public class ProdutoDAO implements IProdutoRepository
 				produto.getUnidadeComercial(),
 				produto.getFornecedor() != null ? produto.getFornecedor().getIdFornecedor() : null,
 				Timestamp.valueOf( LocalDateTime.now( this.fusoHorarioDeSaoPaulo ) ) );
+
+		return id;
 	}
 
-	@Override
 	public void updateProduto( Produto produto )
 	{
 		jdbcTemplate.update( "UPDATE produto " +
@@ -119,19 +122,16 @@ public class ProdutoDAO implements IProdutoRepository
 				produto.getCodigo() );
 	}
 
-	@Override
 	public void deleteProduto( long id )
 	{
 		jdbcTemplate.update( "DELETE from produto WHERE codigo = ? ", id );
 	}
 
-	@Override
 	public void updateSituacaoProduto( long id, boolean situacao )
 	{
 		jdbcTemplate.update( "UPDATE produto SET situacao = ? WHERE codigo = ?", situacao, id );
 	}
 
-	@Override
 	public Page<Produto> listProdutosByFilters( String nome, PageRequest pageable )
 	{
 		if ( pageable == null ) pageable = new PageRequest( 0, 10 );
