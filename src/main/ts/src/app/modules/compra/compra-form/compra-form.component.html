@@ -326,7 +326,7 @@
 
   <div>
 
-    <button *ngIf="!isDetail || compra.condicaoPagamento.codigo" [disabled]="!validForm(informacoesForm)" (click)="onSubmit(informacoesForm)" mat-raised-button
+    <button *ngIf="!isDetail" [disabled]="!validForm(informacoesForm)" (click)="onSubmit(informacoesForm)" mat-raised-button
       class="white-btn" color="primary">
       SALVAR
     </button>

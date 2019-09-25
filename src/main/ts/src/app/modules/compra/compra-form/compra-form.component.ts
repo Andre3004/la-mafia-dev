@@ -113,7 +113,7 @@ export class CompraFormComponent implements OnInit
 
   public validForm(form)
   {
-    return form.valid && this.compra.itensCompra.length && this.compra.contasAPagar.length;
+    return !form.invalid && this.compra.itensCompra.length && this.compra.contasAPagar.length;
   }
 
   public addItemCompra()
