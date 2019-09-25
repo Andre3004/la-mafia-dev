@@ -61,7 +61,7 @@
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Preço de custo</mat-label>
                 <input [(ngModel)]="produto.currentEstoque.precoCusto" name="precoCusto" matInput required
-                    [textMask]="{mask: textMasks.getDecimalNumberMask(5, 2), guide: false}"
+                    [textMask]="{mask: textMasks.getDecimalNumberMask(5, 4), guide: false}"
                     [disabled]="true"
                     placeholder="Digite o preço de custo do produto" >
             </mat-form-field>

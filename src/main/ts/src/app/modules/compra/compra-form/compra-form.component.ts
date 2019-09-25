@@ -22,7 +22,7 @@ export class CompraFormComponent implements OnInit
 
   public title = "";
 
-  public compra: Compra = { itensCompra: [], contasAPagar: [], created: new Date() };//Compra = { numeroCompra: 0 };
+  public compra: Compra = { condicaoPagamento: {}, itensCompra: [], contasAPagar: [], created: new Date() };//Compra = { numeroCompra: 0 };
 
   public textMasks = TextMasks;
 
@@ -40,7 +40,9 @@ export class CompraFormComponent implements OnInit
 
   public masks = TextMasks;
 
-  public isDetail : boolean = false;
+  public isDetail: boolean = false;
+
+  public dataHoje = new Date();
 
   constructor(
     private openSnackBarService: OpenSnackBarService,
@@ -54,7 +56,7 @@ export class CompraFormComponent implements OnInit
   {
     if (data.isDetail != null)
     {
-     this.isDetail = data.isDetail;
+      this.isDetail = data.isDetail;
     }
 
     if (data.compra != null)
@@ -86,7 +88,6 @@ export class CompraFormComponent implements OnInit
   {
     this.compra.contasAPagar.forEach((conta, i) =>
     {
-      conta.valorParcela = this.getValorParcela(i);
       conta.serie = this.compra.serie;
       conta.modelo = this.compra.modelo;
       conta.numeroNota = this.compra.numeroNota;
@@ -119,6 +120,7 @@ export class CompraFormComponent implements OnInit
   {
     this.compra.itensCompra.push({ ...this.itemCompra });
     this.itemCompra = {};
+    this.onListProdutos("");
   }
 
   public removeItemCompra(i)
@@ -129,9 +131,10 @@ export class CompraFormComponent implements OnInit
   private findCompraById(compra: Compra)
   {
     this.compraService.findCompraById(compra.modelo, compra.serie, compra.numeroNota, compra.fornecedor.idFornecedor)
-    .subscribe(compra => {
-      this.compra = compra;
-    }, err => console.log(err))
+      .subscribe(compra =>
+      {
+        this.compra = compra;
+      }, err => console.log(err))
   }
 
   /////////////////MODEL
@@ -162,9 +165,28 @@ export class CompraFormComponent implements OnInit
       this.compra.contasAPagar = [];
       for (let i = 0; i < this.compra.condicaoPagamento.parcelas.length; i++) 
       {
-        var dataVencimento = this.compra.created.setDate(this.compra.created.getDate() + this.compra.condicaoPagamento.parcelas[i].dias);
+        var dateNow = new Date();
+        dateNow.setHours(0)
+        dateNow.setMinutes(0);
+
+
+        var dataVencimento = dateNow.setDate(dateNow.getDate() + this.compra.condicaoPagamento.parcelas[i].dias);
         this.compra.contasAPagar.push({ dataVencimento } as any) //completar isso com os atributos.
       }
+
+      for (let i = 0; i < this.compra.contasAPagar.length - 1; i++)
+      {
+        const contaAPagar = this.compra.contasAPagar[i];
+        contaAPagar.valorParcela = parseFloat(this.getValorParcela(i));
+      }
+
+      this.compra.contasAPagar[this.compra.contasAPagar.length - 1].valorParcela = (this.getValorTotalCompra + this.compra.despesa + this.compra.frete + this.compra.seguro) - this.compra.contasAPagar.map(c => c.valorParcela)
+        .reduce((total, currentValue) =>
+        {
+          if(currentValue)
+            total += currentValue;
+          return total;
+        }, 0);
     }
   }
 
@@ -187,7 +209,7 @@ export class CompraFormComponent implements OnInit
   {
     this.produtoService.listProdutosByFilters(filter ? filter : "", null).subscribe(page =>
     {
-      this.produtos = page.content.filter(c => c.situacao);
+      this.produtos = page.content.filter(c => c.situacao).filter(c => !this.compra.itensCompra.map(i => i.codigo).includes(c.codigo));
     })
   }
 
@@ -215,18 +237,18 @@ export class CompraFormComponent implements OnInit
     var valorFinal = 0;
 
 
-    if( this.compra.itensCompra.length > 0)
+    if (this.compra.itensCompra.length > 0)
     {
 
       ///Soma o valor unitario de todos os itens da compra
-      var total = this.compra.itensCompra.map(item => item.valorUnitario * item.quantidade).reduce( (item1, item2) => item1 + item2);
-  
+      var total = this.compra.itensCompra.map(item => item.valorUnitario * item.quantidade).reduce((item1, item2) => item1 + item2);
+
       //Soma toda as despesas
-      var totalDespesas = this.compra.frete + this.compra.despesa + this.compra.seguro; 
-      
+      var totalDespesas = this.compra.frete + this.compra.despesa + this.compra.seguro;
+
       //Pega a porcentagem que representa o valor unitario do item do produto referente ao total
       var porcentagemItem = (itemCompra.valorUnitario * itemCompra.quantidade) / total;
-  
+
       //Pega o valor total que o item vai ter de despesa
       valorFinal = totalDespesas * porcentagemItem;
 
@@ -265,6 +287,6 @@ export class CompraFormComponent implements OnInit
 
   public getValorParcela(i)
   {
-    return this.getValorTotalCompra * (this.compra.condicaoPagamento.parcelas[i].porcentagem / 100);
+    return ((this.getValorTotalCompra + this.compra.frete + this.compra.despesa + this.compra.seguro) * (this.compra.condicaoPagamento.parcelas[i].porcentagem / 100)).toFixed(2);
   }
 }
