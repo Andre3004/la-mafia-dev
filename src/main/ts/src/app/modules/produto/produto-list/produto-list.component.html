@@ -1,5 +1,11 @@
 <mat-toolbar class="toolbar-default">
 	<mat-toolbar-row fxLayoutGap="30px">
+
+		<mat-form-field fxFlex="20" appearance="outline">
+			<mat-label>CÓDIGO</mat-label>
+			<input matInput uppercase placeholder="Pesquisar por codigo" [textMask]="{mask: masks.getNumbersOnlyMask(8), guide: false}" [(ngModel)]="filters.codigo">
+		</mat-form-field>
+
 		<mat-form-field fxFlex="20" appearance="outline">
 			<mat-label>Produto</mat-label>
 			<input uppercase matInput placeholder="Pesquisar por nome" maxlength="144" [(ngModel)]="filters.nome">

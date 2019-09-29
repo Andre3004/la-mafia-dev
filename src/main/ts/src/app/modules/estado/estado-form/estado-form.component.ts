@@ -15,7 +15,7 @@ import { TextMasks } from 'src/app/common/mask/text-masks';
 })
 export class EstadoFormComponent implements OnInit {
 
-  public estado: any = {idEstado: 0};
+  public estado: any = {codigo: 0};
 
   public pais: any = {};
 
@@ -36,9 +36,9 @@ export class EstadoFormComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   )
   {
-    if (data.idEstado != null)
+    if (data.codigo != null)
     {
-      this.onFindEstadoById(data.idEstado);
+      this.onFindEstadoById(data.codigo);
     }
 
     this.onListPaises("");
@@ -47,7 +47,7 @@ export class EstadoFormComponent implements OnInit {
   ngOnInit()
   {
 
-    if (this.data.idEstado)
+    if (this.data.codigo)
       this.title = "Alterar estado";
     else
       this.title = "Inserir estado";
@@ -69,13 +69,13 @@ export class EstadoFormComponent implements OnInit {
 
  public onSubmit(): void
   {
-    if(!this.estado.pais || (this.estado.pais && !this.estado.pais.idPais))
+    if(!this.estado.pais || (this.estado.pais && !this.estado.pais.codigo))
     {
       this.openSnackBarService.openError("O campo país deve ser preenchido.");
       return;
     }
 
-    if (!this.estado.idEstado)
+    if (!this.estado.codigo)
     {
       this.estadoService.insertEstado(this.estado).subscribe(estado =>
       {

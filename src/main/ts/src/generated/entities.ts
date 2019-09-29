@@ -34,52 +34,35 @@ export interface IntlString {
     };
 }
 
-export interface ContasAPagar {
-    serie?: string,
+export interface ItemCompra extends Produto {
     modelo?: string,
+    serie?: string,
     numeroNota?: string,
-    fornecedorId?: number,
-    numero_parcela?: number,
-    dataVencimento?: Date,
-    valorParcela?: number,
+    quantidade?: number,
+    valorUnitario?: number,
+    custoUnitario?: number,
+    compra?: Compra,
+    produtoId?: number
+}
+
+
+export interface Pais {
+    codigo?: number,
+    pais?: string,
+    sigla?: string,
+    ddi?: string,
     situacao?: Boolean,
-    fornecedor?: Fornecedor,
     created?: Date,
     updated?: Date
 }
 
 
-export interface CondicaoPagamento {
-    codigo?: number,
-    juros?: number,
-    multa?: number,
-    desconto?: number,
+export interface Mesa {
+    numeroMesa?: number,
+    ambiente?: Ambiente,
+    quantidadeLugaresMesa?: number,
     situacao?: Boolean,
-    prazo?: Boolean,
-    parcelas?: CondicaoPagamentoParcela[],
-    created?: Date,
-    updated?: Date
-}
-
-
-export interface GrupoProduto {
-    codigo?: number,
-    grupoProduto?: string,
-    exigeAno?: Boolean,
-    situacao?: Boolean,
-    anexoUuid?: string,
-    nomeArquivo?: string,
-    anexo?: HTMLInputElement,
-    grupoProdutoFranquia?: GrupoProdutoFranquia[],
-    created?: Date,
-    updated?: Date
-}
-
-
-export interface FormaPagamento {
-    codigo?: number,
-    situacao?: Boolean,
-    formaPagamento?: string,
+    ambienteId?: number,
     created?: Date,
     updated?: Date
 }
@@ -96,54 +79,6 @@ export interface Ambiente {
     ambienteImagems?: AmbienteImagem[],
     mesas?: Mesa[],
     quantidadeMesas?: number,
-    created?: Date,
-    updated?: Date
-}
-
-
-export interface Compra {
-    serie?: string,
-    modelo?: string,
-    numeroNota?: string,
-    fornecedorId?: number,
-    usuarioId?: number,
-    condicaoPagamentoId?: number,
-    dataChegada?: Date,
-    tipoFrete?: TipoFrete,
-    frete?: number,
-    seguro?: number,
-    despesa?: number,
-    situacao?: Boolean,
-    condicaoPagamento?: CondicaoPagamento,
-    fornecedor?: Fornecedor,
-    usuario?: Usuario,
-    itensCompra?: ItemCompra[],
-    contasAPagar?: ContasAPagar[],
-    created?: Date,
-    updated?: Date
-}
-
-
-export interface Cidade {
-    idCidade?: number,
-    cidade?: string,
-    ddd?: string,
-    estado?: Estado,
-    situacao?: Boolean,
-    idEstado?: number,
-    created?: Date,
-    updated?: Date
-}
-
-
-export interface Estoque {
-    franquia?: Franquia,
-    produto?: Produto,
-    precoCusto?: number,
-    precoVenda?: number,
-    saldo?: number,
-    franquiaId?: number,
-    produtoId?: number,
     created?: Date,
     updated?: Date
 }
@@ -172,35 +107,10 @@ export interface Produto {
     grupoProduto?: GrupoProduto,
     unidadeComercial?: string,
     codigoBarras?: string,
-    fornecedor?: Fornecedor,
-    dataUltimaCompra?: Date,
     anexo?: HTMLInputElement,
     grupoProdutoId?: number,
-    fornecedorId?: number,
     estoques?: Estoque[],
     currentEstoque?: Estoque,
-    created?: Date,
-    updated?: Date
-}
-
-
-export interface Cliente {
-    idCliente?: number,
-    cliente?: string,
-    apelido?: string,
-    cpf?: string,
-    sexo?: string,
-    telefone?: string,
-    celular?: string,
-    email?: string,
-    endereco?: string,
-    situacao?: Boolean,
-    cidade?: Cidade,
-    estado?: Estado,
-    pais?: Pais,
-    cidadeId?: number,
-    estadoId?: number,
-    paisId?: number,
     created?: Date,
     updated?: Date
 }
@@ -219,12 +129,163 @@ export interface CondicaoPagamentoParcela {
 }
 
 
-export interface Pais {
-    idPais?: number,
-    pais?: string,
-    sigla?: string,
-    ddi?: string,
+export interface FormaPagamento {
+    codigo?: number,
     situacao?: Boolean,
+    formaPagamento?: string,
+    created?: Date,
+    updated?: Date
+}
+
+
+export interface ContasAPagar {
+    serie?: string,
+    modelo?: string,
+    numeroNota?: string,
+    fornecedorId?: number,
+    numero_parcela?: number,
+    dataVencimento?: Date,
+    valorParcela?: number,
+    situacao?: Boolean,
+    fornecedor?: Fornecedor,
+    created?: Date,
+    updated?: Date
+}
+
+
+export interface Arquivo {
+    id?: number,
+    uuid?: string,
+    nomeOriginal?: string,
+    fileTransfer?: HTMLInputElement,
+    rootPath?: string,
+    mimeType?: string,
+    created?: Date,
+    updated?: Date
+}
+
+
+export interface Compra {
+    serie?: string,
+    modelo?: string,
+    numeroNota?: string,
+    fornecedorId?: number,
+    usuarioId?: number,
+    condicaoPagamentoId?: number,
+    dataChegada?: Date,
+    tipoFrete?: TipoFrete,
+    frete?: number,
+    seguro?: number,
+    despesa?: number,
+    situacao?: Boolean,
+    condicaoPagamento?: CondicaoPagamento,
+    fornecedor?: Fornecedor,
+    usuario?: Usuario,
+    itensCompra?: ItemCompra[],
+    contasAPagar?: ContasAPagar[],
+    created?: Date,
+    updated?: Date
+}
+
+
+export interface Estoque {
+    franquia?: Franquia,
+    produto?: Produto,
+    precoCusto?: number,
+    precoVenda?: number,
+    saldo?: number,
+    fornecedor?: Fornecedor,
+    dataUltimaCompra?: Date,
+    franquiaId?: number,
+    produtoId?: number,
+    fornecedorId?: number,
+    created?: Date,
+    updated?: Date
+}
+
+
+export let TipoFreteValues: string[] = ['PAGO_PELO_DESTINATARIO', 'PAGO_PELO_FORNECEDOR'];
+export type TipoFrete = 'PAGO_PELO_DESTINATARIO' | 'PAGO_PELO_FORNECEDOR';
+
+
+export interface GrupoProduto {
+    codigo?: number,
+    grupoProduto?: string,
+    exigeAno?: Boolean,
+    situacao?: Boolean,
+    anexoUuid?: string,
+    nomeArquivo?: string,
+    anexo?: HTMLInputElement,
+    grupoProdutoFranquia?: GrupoProdutoFranquia[],
+    created?: Date,
+    updated?: Date
+}
+
+
+export interface GrupoProdutoFranquia {
+    grupoProduto?: GrupoProduto,
+    franquia?: Franquia,
+    franquiaId?: number,
+    grupoProdutoId?: number,
+    created?: Date,
+    updated?: Date
+}
+
+
+export interface Fornecedor {
+    codigo?: number,
+    razaoSocial?: string,
+    cnpj?: string,
+    telefone?: string,
+    celular?: string,
+    endereco?: string,
+    numero?: string,
+    bairro?: string,
+    email?: string,
+    inscricaoEstadual?: string,
+    cep?: string,
+    situacao?: Boolean,
+    cidade?: Cidade,
+    estado?: Estado,
+    pais?: Pais,
+    condicaoPagamento?: CondicaoPagamento,
+    cidadeId?: number,
+    estadoId?: number,
+    paisId?: number,
+    condicaoPagamentoId?: number,
+    created?: Date,
+    updated?: Date
+}
+
+
+export interface CondicaoPagamento {
+    codigo?: number,
+    condicaoPagamento?: string,
+    juros?: number,
+    multa?: number,
+    desconto?: number,
+    situacao?: Boolean,
+    prazo?: Boolean,
+    parcelas?: CondicaoPagamentoParcela[],
+    created?: Date,
+    updated?: Date
+}
+
+
+export interface Usuario {
+    codigo?: number,
+    usuario?: string,
+    email?: string,
+    senha?: string,
+    telefone?: string,
+    cpf?: string,
+    perfilUsuario?: PerfilUsuario,
+    situacao?: Boolean,
+    anexoUuid?: string,
+    nomeArquivo?: string,
+    franquia?: Franquia,
+    anexo?: HTMLInputElement,
+    franquiaId?: number,
     created?: Date,
     updated?: Date
 }
@@ -255,110 +316,51 @@ export interface Franquia {
 }
 
 
-export interface GrupoProdutoFranquia {
-    grupoProduto?: GrupoProduto,
-    franquia?: Franquia,
-    franquiaId?: number,
-    grupoProdutoId?: number,
+export let PerfilUsuarioValues: string[] = ['ADMINISTRADOR', 'USUARIO'];
+export type PerfilUsuario = 'ADMINISTRADOR' | 'USUARIO';
+
+
+export interface Cliente {
+    codigo?: number,
+    cliente?: string,
+    apelido?: string,
+    cpf?: string,
+    sexo?: string,
+    telefone?: string,
+    celular?: string,
+    email?: string,
+    endereco?: string,
+    situacao?: Boolean,
+    cidade?: Cidade,
+    estado?: Estado,
+    pais?: Pais,
+    cidadeId?: number,
+    estadoId?: number,
+    paisId?: number,
     created?: Date,
     updated?: Date
 }
 
 
-export interface Fornecedor {
-    idFornecedor?: number,
-    razaoSocial?: string,
-    cnpj?: string,
-    telefone?: string,
-    celular?: string,
-    endereco?: string,
-    numero?: string,
-    bairro?: string,
-    email?: string,
-    inscricaoEstadual?: string,
-    cep?: string,
-    situacao?: Boolean,
-    cidade?: Cidade,
+export interface Cidade {
+    codigo?: number,
+    cidade?: string,
+    ddd?: string,
     estado?: Estado,
-    pais?: Pais,
-    condicaoPagamento?: CondicaoPagamento,
-    cidadeId?: number,
+    situacao?: Boolean,
     estadoId?: number,
-    paisId?: number,
-    condicaoPagamentoId?: number,
     created?: Date,
     updated?: Date
 }
 
 
 export interface Estado {
-    idEstado?: number,
+    codigo?: number,
     estado?: string,
     uf?: string,
     pais?: Pais,
     situacao?: Boolean,
-    idPais?: number,
-    created?: Date,
-    updated?: Date
-}
-
-
-export let TipoFreteValues: string[] = ['PAGO_PELO_DESTINATARIO', 'PAGO_PELO_FORNECEDOR'];
-export type TipoFrete = 'PAGO_PELO_DESTINATARIO' | 'PAGO_PELO_FORNECEDOR';
-
-
-export interface Mesa {
-    numeroMesa?: number,
-    ambiente?: Ambiente,
-    quantidadeLugaresMesa?: number,
-    situacao?: Boolean,
-    ambienteId?: number,
-    created?: Date,
-    updated?: Date
-}
-
-
-export interface ItemCompra extends Produto {
-    modelo?: string,
-    serie?: string,
-    numeroNota?: string,
-    quantidade?: number,
-    valorUnitario?: number,
-    custoUnitario?: number,
-    compra?: Compra
-}
-
-
-export let PerfilUsuarioValues: string[] = ['ADMINISTRADOR', 'USUARIO'];
-export type PerfilUsuario = 'ADMINISTRADOR' | 'USUARIO';
-
-
-export interface Arquivo {
-    id?: number,
-    uuid?: string,
-    nomeOriginal?: string,
-    fileTransfer?: HTMLInputElement,
-    rootPath?: string,
-    mimeType?: string,
-    created?: Date,
-    updated?: Date
-}
-
-
-export interface Usuario {
-    codigo?: number,
-    usuario?: string,
-    email?: string,
-    senha?: string,
-    telefone?: string,
-    cpf?: string,
-    perfilUsuario?: PerfilUsuario,
-    situacao?: Boolean,
-    anexoUuid?: string,
-    nomeArquivo?: string,
-    franquia?: Franquia,
-    anexo?: HTMLInputElement,
-    franquiaId?: number,
+    paisId?: number,
     created?: Date,
     updated?: Date
 }

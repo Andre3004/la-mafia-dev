@@ -25,7 +25,7 @@ export class PaisListComponent implements OnInit {
 
   }
   public tableColumns: ITdDataTableColumn[] = [
-    { name: 'idPais', label: 'CÓDIGO' },
+    { name: 'codigo', label: 'CÓDIGO' },
     { name: 'pais', label: 'PAÍS' },
     { name: 'sigla', label: 'SIGLA'  },
     { name: 'ddi', label: 'DDI' },
@@ -40,7 +40,7 @@ constructor(public dialog: MatDialog,
   private paisService: PaisService) 
 {
 
-  this.pageRequest = paginationService.pageRequest('idPais', 'ASC', 10);
+  this.pageRequest = paginationService.pageRequest('codigo', 'ASC', 10);
 
  
 
@@ -77,7 +77,7 @@ constructor(public dialog: MatDialog,
       const dialogRef = this.dialog.open(PaisFormComponent, {
           width: '600px',
           height: 'auto',
-          data: { idPais: pais ? pais.idPais : null }
+          data: { codigo: pais ? pais.codigo : null }
       });
 
       dialogRef.afterClosed().subscribe(paisSaved =>
@@ -101,7 +101,7 @@ constructor(public dialog: MatDialog,
             {
                 if (accept)
                 {
-                    this.paisService.deletePais(pais.idPais).subscribe( result => {
+                    this.paisService.deletePais(pais.codigo).subscribe( result => {
                         this.openSnackBarService.openSuccess('País excluído com sucesso.');
                         this.onListPaises();
                     }, err => {
@@ -117,7 +117,7 @@ constructor(public dialog: MatDialog,
                         {
                             if (accept)
                             {
-                                this.paisService.updateSituacaoPais(pais.idPais, !pais.situacao).subscribe( result => {
+                                this.paisService.updateSituacaoPais(pais.codigo, !pais.situacao).subscribe( result => {
                                     this.openSnackBarService.openSuccess('País desativado com sucesso.');
                                     this.onListPaises();
                                 }, err => this.openSnackBarService.openError(err.message))
@@ -139,7 +139,7 @@ constructor(public dialog: MatDialog,
             {
                 if (accept)
                 {
-                    this.paisService.updateSituacaoPais(pais.idPais, !pais.situacao).subscribe( result => {
+                    this.paisService.updateSituacaoPais(pais.codigo, !pais.situacao).subscribe( result => {
                         this.openSnackBarService.openSuccess('País ativado com sucesso.');
                         this.onListPaises();
                     }, err => this.openSnackBarService.openError(err.message))

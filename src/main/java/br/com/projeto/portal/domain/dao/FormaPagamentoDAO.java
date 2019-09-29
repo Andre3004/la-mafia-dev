@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import br.com.projeto.portal.domain.entity.pagamento.FormaPagamento;
-import br.com.projeto.portal.domain.repository.IFormaPagamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -21,14 +20,14 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Qualifier("formaPagamentoDao")
-public class FormaPagamentoDAO implements IFormaPagamentoRepository {
+public class FormaPagamentoDAO{
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
     private static ZoneId fusoHorarioDeSaoPaulo = ZoneId.of("America/Sao_Paulo");
 
-	@Override
+	
 	public FormaPagamento findFormaPagamentoById( Long id)
 	{
 		String sql = "SELECT * FROM forma_pagamento WHERE codigo = ?";
@@ -39,7 +38,7 @@ public class FormaPagamentoDAO implements IFormaPagamentoRepository {
 		return formaPagamento;
 	}
 
-	@Override
+	
 	public void insertFormaPagamento( FormaPagamento formaPagamento )
 	{
 		jdbcTemplate.update(
@@ -52,7 +51,7 @@ public class FormaPagamentoDAO implements IFormaPagamentoRepository {
 				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)));
 	}
 
-	@Override
+	
 	public void updateFormaPagamento( FormaPagamento formaPagamento )
 	{
 		jdbcTemplate.update("UPDATE forma_pagamento " +
@@ -69,17 +68,20 @@ public class FormaPagamentoDAO implements IFormaPagamentoRepository {
 		jdbcTemplate.update("UPDATE forma_pagamento SET situacao = ? WHERE codigo = ?", situacao, id);
 	}
 
-	@Override
+	
 	public void deleteFormaPagamento(Long codigo){
 		jdbcTemplate.update("DELETE from forma_pagamento WHERE codigo = ? ", codigo);
 	}
 
 
-	@Override
+	
 	public Page<FormaPagamento> listFormaPagamentoByFilters( String formaPagamento, PageRequest pageable )
 	{
 		if(pageable == null) pageable = new PageRequest(0, 10);
 
+		if(formaPagamento != null)
+			formaPagamento = formaPagamento.replaceAll( "'", "''" );
+			
 		String rowCountSql = "SELECT count(1) AS row_count FROM forma_pagamento " ;
 
 		int total =

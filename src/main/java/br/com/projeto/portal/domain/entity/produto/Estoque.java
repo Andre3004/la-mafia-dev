@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import org.directwebremoting.annotations.DataTransferObject;
 
+import br.com.projeto.portal.domain.entity.Fornecedor;
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
 
@@ -28,11 +29,19 @@ public class Estoque implements Serializable
 
 	private Integer saldo;
 
+	private Fornecedor fornecedor;
+
+	private LocalDateTime dataUltimaCompra;
+
 	//@Transient
 	private Long franquiaId;
 
 	//@Transient
 	private Long produtoId;
+
+
+	//@Transient
+	private Integer fornecedorId;
 
 	protected LocalDateTime created;
 

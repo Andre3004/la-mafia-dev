@@ -169,13 +169,19 @@ export class CondicaoPagamentoFormComponent implements OnInit
 
   public displayFn(formaPagamento?: FormaPagamento): string | undefined
   {
-    return formaPagamento ? formaPagamento.formaPagamento : undefined;
+    return formaPagamento ?`${formaPagamento.codigo} - ${formaPagamento.formaPagamento}` : undefined;
   }
 
 
   /*-------------------------------------------------------------------
  *                           Formas de pagamento
  *-------------------------------------------------------------------*/
+
+  public redirect()
+  {
+    var win = window.open(`http://localhost:4200/#/forma-pagamento`, '_blank');
+    win.focus();
+  }
 
   public addParcela()
   {

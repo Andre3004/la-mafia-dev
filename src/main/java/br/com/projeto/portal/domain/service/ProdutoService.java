@@ -6,7 +6,6 @@ import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.dao.EstoqueDAO;
 import br.com.projeto.portal.domain.dao.ProdutoDAO;
 import br.com.projeto.portal.domain.entity.produto.Produto;
-import br.com.projeto.portal.domain.repository.IProdutoRepository;
 import br.com.projeto.portal.infrastructure.arquivo.Arquivo;
 import br.com.projeto.portal.infrastructure.arquivo.ArquivoService;
 import br.com.projeto.portal.infrastructure.arquivo.IArquivoRepository;
@@ -43,9 +42,9 @@ public class ProdutoService
 	 *-------------------------------------------------------------------*/
 
 	
-	public Page<Produto> listProdutosByFilters( String nome, PageRequest pageable )
+	public Page<Produto> listProdutosByFilters( String nome, Long codigo, PageRequest pageable )
 	{
-		return this.produtoDao.listProdutosByFilters( nome, pageable );
+		return this.produtoDao.listProdutosByFilters( nome, codigo, pageable );
 	}
 
 	

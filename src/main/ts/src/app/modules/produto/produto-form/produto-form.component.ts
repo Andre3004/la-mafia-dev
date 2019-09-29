@@ -58,6 +58,7 @@ export class ProdutoFormComponent implements OnInit
   {
     this.produtoService.findProdutoById(produtoId).subscribe(produto =>
     {
+      console.log(produto)
       this.produto = produto;
     }, err => this.openSnackBarService.openError(err.message))
 

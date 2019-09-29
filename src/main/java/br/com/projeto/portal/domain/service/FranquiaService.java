@@ -5,7 +5,6 @@ import java.util.List;
 
 import br.com.projeto.portal.domain.dao.FranquiaDAO;
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
-import br.com.projeto.portal.domain.repository.IFranquiaRepository;
 import br.com.projeto.portal.infrastructure.arquivo.Arquivo;
 import br.com.projeto.portal.infrastructure.arquivo.ArquivoService;
 import br.com.projeto.portal.infrastructure.arquivo.IArquivoRepository;
@@ -22,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RemoteProxy
 @Transactional
-public class FranquiaService implements IFranquiaRepository
+public class FranquiaService
 {
 	/*-------------------------------------------------------------------
 	 *				 		     ATTRIBUTES
@@ -41,13 +40,13 @@ public class FranquiaService implements IFranquiaRepository
 	 *				 		     SERVICES
 	 *-------------------------------------------------------------------*/
 
-	@Override
+	
 	public Page<Franquia> listFranquiasByFilters( String nome, String cnpj, PageRequest pageable )
 	{
 		return this.franquiaDao.listFranquiasByFilters( nome, cnpj, pageable );
 	}
 
-	@Override
+	
 	public Franquia findFranquiaById( long id )
 	{
 		Franquia franquia = this.franquiaDao.findFranquiaById( id );
@@ -60,7 +59,7 @@ public class FranquiaService implements IFranquiaRepository
 		return franquia;
 	}
 
-	@Override
+	
 	public void insertFranquia( Franquia franquia )
 	{
 		if(franquia.getAnexo() != null)
@@ -71,7 +70,7 @@ public class FranquiaService implements IFranquiaRepository
 		this.franquiaDao.insertFranquia( franquia );
 	}
 
-	@Override
+	
 	public void updateFranquia( Franquia franquia)
 	{
 		if(franquia.getAnexoUuid() == null && franquia.getAnexo() != null)
@@ -84,13 +83,13 @@ public class FranquiaService implements IFranquiaRepository
 		this.franquiaDao.updateFranquia( franquia );
 	}
 
-	@Override
+	
 	public void updateSituacaoFranquia( long id, boolean situacao )
 	{
 		this.franquiaDao.updateSituacaoFranquia( id, situacao );
 	}
 
-	@Override
+	
 	public void deleteFranquia( long id )
 	{
 		//TODO validar se existe registros relacionados, se existe só desativa

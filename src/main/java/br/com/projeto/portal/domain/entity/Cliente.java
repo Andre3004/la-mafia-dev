@@ -22,7 +22,7 @@ public class Cliente extends AbstractEntity
      *				 		     ATTRIBUTES
      *-------------------------------------------------------------------*/
 
-    private Integer idCliente;
+    private Integer codigo;
 
     private String cliente;
 
@@ -71,11 +71,11 @@ public class Cliente extends AbstractEntity
      *							BEHAVIORS
      *-------------------------------------------------------------------*/
 
-    @Override
+    
     public String toString()
     {
         return "Cliente{" +
-                "idCliente=" + idCliente +
+                "codigo=" + codigo +
                 ", cliente='" + cliente + '\'' +
                 ", apelido='" + apelido + '\'' +
                 ", cpf='" + cpf + '\'' +

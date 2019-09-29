@@ -11,19 +11,22 @@
         <input uppercase matInput [(ngModel)]="usuario.codigo" [disabled]="true" name="codigo">
       </mat-form-field>
 
-      <mat-form-field style="margin-left: 30px" fxFlex appearance="outline">
-        <mat-label>Franquia</mat-label>
-        <input uppercase required type="text" matInput [matAutocomplete]="auto" #inputFilter [(ngModel)]="usuario.franquia"
-          name="franquia" (keyup)="onListFranquias(inputFilter.value);">
-      </mat-form-field>
-
-      <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
-        (optionSelected)="usuario.franquia = $event.option.value; onListFranquias();">
-        <mat-option [value]="null">Nenhum</mat-option>
-        <mat-option *ngFor="let franquia of franquias" [value]="franquia">{{franquia.franquia}}</mat-option>
-      </mat-autocomplete>
-
-
+      <auto-complete-with-redirect
+      class="push-left-md"
+			fxFlex
+			title="Franquia"
+			key="codigo"
+			link="franquia"
+			displayKey="franquia"
+			[displayId]="true"
+			[list]="{values: franquias}"
+			[itemSelected]="{selected: usuario.franquia}"
+			(onFilterChange)="franquiaFilter = $event; onListFranquias()"
+			(onSelect)="usuario.franquia = $event"
+			(onDelete)="usuario.franquia = {}"
+		>
+    </auto-complete-with-redirect>
+    
     </div>
 
     <div fxLayout="row">

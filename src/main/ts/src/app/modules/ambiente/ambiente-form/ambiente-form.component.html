@@ -32,20 +32,20 @@
 
                 <div fxLayout="row" fxLayoutAlign=" center">
 
-                    <mat-form-field fxFlex appearance="outline">
-                        <mat-label>Franquia</mat-label>
-                        <input required type="text" matInput [matAutocomplete]="auto" #inputFilter
-                            [(ngModel)]="ambiente.franquia" name="franquia"
-                            (ngModelChange)="onListFranquias(inputFilter.value);">
-                    </mat-form-field>
-
-                    <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
-                        (optionSelected)="ambiente.franquia = $event.option.value; onListFranquias();">
-                        <mat-option [value]="null">Nenhum</mat-option>
-                        <mat-option *ngFor="let franquia of franquias" [value]="franquia">{{franquia.franquia}}
-                        </mat-option>
-                    </mat-autocomplete>
-
+                    <auto-complete-with-redirect
+                        fxFlex
+                        title="Franquia"
+                        key="codigo"
+                        link="franquia"
+                        displayKey="franquia"
+                        [displayId]="true"
+                        [list]="{values: franquias}"
+                        [itemSelected]="{selected: ambiente.franquia}"
+                        (onFilterChange)="onListFranquias($event)"
+                        (onSelect)="ambiente.franquia = $event"
+                        (onDelete)="ambiente.franquia = {}"
+                    >
+                    </auto-complete-with-redirect>
 
                 </div>
 

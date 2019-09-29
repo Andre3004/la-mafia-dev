@@ -9,7 +9,6 @@ import br.com.projeto.portal.domain.dao.MesaDAO;
 import br.com.projeto.portal.domain.entity.Ambiente.Ambiente;
 import br.com.projeto.portal.domain.entity.Ambiente.AmbienteImagem;
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
-import br.com.projeto.portal.domain.repository.IAmbienteRepository;
 import br.com.projeto.portal.infrastructure.arquivo.Arquivo;
 import br.com.projeto.portal.infrastructure.arquivo.ArquivoService;
 import br.com.projeto.portal.infrastructure.arquivo.IArquivoRepository;
@@ -26,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RemoteProxy
 @Transactional
-public class AmbienteService implements IAmbienteRepository
+public class AmbienteService
 {
 	/*-------------------------------------------------------------------
 	 *				 		     ATTRIBUTES
@@ -49,13 +48,13 @@ public class AmbienteService implements IAmbienteRepository
 	 *				 		     SERVICES
 	 *-------------------------------------------------------------------*/
 
-	@Override
+	
 	public Page<Ambiente> listAmbientesByFilters( String nome, Long ambienteId, PageRequest pageable )
 	{
 		return this.ambienteDao.listAmbientesByFilters( nome, ambienteId, pageable );
 	}
 
-	@Override
+	
 	public Ambiente findAmbienteById( long id )
 	{
 		Ambiente ambiente = this.ambienteDao.findAmbienteById( id );
@@ -65,7 +64,7 @@ public class AmbienteService implements IAmbienteRepository
 		return ambiente;
 	}
 
-	@Override
+	
 	public Long insertAmbiente( Ambiente ambiente )
 	{
 		ambiente.setSituacao( true );
@@ -84,7 +83,7 @@ public class AmbienteService implements IAmbienteRepository
 		return ambienteId;
 	}
 
-	@Override
+	
 	public void updateAmbiente( Ambiente ambiente, List<Long> imagensDeletadasIds )
 	{
 		if(imagensDeletadasIds != null && imagensDeletadasIds.size() > 0)
@@ -109,13 +108,13 @@ public class AmbienteService implements IAmbienteRepository
 		this.ambienteDao.updateAmbiente( ambiente, imagensDeletadasIds );
 	}
 
-	@Override
+	
 	public void updateSituacaoAmbiente( long id, boolean situacao )
 	{
 		this.ambienteDao.updateSituacaoAmbiente( id, situacao );
 	}
 
-	@Override
+	
 	public void deleteAmbiente( long id )
 	{
 		Ambiente ambiente = ambienteDao.findAmbienteById( id );
@@ -134,13 +133,13 @@ public class AmbienteService implements IAmbienteRepository
 	 *				 		     AMBIENTE IMAGEM
 	 *-------------------------------------------------------------------*/
 
-	@Override
+	
 	public List<AmbienteImagem> findAmbienteImagemByAmbienteId( long ambienteId )
 	{
 		return  ambienteDao.findAmbienteImagemByAmbienteId( ambienteId );
 	}
 
-	@Override
+	
 	public void insertAmbienteImagem( AmbienteImagem ambienteImagem )
 	{
 		insertArquivo(ambienteImagem);
@@ -148,13 +147,13 @@ public class AmbienteService implements IAmbienteRepository
 		ambienteDao.insertAmbienteImagem( ambienteImagem );
 	}
 
-	@Override
+	
 	public void deleteAmbienteImagem( long id )
 	{
 		ambienteDao.deleteAmbienteImagem( id );
 	}
 
-	@Override
+	
 	public void updateAmbienteImagem( AmbienteImagem ambienteImagem )
 	{
 		if(ambienteImagem.getAnexoUuid() == null && ambienteImagem.getAnexo() != null)

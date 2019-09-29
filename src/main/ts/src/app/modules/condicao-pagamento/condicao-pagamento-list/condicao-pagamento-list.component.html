@@ -5,6 +5,11 @@
 			<input matInput uppercase placeholder="Pesquisar por codigo" [textMask]="{mask: masks.getNumbersOnlyMask(8), guide: false}" [(ngModel)]="filters.codigo">
 		</mat-form-field>
 
+		<mat-form-field fxFlex="20" appearance="outline">
+			<mat-label>CONDIÇÃO DE PAGAMENTO</mat-label>
+			<input matInput uppercase placeholder="Pesquisar por condição de pagamento" [(ngModel)]="filters.condicaoPagamento" maxlength="144">
+		</mat-form-field>
+
 		<div fxFlex></div>
 
 		<button color="primary" class="white-btn" (click)="openForm()" mat-raised-button>ADICIONAR
@@ -23,11 +28,13 @@
 
 	<td-data-table *ngIf="pageRequest?.content?.length > 0" #dataTable [data]="pageRequest.content"
 		[columns]="tableColumns" [clickable]="true">
-
+		
 		<ng-template fxLayoutAlign="end" tdDataTableTemplate="situacao" let-condicaoPagamento="row">
 			<mat-icon *ngIf="condicaoPagamento?.situacao" class="tc-green-700" matTooltip="Ativado">check_circle</mat-icon>
 			<mat-icon *ngIf="!condicaoPagamento?.situacao" matTooltip="Desativado" class="tc-red-700">block</mat-icon>
 		</ng-template>
+
+
 
 		<ng-template fxLayoutAlign="end" tdDataTableTemplate="opcoes" let-condicaoPagamento="row">
 

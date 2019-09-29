@@ -9,7 +9,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Código</mat-label>
-        <input uppercase uppercase required matInput [(ngModel)]="cliente.idCliente" name="idCliente" [disabled]="true">
+        <input uppercase uppercase required matInput [(ngModel)]="cliente.codigo" name="codigo" [disabled]="true">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
@@ -96,23 +96,21 @@
         <label>{{cliente?.cidade?.estado?.estado}}</label>
       </div>
 
-      <mat-form-field fxFlex appearance="outline" >
-        <mat-label>Cidade</mat-label>
-        <input required uppercase type="text" matInput [matAutocomplete]="autoCidade" #inputFilterCidade
-          [disabled]="cliente?.cidade?.idCidade" [(ngModel)]="cliente.cidade" name="cidade"
-          (ngModelChange)="onListCidades(inputFilterCidade.value);">
+      <auto-complete-with-redirect
+          fxFlex
+          title="Cidade"
+          key="codigo"
+          link="cidade"
+          displayKey="cidade"
+          [displayId]="true"
+          [list]="{values: cidades}"
+          [itemSelected]="{selected: cliente.cidade}"
+          (onFilterChange)="onListCidades($event)"
+          (onSelect)="cliente.cidade = $event"
+          (onDelete)="cliente.cidade = null"
+      >
+      </auto-complete-with-redirect>
 
-        <button *ngIf="cliente?.cidade?.idCidade" (click)="cliente.cidade = null;  onListCidades('');"
-          matTooltip="Remover cidade" matSuffix mat-icon-button class="tc-grey-700 delete-button-hover">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-form-field>
-
-      <mat-autocomplete [displayWith]="displayFnCidade" #autoCidade="matAutocomplete"
-        (optionSelected)="cliente.cidade = $event.option.value; onListCidades('');">
-        <mat-option [value]="null">Nenhum</mat-option>
-        <mat-option *ngFor="let cidade of cidades" [value]="cidade">{{cidade?.cidade}}</mat-option>
-      </mat-autocomplete>
     </div>
 
   </form>

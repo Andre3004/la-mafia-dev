@@ -2,7 +2,6 @@
 package br.com.projeto.portal.domain.service;
 
 import java.time.LocalDateTime;
-import br.com.projeto.portal.domain.repository.ICidadeRepository;
 
 import br.com.projeto.portal.domain.dao.cidade.CidadeDAO;
 import org.directwebremoting.annotations.RemoteProxy;
@@ -20,7 +19,7 @@ import br.com.projeto.portal.domain.entity.Cidade;
 @Service
 @RemoteProxy
 @Transactional
-public class CidadeService implements ICidadeRepository
+public class CidadeService
 {
     /*-------------------------------------------------------------------
      *				 		     ATTRIBUTES
@@ -34,13 +33,13 @@ public class CidadeService implements ICidadeRepository
      *				 		     SERVICES
      *-------------------------------------------------------------------*/
 
-    @Override
+    
     public Page<Cidade> listCidadesByFilters( String cidade, PageRequest pageable )
     {
         return this.cidadeDao.listCidadesByFilters( cidade, pageable );
     }
 
-    @Override
+    
     public Cidade findCidadeById( int id )
     {
         Cidade cidade = this.cidadeDao.findCidadeById( id );
@@ -48,7 +47,7 @@ public class CidadeService implements ICidadeRepository
         return cidade;
     }
 
-    @Override
+    
     public void insertCidade( Cidade cidade )
     {
         cidade.setSituacao( true );
@@ -60,17 +59,17 @@ public class CidadeService implements ICidadeRepository
         this.cidadeDao.updateSituacaoCidade( id, situacao );
     }
 
-    @Override
+    
     public void updateCidade( Cidade cidade )
     {
-        Cidade cidadeSaved = this.cidadeDao.findCidadeById( cidade.getIdCidade() );
+        Cidade cidadeSaved = this.cidadeDao.findCidadeById( cidade.getCodigo() );
 
         cidade.setUpdated( LocalDateTime.now() );
 
         this.cidadeDao.updateCidade( cidade );
     }
 
-    @Override
+    
     public void deleteCidade( int id )
     {
         Cidade cidade = this.findCidadeById( id );

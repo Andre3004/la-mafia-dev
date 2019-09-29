@@ -19,7 +19,7 @@ export class ClienteFormComponent implements OnInit
 
   public title = "";
 
-  public cliente: Cliente = { idCliente: 0 };
+  public cliente: Cliente = { codigo: 0 };
 
   public maskCpf = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
 
@@ -37,9 +37,9 @@ export class ClienteFormComponent implements OnInit
     @Inject(MAT_DIALOG_DATA) public data: any
   )
   {
-    if (data.idCliente != null)
+    if (data.codigo != null)
     {
-      this.onFindClienteById(data.idCliente);
+      this.onFindClienteById(data.codigo);
     }
 
     this.onListCidades("");
@@ -48,7 +48,7 @@ export class ClienteFormComponent implements OnInit
 
   ngOnInit()
   {
-    if (this.data.idCliente)
+    if (this.data.codigo)
       this.title = "Alterar cliente";
     else
       this.title = "Inserir cliente";
@@ -121,7 +121,7 @@ export class ClienteFormComponent implements OnInit
 
     }
 
-    if (!this.cliente.idCliente)
+    if (!this.cliente.codigo)
     {
       this.clienteService.insertCliente(this.cliente).subscribe(cliente =>
       {

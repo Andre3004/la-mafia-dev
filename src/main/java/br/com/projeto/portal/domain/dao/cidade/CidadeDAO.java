@@ -10,7 +10,6 @@ import java.util.List;
 
 import br.com.projeto.portal.domain.dao.estado.EstadoDAO;
 import br.com.projeto.portal.domain.entity.Cidade;
-import br.com.projeto.portal.domain.repository.ICidadeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -22,11 +21,10 @@ import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import br.com.projeto.portal.domain.repository.ICidadeRepository;
 
 @Repository
 @Qualifier("cidadeDao")
-public class CidadeDAO implements ICidadeRepository
+public class CidadeDAO 
 {
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -36,63 +34,66 @@ public class CidadeDAO implements ICidadeRepository
     @Autowired
     EstadoDAO estadoDAO;
 
-    @Override
+    
     public Cidade findCidadeById(int id)
     {
-        String sql = "SELECT * FROM cidade WHERE idCidade = ?";
+        String sql = "SELECT * FROM cidade WHERE codigo = ?";
 
         Cidade cidade = (Cidade) jdbcTemplate.queryForObject(sql,
                 new Object[] { id }, new BeanPropertyRowMapper(Cidade.class));
 
-        cidade.setEstado( estadoDAO.findEstadoById( cidade.getIdEstado() ) );
+        cidade.setEstado( estadoDAO.findEstadoById( cidade.getCodigo() ) );
 
         return cidade;
     }
 
-    @Override
+    
     public void insertCidade( Cidade cidade )
     {
         jdbcTemplate.update(
                 "INSERT INTO cidade " +
                         "(cidade  , " +
                         "ddd, " +
-                        "idEstado, " +
+                        "estado_id, " +
                         "situacao, " +
                         "created) VALUES (?, ?, ?, ?, ?)",
                 cidade.getCidade(),
                 cidade.getDdd(),
-                cidade.getEstado().getIdEstado(),
+                cidade.getEstado().getCodigo(),
                 cidade.getSituacao(),
                 Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
     }
 
-    @Override
+    
     public void updateCidade( Cidade cidade )
     {
         jdbcTemplate.update("UPDATE cidade " +
                         "SET " +
                         "cidade= ?, " +
                         "ddd= ?, " +
-                        "idEstado= ?," +
+                        "estado_id= ?," +
                         "updated = ? " +
-                        "WHERE idCidade = ?",
+                        "WHERE codigo = ?",
                 cidade.getCidade(),
                 cidade.getDdd(),
-                cidade.getEstado().getIdEstado(),
+                cidade.getEstado().getCodigo(),
                 Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
-                cidade.getIdCidade());
+                cidade.getCodigo());
     }
 
-    @Override
+    
     public void deleteCidade(int id){
-        jdbcTemplate.update("DELETE from cidade WHERE idCidade = ? ", id);
+        jdbcTemplate.update("DELETE from cidade WHERE codigo = ? ", id);
     }
 
 
-    @Override
+    
     public Page<Cidade> listCidadesByFilters( String cidade, PageRequest pageable )
     {
         if(pageable == null) pageable = new PageRequest(0, 100);
+
+        if(cidade != null)
+            cidade = cidade.replaceAll( "'", "''" );
 
         String rowCountSql = "SELECT count(1) AS row_count FROM cidade " ;
 
@@ -116,11 +117,11 @@ public class CidadeDAO implements ICidadeRepository
         List<Cidade> cidades = jdbcTemplate.query(querySql,new RowMapper<Cidade>(){
             public Cidade mapRow( ResultSet rs, int row) throws SQLException {
                 Cidade e=new Cidade();
-                e.setIdCidade(rs.getInt(1));
+                e.setCodigo(rs.getInt(1));
                 e.setCidade(rs.getString(2));
                 e.setDdd(rs.getString(3));
                 e.setSituacao( rs.getBoolean( "situacao" ) );
-                e.setEstado( estadoDAO.findEstadoById( rs.getInt( "idEstado" )  ));
+                e.setEstado( estadoDAO.findEstadoById( rs.getInt( "codigo" )  ));
                 return e;
             }
         });
@@ -129,6 +130,6 @@ public class CidadeDAO implements ICidadeRepository
 
     public void updateSituacaoCidade( long id, boolean situacao )
     {
-        jdbcTemplate.update("UPDATE cidade SET situacao = ? WHERE idCidade = ?", situacao, id);
+        jdbcTemplate.update("UPDATE cidade SET situacao = ? WHERE codigo = ?", situacao, id);
     }
 }

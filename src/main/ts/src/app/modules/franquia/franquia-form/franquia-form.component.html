@@ -87,23 +87,20 @@
         <label>{{franquia?.cidade?.estado?.estado}}</label>
       </div>
       
-      <mat-form-field  fxFlex appearance="outline">
-        <mat-label>Cidade</mat-label>
-        <input required uppercase type="text" matInput [matAutocomplete]="autoCidade" #inputFilterCidade
-          [disabled]="franquia?.cidade?.idCidade" [(ngModel)]="franquia.cidade" name="cidade"
-          (ngModelChange)="onListCidades(inputFilterCidade.value);">
-
-        <button *ngIf="franquia?.cidade?.idCidade" (click)="franquia.cidade = null;  onListCidades('');" matTooltip="Remover cidade"
-          matSuffix mat-icon-button class="tc-grey-700 delete-button-hover">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-form-field>
-
-      <mat-autocomplete [displayWith]="displayFnCidade" #autoCidade="matAutocomplete"
-        (optionSelected)="franquia.cidade = $event.option.value; onListCidades('');">
-        <mat-option [value]="null">Nenhum</mat-option>
-        <mat-option *ngFor="let cidade of cidades" [value]="cidade">{{cidade?.cidade}}</mat-option>
-      </mat-autocomplete>
+      <auto-complete-with-redirect
+          fxFlex
+          title="Cidade"
+          link="cidade"
+          key="codigo"
+          displayKey="cidade"
+          [displayId]="true"
+          [list]="{values: cidades}"
+          [itemSelected]="{selected: franquia.cidade}"
+          (onFilterChange)="onListCidades($event)"
+          (onSelect)="franquia.cidade = $event"
+          (onDelete)="franquia.cidade = null"
+      >
+      </auto-complete-with-redirect>
 
     </div>
 

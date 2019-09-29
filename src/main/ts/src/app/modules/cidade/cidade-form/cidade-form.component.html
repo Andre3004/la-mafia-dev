@@ -9,7 +9,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Código</mat-label>
-        <input  uppercase matInput [(ngModel)]="cidade.idCidade" name="idCidade" [disabled]="true">
+        <input  uppercase matInput [(ngModel)]="cidade.codigo" name="codigo" [disabled]="true">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
@@ -28,17 +28,21 @@
         <input required uppercase [(ngModel)]="cidade.cidade" name="cidade" matInput maxlength="144">
       </mat-form-field>
 
-      <mat-form-field fxFlex style="margin-left: 30px" appearance="outline" class="push-left-md">
-        <mat-label>Estado</mat-label>
-        <input uppercase required type="text" matInput [matAutocomplete]="autoEstado" #inputFilterEstado [(ngModel)]="cidade.estado"
-          name="estado" (ngModelChange)="onListEstados(inputFilterEstado.value);">
-      </mat-form-field>
-
-      <mat-autocomplete [displayWith]="displayFnEstado" #autoEstado="matAutocomplete"
-        (optionSelected)="cidade.estado = $event.option.value; onListEstados();">
-        <mat-option [value]="null">Nenhum</mat-option>
-        <mat-option *ngFor="let estado of estados" [value]="estado">{{estado?.estado}}</mat-option>
-      </mat-autocomplete>
+        <auto-complete-with-redirect
+            style="margin-left: 30px"
+            fxFlex
+            title="Estado"
+            key="codigo"
+            link="estado"
+            displayKey="estado"
+            [displayId]="true"
+            [list]="{values: estados}"
+            [itemSelected]="{selected: cidade.estado}"
+            (onFilterChange)="onListEstados($event)"
+            (onSelect)="cidade.estado = $event"
+            (onDelete)="cidade.estado = {}"
+        >
+        </auto-complete-with-redirect>
 
     </div>
 

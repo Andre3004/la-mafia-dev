@@ -2,7 +2,6 @@
 package br.com.projeto.portal.domain.service;
 
 import java.time.LocalDateTime;
-import br.com.projeto.portal.domain.repository.IEstadoRepository;
 
 import br.com.projeto.portal.domain.dao.estado.EstadoDAO;
 import org.directwebremoting.annotations.RemoteProxy;
@@ -20,7 +19,7 @@ import br.com.projeto.portal.domain.entity.Estado;
 @Service
 @RemoteProxy
 @Transactional
-public class EstadoService implements IEstadoRepository
+public class EstadoService
 {
     /*-------------------------------------------------------------------
      *				 		     ATTRIBUTES
@@ -34,13 +33,13 @@ public class EstadoService implements IEstadoRepository
      *				 		     SERVICES
      *-------------------------------------------------------------------*/
 
-    @Override
+    
     public Page<Estado> listEstadosByFilters( String estado, PageRequest pageable )
     {
         return this.estadoDao.listEstadosByFilters( estado, pageable );
     }
 
-    @Override
+    
     public Estado findEstadoById( int id )
     {
         Estado estado = this.estadoDao.findEstadoById( id );
@@ -48,7 +47,7 @@ public class EstadoService implements IEstadoRepository
         return estado;
     }
 
-    @Override
+    
     public void insertEstado( Estado estado )
     {
         estado.setSituacao( true );
@@ -60,12 +59,12 @@ public class EstadoService implements IEstadoRepository
         this.estadoDao.updateSituacaoEstado( id, situacao );
     }
 
-    @Override
+    
     public void updateEstado( Estado estado )
     {
 
 
-        Estado estadoSaved = this.estadoDao.findEstadoById( estado.getIdEstado() );
+        Estado estadoSaved = this.estadoDao.findEstadoById( estado.getCodigo() );
 
 
 
@@ -74,7 +73,7 @@ public class EstadoService implements IEstadoRepository
         this.estadoDao.updateEstado( estado );
     }
 
-    @Override
+    
     public void deleteEstado( int id )
     {
         Estado estado = this.findEstadoById( id );

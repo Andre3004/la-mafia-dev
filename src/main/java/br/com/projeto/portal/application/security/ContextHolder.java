@@ -30,9 +30,9 @@ public class ContextHolder
 		Usuario usuario = new Usuario();
 		Franquia franquia = new Franquia();
 
-		franquia.setCodigo( 6L );
+		franquia.setCodigo( 1L );
 
-		usuario.setCodigo( 2L );
+		usuario.setCodigo( 1L );
 		usuario.setUsuario( "André" );
 		usuario.setFranquia( franquia );
 

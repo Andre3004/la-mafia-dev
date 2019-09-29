@@ -130,7 +130,7 @@ export class CompraFormComponent implements OnInit
 
   private findCompraById(compra: Compra)
   {
-    this.compraService.findCompraById(compra.modelo, compra.serie, compra.numeroNota, compra.fornecedor.idFornecedor)
+    this.compraService.findCompraById(compra.modelo, compra.serie, compra.numeroNota, compra.fornecedor.codigo)
       .subscribe(compra =>
       {
         this.compra = compra;
@@ -141,7 +141,13 @@ export class CompraFormComponent implements OnInit
 
   public onListCondicaoPagamentos(filter)
   {
-    this.condicaoPagamentoService.listCondicaoPagamentosByFilters(filter ? parseInt(filter) : null, null).subscribe(page =>
+    var codigo = null;
+    var condicaoPagamento = "";
+
+    if(isNaN(parseInt(filter))) condicaoPagamento = filter ? filter : "";
+    else codigo = parseInt(filter)
+
+    this.condicaoPagamentoService.listCondicaoPagamentosByFilters(codigo, condicaoPagamento, null).subscribe(page =>
     {
       this.condicoesPagamentos = page.content.filter(c => c.situacao);
     })
@@ -207,7 +213,13 @@ export class CompraFormComponent implements OnInit
 
   public onListProdutos(filter)
   {
-    this.produtoService.listProdutosByFilters(filter ? filter : "", null).subscribe(page =>
+    var codigo = null;
+    var produto = "";
+
+    if(isNaN(parseInt(filter))) produto = filter ? filter : "";
+    else codigo = parseInt(filter)
+
+    this.produtoService.listProdutosByFilters(produto, codigo, null).subscribe(page =>
     {
       this.produtos = page.content.filter(c => c.situacao).filter(c => !this.compra.itensCompra.map(i => i.codigo).includes(c.codigo));
     })

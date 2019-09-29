@@ -19,7 +19,7 @@ public class Cidade extends AbstractEntity
      *				 		     ATTRIBUTES
      *-------------------------------------------------------------------*/
 
-    private Integer idCidade;
+    private Integer codigo;
 
     private String cidade;
 
@@ -29,7 +29,7 @@ public class Cidade extends AbstractEntity
 
     private Boolean situacao;
 
-    private Integer idEstado;
+    private Integer estadoId;
 
 
     /*-------------------------------------------------------------------
@@ -43,14 +43,14 @@ public class Cidade extends AbstractEntity
      *							BEHAVIORS
      *-------------------------------------------------------------------*/
 
-    @Override
+    
     public String toString()
     {
         return "Cidade{" +
-                "idCidade=" + idCidade +
+                "codigo=" + codigo +
                 ", cidade='" + cidade + '\'' +
                 ", ddd='" + ddd + '\'' +
-                ", idEstado='" + estado.getIdEstado() + '\'' +
+                ", codigo='" + estado.getCodigo() + '\'' +
                 ", created=" + created +
                 ", updated=" + updated +
                 '}';

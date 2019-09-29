@@ -19,6 +19,12 @@
                     </mat-form-field>
 
                     <mat-form-field fxFlex appearance="outline">
+                        <mat-label>Condição de pagamento</mat-label>
+                        <input uppercase required maxlength="144" [(ngModel)]="condicaoPagamento.condicaoPagamento" name="condicaoPagamento" matInput
+                            placeholder="Digite a condição de pagamento">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex appearance="outline">
                         <mat-label>Juros</mat-label>
                         <input uppercase [(ngModel)]="condicaoPagamento.juros" name="juros" matInput
                             [textMask]="{mask: masks.getDecimalNumberMask(8,2), guide: false}"
@@ -105,8 +111,7 @@
                                         matInput [textMask]="{mask: masks.getDecimalNumberMask(8,2), guide: false}"
                                         placeholder="Digite a porcentagem">
                                 </mat-form-field>
-
-
+        
                                 <mat-form-field fxFlex appearance="outline" class="push-left-md">
                                     <mat-label>Forma de Pagamento</mat-label>
                                     <input required type="text" matInput [matAutocomplete]="auto" #inputFilter
@@ -121,14 +126,17 @@
 
                                 </mat-form-field>
 
-
-
+                                <button (click)="redirect()" mat-mini-fab color="primary" style="margin: 0 0 22px 13px;" matTooltip="Ir para forma de pagamento">
+                                    <mat-icon>
+                                        launch
+                                    </mat-icon>
+                                </button>
 
                                 <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
                                     (optionSelected)="parcela.formaPagamento = $event.option.value; onListFormasPagamento();">
                                     <mat-option [value]="null">Nenhum</mat-option>
                                     <mat-option *ngFor="let formaPagamento of formasPagamento" [value]="formaPagamento">
-                                        {{formaPagamento.formaPagamento}}
+                                        {{formaPagamento.codigo}} - {{formaPagamento.formaPagamento}}
                                     </mat-option>
                                 </mat-autocomplete>
 
@@ -136,6 +144,7 @@
                                     matTooltip="Remover parcela" mat-icon-button>
                                     <mat-icon>remove_circle</mat-icon>
                                 </button>
+
 
                             </div>
 

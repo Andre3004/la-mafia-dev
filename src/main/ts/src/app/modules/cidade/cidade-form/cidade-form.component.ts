@@ -15,7 +15,7 @@ import { TextMasks } from 'src/app/common/mask/text-masks';
 })
 export class CidadeFormComponent implements OnInit {
 
-  public cidade: Cidade = { idCidade: 0};
+  public cidade: Cidade = { codigo: 0};
 
   public title = "";
 
@@ -32,15 +32,15 @@ export class CidadeFormComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   )
   {
-    if (data.idCidade != null)
+    if (data.codigo != null)
     {
-      this.onFindCidadeById(data.idCidade);
+      this.onFindCidadeById(data.codigo);
     }
   }
 
   ngOnInit()
   {
-    if (this.data.idCidade)
+    if (this.data.codigo)
       this.title = "Alterar cidade";
     else
       this.title = "Inserir cidade";
@@ -65,13 +65,13 @@ export class CidadeFormComponent implements OnInit {
  public onSubmit(): void
   {
 
-    if(!this.cidade.estado || (this.cidade.estado && !this.cidade.estado.idEstado))
+    if(!this.cidade.estado || (this.cidade.estado && !this.cidade.estado.codigo))
     {
       this.openSnackBarService.openError("O campo estado deve ser preenchido.");
       return;
     }
     
-    if (!this.cidade.idCidade)
+    if (!this.cidade.codigo)
     {
       this.cidadeService.insertCidade(this.cidade).subscribe(cidade =>
       {

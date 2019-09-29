@@ -45,18 +45,11 @@ public class Produto extends AbstractEntity
 
 	private String codigoBarras;
 
-	private Fornecedor fornecedor;
-
-	private LocalDateTime dataUltimaCompra;
-
 	//@Transient
 	private FileTransfer anexo;
 
 	//@Transient
 	private Long grupoProdutoId;
-
-	//@Transient
-	private Integer fornecedorId;
 
 	//@Transient
 	private List<Estoque> estoques = new ArrayList<Estoque>(  );

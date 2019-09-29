@@ -23,7 +23,7 @@ public class ArquivoDAO
 	
 	public Arquivo findArquivoById(long id)
 	{
-		String sql = "SELECT * FROM arquivo WHERE id = ?";
+		String sql = "SELECT * FROM arquivo WHERE codigo = ?";
 
 		Arquivo arquivo = (Arquivo) jdbcTemplate.queryForObject(sql,
 				new Object[] { id }, new BeanPropertyRowMapper(Arquivo.class));
@@ -58,7 +58,7 @@ public class ArquivoDAO
 
 	public Long getLastId(){
 		return jdbcTemplate.queryForObject(
-				"SELECT MAX(ID) FROM arquivo;", Long.class);
+				"SELECT MAX(codigo) FROM arquivo;", Long.class);
 	}
 
 
@@ -70,7 +70,7 @@ public class ArquivoDAO
 						"nome_original = ?, " +
 						"uuid = ?, " +
 						"updated = ? " +
-						"WHERE id = ?",
+						"WHERE codigo = ?",
 				arquivo.getMimeType(),
 				arquivo.getNomeOriginal(),
 				arquivo.getUuid(),
@@ -79,6 +79,6 @@ public class ArquivoDAO
 	}
 
 	public void deleteArquivo(long id){
-		jdbcTemplate.update("DELETE from arquivo WHERE id = ? ", id);
+		jdbcTemplate.update("DELETE from arquivo WHERE codigo = ? ", id);
 	}
 }

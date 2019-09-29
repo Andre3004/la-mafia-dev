@@ -40,12 +40,16 @@ public class EstoqueDAO
 						"saldo, " +
 						"preco_custo, " +
 						"preco_venda, " +
-						"created) VALUES (?, ?, ?, ?, ?, ?)",
+						"fornecedor_id, " +
+						"data_ultima_compra, "+
+						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
 				estoque.getProduto().getCodigo(),
 				estoque.getFranquia().getCodigo(),
 				estoque.getSaldo(),
 				estoque.getPrecoCusto(),
 				estoque.getPrecoVenda(),
+				estoque.getFornecedor() != null ? estoque.getFornecedor().getCodigo() : null,
+				estoque.getDataUltimaCompra(),
 				Timestamp.valueOf( LocalDateTime.now( this.fusoHorarioDeSaoPaulo ) ));
 	}
 
@@ -56,11 +60,15 @@ public class EstoqueDAO
 						"saldo = ?, " +
 						"preco_custo = ?, " +
 						"preco_venda = ?, " +
+						"fornecedor_id = ?, " +
+						"data_ultima_compra = ?, " +
 						"updated = ? " +
 						"WHERE franquia_id = ? AND produto_id = ?",
 				estoque.getSaldo(),
 				estoque.getPrecoCusto(),
 				estoque.getPrecoVenda(),
+				estoque.getFornecedor().getCodigo(),
+				Timestamp.valueOf( estoque.getDataUltimaCompra() ),
 				Timestamp.valueOf( LocalDateTime.now( this.fusoHorarioDeSaoPaulo ) ),
 				estoque.getFranquia().getCodigo(),
 				estoque.getProduto().getCodigo() );
@@ -86,6 +94,8 @@ public class EstoqueDAO
 				e.setPrecoCusto(rs.getDouble("preco_custo"));
 				e.setPrecoVenda(rs.getDouble("preco_venda"));
 				e.setCreated( rs.getTimestamp( "created" ).toLocalDateTime() );
+				e.setFornecedorId(rs.getInt("fornecedor_id") != 0 ? rs.getInt("fornecedor_id") : null);
+				e.setDataUltimaCompra( rs.getTimestamp( "data_ultima_compra" ) != null ? rs.getTimestamp( "data_ultima_compra" ).toLocalDateTime() : null );
 				e.setSaldo(rs.getInt("saldo"));
 
 				return e;

@@ -7,6 +7,7 @@ import { PaginationService } from 'src/app/common/pagination/pagination.service'
 import { ProdutoService, FranquiaService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
 import { Franquia, Produto } from 'src/generated/entities';
+import { TextMasks } from 'src/app/common/mask/text-masks';
 
 
 @Component({
@@ -25,6 +26,7 @@ export class ProdutoListComponent implements OnInit
 
     public filters = {
         nome: '',
+        codigo: null
     }
 
 
@@ -37,6 +39,8 @@ export class ProdutoListComponent implements OnInit
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
         { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 150 }
     ];
+
+    public masks = TextMasks;
 
     /**
      * 
@@ -158,6 +162,7 @@ export class ProdutoListComponent implements OnInit
 
         this.produtoService.listProdutosByFilters(
             this.filters.nome,
+            this.filters.codigo,
             this.pageRequest.pageable
         ).subscribe((result) =>
         {
@@ -171,7 +176,8 @@ export class ProdutoListComponent implements OnInit
     public clearFilters()
     {
         this.filters = {
-            nome: ''
+            nome: '',
+            codigo: null
         }
 
         this.onListProdutos();

@@ -49,7 +49,7 @@ public class GrupoProduto extends AbstractEntity
 	 *							BEHAVIORS
 	 *-------------------------------------------------------------------*/
 
-	@Override
+	
 	public String toString()
 	{
 		return "GrupoProduto{" +

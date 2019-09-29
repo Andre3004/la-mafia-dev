@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import br.com.projeto.portal.domain.dao.CondicaoPagamentoDAO;
 import br.com.projeto.portal.domain.entity.pagamento.CondicaoPagamento;
 import br.com.projeto.portal.domain.entity.pagamento.CondicaoPagamentoParcela;
-import br.com.projeto.portal.domain.repository.ICondicaoPagamentoRepository;
 import org.directwebremoting.annotations.RemoteProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RemoteProxy
 @Transactional
-public class CondicaoPagamentoService implements ICondicaoPagamentoRepository
+public class CondicaoPagamentoService
 {
 	/*-------------------------------------------------------------------
 	 *				 		     ATTRIBUTES
@@ -31,20 +30,20 @@ public class CondicaoPagamentoService implements ICondicaoPagamentoRepository
 	 *				 		     SERVICES
 	 *-------------------------------------------------------------------*/
 
-	@Override
-	public Page<CondicaoPagamento> listCondicaoPagamentosByFilters( Long codigo, PageRequest pageable )
+	
+	public Page<CondicaoPagamento> listCondicaoPagamentosByFilters( Long codigo, String condicaoPagamento, PageRequest pageable )
 	{
-		return this.condicaoPagamentoDao.listCondicaoPagamentosByFilters(codigo, pageable );
+		return this.condicaoPagamentoDao.listCondicaoPagamentosByFilters(codigo, condicaoPagamento, pageable );
 	}
 
-	@Override
+	
 	public CondicaoPagamento findCondicaoPagamentoById( long id )
 	{
 		CondicaoPagamento condicaoPagamento = this.condicaoPagamentoDao.findCondicaoPagamentoById( id );
 		return condicaoPagamento;
 	}
 
-	@Override
+	
 	public Long insertCondicaoPagamento( CondicaoPagamento condicaoPagamento )
 	{
 		condicaoPagamento.setSituacao( true );
@@ -63,7 +62,7 @@ public class CondicaoPagamentoService implements ICondicaoPagamentoRepository
 		return condicaoPagamentoId;
 	}
 
-	@Override
+	
 	public void updateCondicaoPagamento( CondicaoPagamento condicaoPagamento, List<Long> condicaoPagamentoParcelasIds )
 	{
 		if(condicaoPagamentoParcelasIds != null && condicaoPagamentoParcelasIds.size() > 0)
@@ -99,13 +98,13 @@ public class CondicaoPagamentoService implements ICondicaoPagamentoRepository
 		this.condicaoPagamentoDao.updateCondicaoPagamento( condicaoPagamento, condicaoPagamentoParcelasIds );
 	}
 
-	@Override
+	
 	public void updateSituacaoCondicaoPagamento( long id, boolean situacao )
 	{
 		this.condicaoPagamentoDao.updateSituacaoCondicaoPagamento( id, situacao );
 	}
 
-	@Override
+	
 	public void deleteCondicaoPagamento( long id )
 	{
 		CondicaoPagamento condicaoPagamentoSaved = this.condicaoPagamentoDao.findCondicaoPagamentoById( id );

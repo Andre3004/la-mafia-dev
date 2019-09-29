@@ -10,7 +10,6 @@ import java.util.List;
 
 import br.com.projeto.portal.domain.entity.pagamento.CondicaoPagamento;
 import br.com.projeto.portal.domain.entity.pagamento.CondicaoPagamentoParcela;
-import br.com.projeto.portal.domain.repository.ICondicaoPagamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -24,7 +23,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Qualifier("condicaoPagamentoDao")
-public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
+public class CondicaoPagamentoDAO
 {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -34,7 +33,7 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 	@Autowired
 	FormaPagamentoDAO formaPagamentoDAO;
 
-	@Override
+	
 	public CondicaoPagamento findCondicaoPagamentoById( long id)
 	{
 		String sql = "SELECT * FROM condicao_pagamento WHERE codigo = ?";
@@ -46,7 +45,7 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 		return condicaoPagamento;
 	}
 
-	@Override
+	
 	public Long insertCondicaoPagamento( CondicaoPagamento condicaoPagamento )
 	{
 		String sqlId = "SELECT max(codigo) FROM condicao_pagamento";
@@ -56,13 +55,15 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 		jdbcTemplate.update(
 				"INSERT INTO condicao_pagamento " +
 						"(codigo, " +
+						"condicao_pagamento, " +
 						"juros, " +
 						"multa, " +
 						"desconto, " +
 						"situacao, " +
 						"prazo, " +
-						"created) VALUES (?, ?, ?, ?, ?, ?, ?)",
+						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
 				id,
+				condicaoPagamento.getCondicaoPagamento(),
 				condicaoPagamento.getJuros(),
 				condicaoPagamento.getMulta(),
 				condicaoPagamento.getDesconto(),
@@ -73,12 +74,13 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 		return id;
 	}
 
-	@Override
+	
 	public void updateCondicaoPagamento( CondicaoPagamento condicaoPagamento, List<Long> parcelasExcluidas )
 	{
 		jdbcTemplate.update("UPDATE condicao_pagamento " +
 						"SET " +
 						"juros = ?, " +
+						"condicao_pagamento = ?, " +
 						"multa = ?, " +
 						"desconto = ?, " +
 						"situacao = ?, " +
@@ -86,6 +88,7 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 						"updated = ? " +
 						"WHERE codigo = ?",
 				condicaoPagamento.getJuros(),
+				condicaoPagamento.getCondicaoPagamento(),
 				condicaoPagamento.getMulta(),
 				condicaoPagamento.getDesconto(),
 				condicaoPagamento.getSituacao(),
@@ -94,22 +97,22 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 				condicaoPagamento.getCodigo());
 	}
 
-	@Override
+	
 	public void deleteCondicaoPagamento(long id){
 		jdbcTemplate.update("DELETE from condicao_pagamento WHERE codigo = ? ", id);
 	}
 
-	@Override
+	
 	public void updateSituacaoCondicaoPagamento(long id, boolean situacao){
 		jdbcTemplate.update("UPDATE condicao_pagamento SET situacao = ? WHERE codigo = ?", situacao, id);
 	}
 
-	@Override
-	public Page<CondicaoPagamento> listCondicaoPagamentosByFilters( Long codigo, PageRequest pageable )
+	public Page<CondicaoPagamento> listCondicaoPagamentosByFilters( Long codigo, String condicaoPagamento, PageRequest pageable )
 	{
 		if(pageable == null) pageable = new PageRequest(0, 10);
 
-
+		if(condicaoPagamento != null)
+			condicaoPagamento = condicaoPagamento.replaceAll( "'", "''" );
 
 		String rowCountSql = "SELECT count(1) AS row_count FROM condicao_pagamento " ;
 
@@ -122,9 +125,9 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 		String selectAndFrom = "SELECT * " +
 				"FROM condicao_pagamento ";
 
-		String where =  "";
+		String where =  "WHERE condicao_pagamento LIKE  '%" + condicaoPagamento + "%' ";
 
-		where += codigo != null ? "WHERE codigo = " + codigo + " " : "";
+		where += codigo != null ? "AND codigo = " + codigo + " " : "";
 
 		String pagination = "LIMIT " + pageable.getPageSize() + " " +
 				"OFFSET " + pageable.getOffset() + ";";
@@ -138,6 +141,7 @@ public class CondicaoPagamentoDAO implements ICondicaoPagamentoRepository
 				e.setMulta(rs.getDouble("multa"));
 				e.setDesconto(rs.getDouble("desconto"));
 				e.setSituacao(rs.getBoolean("situacao"));
+				e.setCondicaoPagamento(rs.getString("condicao_pagamento"));
 				e.setParcelas( findCondicaoPagamentoParcelaById( rs.getLong("codigo") ) );
 				return e;
 			}

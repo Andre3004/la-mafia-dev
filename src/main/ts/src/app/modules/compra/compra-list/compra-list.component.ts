@@ -39,7 +39,8 @@ export class CompraListComponent implements OnInit
         { name: 'modelo', label: 'MODELO', sortable: false },
         { name: 'serie', label: 'SERIE', sortable: false },
         { name: 'numeroNota', label: 'NUMERO DA NOTA', sortable: false },
-        { name: 'fornecedor.razaoSocial', label: 'FORNECEDOR', sortable: false },
+        { name: 'fornecedor', label: 'FORNECEDOR', sortable: false },
+        { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
         { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 150 }
     ];
 
@@ -92,7 +93,7 @@ export class CompraListComponent implements OnInit
             this.filters.modelo,
             this.filters.serie,
             this.filters.numeroNota,
-            this.filters.fornecedor ? this.filters.fornecedor.idFornecedor : null
+            this.filters.fornecedor ? this.filters.fornecedor.codigo : null
         ).subscribe((result) =>
         {
             this.pageRequest = this.paginationService.fixPageRequest(result, this.pageRequest);
@@ -136,10 +137,10 @@ export class CompraListComponent implements OnInit
             {
                 if (accept)
                 {
-                    this.compraService.updateSituacaoCompra(compra.modelo, compra.serie, compra.numeroNota, compra.fornecedor.idFornecedor, !compra.situacao).subscribe( result => {
+                    this.compraService.updateSituacaoCompra(compra.modelo, compra.serie, compra.numeroNota, compra.fornecedor.codigo, !compra.situacao).subscribe( result => {
                         this.openSnackBarService.openSuccess('Compra desativada com sucesso.');
                         this.onListComprasByFilters();
-                    }, err => this.openSnackBarService.openError(err.message))
+                    }, err => this.openSnackBarService.openError(err.message, 10000))
                 }
             });
         }
@@ -155,7 +156,7 @@ export class CompraListComponent implements OnInit
             {
                 if (accept)
                 {
-                    this.compraService.updateSituacaoCompra(compra.modelo, compra.serie, compra.numeroNota, compra.fornecedor.idFornecedor, !compra.situacao).subscribe( result => {
+                    this.compraService.updateSituacaoCompra(compra.modelo, compra.serie, compra.numeroNota, compra.fornecedor.codigo, !compra.situacao).subscribe( result => {
                         this.openSnackBarService.openSuccess('Compra ativada com sucesso.');
                         this.onListComprasByFilters();
                     }, err => this.openSnackBarService.openError(err.message))

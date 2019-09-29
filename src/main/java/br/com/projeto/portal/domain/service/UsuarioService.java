@@ -5,11 +5,9 @@ package br.com.projeto.portal.domain.service;
 
 import java.time.LocalDateTime;
 
-//import br.com.projeto.portal.domain.repository.usuario.UsuarioDao;
 import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.dao.UsuarioDAO;
 import br.com.projeto.portal.domain.entity.usuario.PerfilUsuario;
-import br.com.projeto.portal.domain.repository.IUsuarioRepository;
 import br.com.projeto.portal.infrastructure.arquivo.Arquivo;
 import br.com.projeto.portal.infrastructure.arquivo.ArquivoService;
 import br.com.projeto.portal.infrastructure.arquivo.IArquivoRepository;
@@ -29,7 +27,7 @@ import br.com.projeto.portal.domain.entity.usuario.Usuario;
 @Service
 @RemoteProxy
 @Transactional
-public class UsuarioService implements IUsuarioRepository
+public class UsuarioService
 {
 	/*-------------------------------------------------------------------
 	 *				 		     ATTRIBUTES
@@ -48,13 +46,13 @@ public class UsuarioService implements IUsuarioRepository
 	 *				 		     SERVICES
 	 *-------------------------------------------------------------------*/
 
-	@Override
+	
 	public Page<Usuario> listUsuariosByFilters( String nome, Boolean situacao, String email, PageRequest pageable )
 	{
 		return this.usuarioDao.listUsuariosByFilters( nome, situacao, email, pageable );
 	}
 
-	@Override
+	
 	public Usuario findUsuarioById( long id )
 	{
 		Usuario usuario = this.usuarioDao.findUsuarioById( id );
@@ -68,7 +66,7 @@ public class UsuarioService implements IUsuarioRepository
 		return usuario;
 	}
 
-	@Override
+	
 	public void insertUsuario( Usuario usuario )
 	{
 		try
@@ -92,7 +90,7 @@ public class UsuarioService implements IUsuarioRepository
 		}
 	}
 
-	@Override
+	
 	public void updateUsuario( Usuario usuario )
 	{
 		if ( usuario.getAnexoUuid() == null && usuario.getAnexo() != null )
@@ -112,13 +110,13 @@ public class UsuarioService implements IUsuarioRepository
 		this.usuarioDao.updateUsuario( usuario );
 	}
 
-	@Override
+	
 	public void updateSituacaoUsuario( long id, boolean situacao )
 	{
 		this.usuarioDao.updateSituacaoUsuario( id, situacao );
 	}
 
-	@Override
+	
 	public void deleteUsuario( long id )
 	{
 		//TODO validar se existe registros relacionados, se existe só desativa

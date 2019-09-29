@@ -26,7 +26,7 @@ export class CidadeListComponent implements OnInit
 
     }
     public tableColumns: ITdDataTableColumn[] = [
-        { name: 'idCidade', label: 'CÓDIGO' },
+        { name: 'codigo', label: 'CÓDIGO' },
         { name: 'cidade', label: 'CIDADE' },
         { name: 'ddd', label: 'DDD' },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
@@ -40,7 +40,7 @@ export class CidadeListComponent implements OnInit
         private cidadeService: CidadeService) 
     {
 
-        this.pageRequest = paginationService.pageRequest('idCidade', 'ASC', 10);
+        this.pageRequest = paginationService.pageRequest('codigo', 'ASC', 10);
 
 
 
@@ -75,7 +75,7 @@ export class CidadeListComponent implements OnInit
         const dialogRef = this.dialog.open(CidadeFormComponent, {
             width: '600px',
             height: 'auto',
-            data: { idCidade: cidade ? cidade.idCidade : null }
+            data: { codigo: cidade ? cidade.codigo : null }
         });
 
         dialogRef.afterClosed().subscribe(cidadeSaved =>
@@ -99,7 +99,7 @@ export class CidadeListComponent implements OnInit
             {
                 if (accept)
                 {
-                    this.cidadeService.deleteCidade(cidade.idCidade).subscribe( result => {
+                    this.cidadeService.deleteCidade(cidade.codigo).subscribe( result => {
                         this.openSnackBarService.openSuccess('Cidade excluída com sucesso.');
                         this.onListCidades();
                     }, err => {
@@ -115,7 +115,7 @@ export class CidadeListComponent implements OnInit
                         {
                             if (accept)
                             {
-                                this.cidadeService.updateSituacaoCidade(cidade.idCidade, !cidade.situacao).subscribe( result => {
+                                this.cidadeService.updateSituacaoCidade(cidade.codigo, !cidade.situacao).subscribe( result => {
                                     this.openSnackBarService.openSuccess('Cidade desativada com sucesso.');
                                     this.onListCidades();
                                 }, err => this.openSnackBarService.openError(err.message))
@@ -137,7 +137,7 @@ export class CidadeListComponent implements OnInit
             {
                 if (accept)
                 {
-                    this.cidadeService.updateSituacaoCidade(cidade.idCidade, !cidade.situacao).subscribe( result => {
+                    this.cidadeService.updateSituacaoCidade(cidade.codigo, !cidade.situacao).subscribe( result => {
                         this.openSnackBarService.openSuccess('Cidade ativado com sucesso.');
                         this.onListCidades();
                     }, err => this.openSnackBarService.openError(err.message))

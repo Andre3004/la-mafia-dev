@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import br.com.projeto.portal.domain.dao.GrupoProdutoDAO;
 import br.com.projeto.portal.domain.entity.GrupoProdutoFranquia;
 import br.com.projeto.portal.domain.entity.grupoProduto.GrupoProduto;
-import br.com.projeto.portal.domain.repository.IGrupoProdutoRepository;
 import br.com.projeto.portal.infrastructure.arquivo.Arquivo;
 import br.com.projeto.portal.infrastructure.arquivo.ArquivoService;
 import br.com.projeto.portal.infrastructure.arquivo.IArquivoRepository;
@@ -21,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RemoteProxy
 @Transactional
-public class GrupoProdutoService implements IGrupoProdutoRepository
+public class GrupoProdutoService
 {
 	/*-------------------------------------------------------------------
 	 *				 		     ATTRIBUTES
@@ -40,13 +39,13 @@ public class GrupoProdutoService implements IGrupoProdutoRepository
 	 *				 		     SERVICES
 	 *-------------------------------------------------------------------*/
 
-	@Override
+	
 	public Page<GrupoProduto> listGrupoProdutosByFilters( String nome, Long codigo, PageRequest pageable )
 	{
 		return this.grupoProdutoDao.listGrupoProdutosByFilters( nome, codigo, pageable );
 	}
 
-	@Override
+	
 	public GrupoProduto findGrupoProdutoById( long id )
 	{
 		GrupoProduto grupoProduto = this.grupoProdutoDao.findGrupoProdutoById( id );
@@ -59,7 +58,7 @@ public class GrupoProdutoService implements IGrupoProdutoRepository
 		return grupoProduto;
 	}
 
-	@Override
+	
 	public Long insertGrupoProduto( GrupoProduto grupoProduto )
 	{
 		if(grupoProduto.getAnexo() != null)
@@ -82,7 +81,7 @@ public class GrupoProdutoService implements IGrupoProdutoRepository
 		return grupoProdutoId;
 	}
 
-	@Override
+	
 	public void updateGrupoProduto( GrupoProduto grupoProduto, List<Long> grupoProdutoFranquiaIds )
 	{
 		if(grupoProduto.getAnexoUuid() == null && grupoProduto.getAnexo() != null)
@@ -113,13 +112,13 @@ public class GrupoProdutoService implements IGrupoProdutoRepository
 		this.grupoProdutoDao.updateGrupoProduto( grupoProduto, grupoProdutoFranquiaIds );
 	}
 
-	@Override
+	
 	public void updateSituacaoGrupoProduto( long id, boolean situacao )
 	{
 		this.grupoProdutoDao.updateSituacaoGrupoProduto( id, situacao );
 	}
 
-	@Override
+	
 	public void deleteGrupoProduto( long id )
 	{
 		GrupoProduto grupoProdutoSaved = this.grupoProdutoDao.findGrupoProdutoById( id );

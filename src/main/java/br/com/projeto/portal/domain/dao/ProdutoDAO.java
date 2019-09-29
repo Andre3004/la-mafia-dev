@@ -10,7 +10,6 @@ import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.dao.fornecedor.FornecedorDAO;
 import br.com.projeto.portal.domain.entity.produto.Estoque;
 import br.com.projeto.portal.domain.entity.produto.Produto;
-import br.com.projeto.portal.domain.repository.IProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -50,8 +49,6 @@ public class ProdutoDAO
 				new Object[]{id}, new BeanPropertyRowMapper( Produto.class ) );
 
 		produto.setGrupoProduto( grupoProdutoDAO.findGrupoProdutoById( produto.getGrupoProdutoId() ) );
-		if ( produto.getFornecedorId() != null )
-			produto.setFornecedor( fornecedorDAO.findFornecedorById( produto.getFornecedorId() ) );
 
 		setCurrentEstoque( produto );
 
@@ -75,8 +72,7 @@ public class ProdutoDAO
 						"grupo_produto_id, " +
 						"codigo_barras, " +
 						"unidade_comercial, " +
-						"fornecedor_id, " +
-						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 				produto.getProduto(),
 				produto.getDescricao(),
 				produto.getAno(),
@@ -86,7 +82,6 @@ public class ProdutoDAO
 				produto.getGrupoProduto().getCodigo(),
 				produto.getCodigoBarras(),
 				produto.getUnidadeComercial(),
-				produto.getFornecedor() != null ? produto.getFornecedor().getIdFornecedor() : null,
 				Timestamp.valueOf( LocalDateTime.now( this.fusoHorarioDeSaoPaulo ) ) );
 
 		return id;
@@ -105,7 +100,6 @@ public class ProdutoDAO
 						"grupo_produto_id = ?, " +
 						"codigo_barras  = ?, " +
 						"unidade_comercial  = ?, " +
-						"fornecedor_id  = ?, " +
 						"updated = ? " +
 						"WHERE codigo = ?",
 				produto.getProduto(),
@@ -117,7 +111,6 @@ public class ProdutoDAO
 				produto.getGrupoProduto().getCodigo(),
 				produto.getCodigoBarras(),
 				produto.getUnidadeComercial(),
-				produto.getFornecedor() != null ? produto.getFornecedor().getIdFornecedor() : null,
 				Timestamp.valueOf( LocalDateTime.now( this.fusoHorarioDeSaoPaulo ) ),
 				produto.getCodigo() );
 	}
@@ -132,10 +125,13 @@ public class ProdutoDAO
 		jdbcTemplate.update( "UPDATE produto SET situacao = ? WHERE codigo = ?", situacao, id );
 	}
 
-	public Page<Produto> listProdutosByFilters( String nome, PageRequest pageable )
+	public Page<Produto> listProdutosByFilters( String nome, Long codigo, PageRequest pageable )
 	{
 		if ( pageable == null ) pageable = new PageRequest( 0, 10 );
 
+		if(nome != null)
+			nome = nome.replaceAll( "'", "''" );
+			
 		String rowCountSql = "SELECT count(1) AS row_count FROM produto ";
 
 		int total =
@@ -149,6 +145,7 @@ public class ProdutoDAO
 
 		String where = "WHERE produto LIKE  '%" + nome + "%' ";
 
+		where += codigo != null ? "AND codigo = " + codigo + " " : "";
 
 		String pagination = "LIMIT " + pageable.getPageSize() + " " +
 				"OFFSET " + pageable.getOffset() + ";";
@@ -187,12 +184,18 @@ public class ProdutoDAO
 		{
 			Estoque estoqueFiltered = estoquesFiltered.get( 0 );
 			estoqueFiltered.setProduto( produto );
+			if ( estoqueFiltered.getFornecedorId() != null )
+				estoqueFiltered.setFornecedor( fornecedorDAO.findFornecedorById( estoqueFiltered.getFornecedorId() ) );
+
 			produto.setCurrentEstoque( estoqueFiltered );
 		}
 		else
 		{
 			currentEstoque.setFranquia( ContextHolder.getAuthenticatedUser().getFranquia() );
 			currentEstoque.setProduto( produto );
+			if ( currentEstoque.getFornecedorId() != null )
+				currentEstoque.setFornecedor( fornecedorDAO.findFornecedorById( currentEstoque.getFornecedorId() ) );
+
 			produto.setCurrentEstoque( currentEstoque );
 		}
 	}

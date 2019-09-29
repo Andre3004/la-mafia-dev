@@ -12,7 +12,6 @@ import br.com.projeto.portal.domain.dao.cidade.CidadeDAO;
 import br.com.projeto.portal.domain.dao.estado.EstadoDAO;
 import br.com.projeto.portal.domain.dao.pais.PaisDAO;
 import br.com.projeto.portal.domain.entity.Cliente;
-import br.com.projeto.portal.domain.repository.IClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -24,11 +23,10 @@ import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import br.com.projeto.portal.domain.repository.IClienteRepository;
 
 @Repository
 @Qualifier("clienteDao")
-public class ClienteDAO implements IClienteRepository
+public class ClienteDAO 
 {
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -44,10 +42,10 @@ public class ClienteDAO implements IClienteRepository
     @Autowired
     PaisDAO paisDAO;
 
-    @Override
+    
     public Cliente findClienteById(int id)
     {
-        String sql = "SELECT * FROM cliente WHERE idCliente = ?";
+        String sql = "SELECT * FROM cliente WHERE codigo = ?";
 
         Cliente cliente = (Cliente) jdbcTemplate.queryForObject(sql,
                 new Object[] { id }, new BeanPropertyRowMapper(Cliente.class));
@@ -59,7 +57,7 @@ public class ClienteDAO implements IClienteRepository
         return cliente;
     }
 
-    @Override
+    
     public void insertCliente( Cliente cliente )
     {
         jdbcTemplate.update(
@@ -85,14 +83,14 @@ public class ClienteDAO implements IClienteRepository
                 cliente.getCelular(),
                 cliente.getEmail(),
                 cliente.getEndereco(),
-                cliente.getCidade().getIdCidade(),
-                cliente.getEstado().getIdEstado(),
-                cliente.getPais().getIdPais(),
+                cliente.getCidade().getCodigo(),
+                cliente.getEstado().getCodigo(),
+                cliente.getPais().getCodigo(),
                 cliente.getSituacao(),
                 Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
     }
 
-    @Override
+    
     public void updateCliente( Cliente cliente )
     {
         jdbcTemplate.update("UPDATE cliente " +
@@ -109,7 +107,7 @@ public class ClienteDAO implements IClienteRepository
                         "estado_id = ?, " +
                         "pais_id = ?, " +
                         "updated = ? " +
-                        "WHERE idCliente = ?",
+                        "WHERE codigo = ?",
                 cliente.getCliente(),
                 cliente.getApelido(),
                 cliente.getCpf(),
@@ -118,23 +116,26 @@ public class ClienteDAO implements IClienteRepository
                 cliente.getCelular(),
                 cliente.getEmail(),
                 cliente.getEndereco(),
-                cliente.getCidade().getIdCidade(),
-                cliente.getEstado().getIdEstado(),
-                cliente.getPais().getIdPais(),
+                cliente.getCidade().getCodigo(),
+                cliente.getEstado().getCodigo(),
+                cliente.getPais().getCodigo(),
                 Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
-                cliente.getIdCliente());
+                cliente.getCodigo());
     }
 
-    @Override
+    
     public void deleteCliente(int id){
-        jdbcTemplate.update("DELETE from cliente WHERE idCliente = ? ", id);
+        jdbcTemplate.update("DELETE from cliente WHERE codigo = ? ", id);
     }
 
 
-    @Override
+    
     public Page<Cliente> listClientesByFilters( String cliente, PageRequest pageable )
     {
         if(pageable == null) pageable = new PageRequest(0, 10);
+
+        if(cliente != null)
+            cliente = cliente.replaceAll( "'", "''" );
 
         String rowCountSql = "SELECT count(1) AS row_count FROM cliente " ;
 
@@ -158,7 +159,7 @@ public class ClienteDAO implements IClienteRepository
         List<Cliente> clientes = jdbcTemplate.query(querySql,new RowMapper<Cliente>(){
             public Cliente mapRow( ResultSet rs, int row) throws SQLException {
                 Cliente c=new Cliente();
-                c.setIdCliente(rs.getInt(1));
+                c.setCodigo(rs.getInt(1));
                 c.setCliente(rs.getString(2));
                 c.setCpf(rs.getString(4));
                 c.setCelular(rs.getString(7));
@@ -172,6 +173,6 @@ public class ClienteDAO implements IClienteRepository
 
     public void updateSituacaoCliente( long id, boolean situacao )
     {
-        jdbcTemplate.update("UPDATE cliente SET situacao = ? WHERE idCliente = ?", situacao, id);
+        jdbcTemplate.update("UPDATE cliente SET situacao = ? WHERE codigo = ?", situacao, id);
     }
 }

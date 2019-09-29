@@ -8,37 +8,31 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Número da mesa</mat-label>
-        <input matInput  [disabled]="true" [(ngModel)]="mesa.numeroMesa" name="numeroMesa" >
+        <input matInput [disabled]="true" [(ngModel)]="mesa.numeroMesa" name="numeroMesa">
       </mat-form-field>
 
-      
+
       <mat-form-field fxFlex appearance="outline">
-          <mat-label>Quantidade de lugares na mesa</mat-label>
-          <input required [(ngModel)]="mesa.quantidadeLugaresMesa" name="quantidadeLugaresMesa" matInput 
+        <mat-label>Quantidade de lugares na mesa</mat-label>
+        <input required [(ngModel)]="mesa.quantidadeLugaresMesa" name="quantidadeLugaresMesa" matInput
           [textMask]="{mask: textMasks.getNumbersOnlyMask(3), guide: false}"
-            placeholder="Digite a quantidade de lugares">
-        </mat-form-field>
+          placeholder="Digite a quantidade de lugares">
+      </mat-form-field>
 
     </div>
 
-    <div fxLayout="row" >
+    <div fxLayout="row">
 
 
-      <mat-form-field fxFlex appearance="outline">
-        <mat-label>Ambiente</mat-label>
-        <input required type="text" matInput [matAutocomplete]="auto" #inputFilter [(ngModel)]="mesa.ambiente"
-          name="ambiente" (ngModelChange)="onListAmbientes(inputFilter.value);">
-      </mat-form-field>
-
-      <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
-        (optionSelected)="mesa.ambiente = $event.option.value; onListAmbientes();">
-        <mat-option [value]="null">Nenhum</mat-option>
-        <mat-option *ngFor="let ambiente of ambientes" [value]="ambiente">{{ambiente.ambiente}}</mat-option>
-      </mat-autocomplete>
+      <auto-complete-with-redirect fxFlex title="Ambiente" link="ambiente" key="codigo" displayKey="ambiente"
+        [displayId]="true" [list]="{values: ambientes}" [itemSelected]="{selected: mesa.ambiente}"
+        (onFilterChange)="onListAmbientes($event)" (onSelect)="mesa.ambiente = $event"
+        (onDelete)="mesa.ambiente = null">
+      </auto-complete-with-redirect>
 
       <mat-form-field *ngIf="mesa.ambiente" fxFlex appearance="outline" style="margin-left: 30px">
         <mat-label>Franquia</mat-label>
-        <input type="text" [disabled]="true" matInput [ngModel]="mesa?.ambiente?.franquia?.franquia" name="franquia" >
+        <input type="text" [disabled]="true" matInput [ngModel]="mesa?.ambiente?.franquia?.franquia" name="franquia">
       </mat-form-field>
 
     </div>
@@ -49,21 +43,21 @@
 
 <mat-dialog-actions fxLayoutAlign="space-between end">
 
-    <div fxLayout="column">
-        <label> <label style="font-weight: bold">Data de criação:</label>
-            {{ mesa.created ? (mesa.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
-        <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
-            {{ mesa.updated ? (mesa.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
-    </div>
+  <div fxLayout="column">
+    <label> <label style="font-weight: bold">Data de criação:</label>
+      {{ mesa.created ? (mesa.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+      {{ mesa.updated ? (mesa.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+  </div>
 
-    <div>
-  <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
-    color="primary">
-    SALVAR
-  </button>
-  <button mat-dialog-close mat-raised-button class="white-btn
+  <div>
+    <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+      color="primary">
+      SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
     push-left-md bgc-grey-800">
-    CANCELAR
-  </button>
-    </div>
+      CANCELAR
+    </button>
+  </div>
 </mat-dialog-actions>

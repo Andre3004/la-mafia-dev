@@ -10,7 +10,6 @@ import java.util.List;
 import br.com.projeto.portal.domain.entity.GrupoProdutoFranquia;
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
 import br.com.projeto.portal.domain.entity.grupoProduto.GrupoProduto;
-import br.com.projeto.portal.domain.repository.IGrupoProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -24,7 +23,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Qualifier("grupoProdutoDao")
-public class GrupoProdutoDAO implements IGrupoProdutoRepository
+public class GrupoProdutoDAO
 {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -34,7 +33,7 @@ public class GrupoProdutoDAO implements IGrupoProdutoRepository
 	@Autowired
 	FranquiaDAO franquiaDAO;
 
-	@Override
+	
 	public GrupoProduto findGrupoProdutoById( long id )
 	{
 		String sql = "SELECT * FROM grupo_produto WHERE codigo = ?";
@@ -47,7 +46,7 @@ public class GrupoProdutoDAO implements IGrupoProdutoRepository
 		return grupoProduto;
 	}
 
-	@Override
+	
 	public Long insertGrupoProduto( GrupoProduto grupoProduto )
 	{
 		String sqlId = "SELECT max(codigo) FROM grupo_produto";
@@ -74,7 +73,7 @@ public class GrupoProdutoDAO implements IGrupoProdutoRepository
 		return id;
 	}
 
-	@Override
+	
 	public void updateGrupoProduto( GrupoProduto grupoProduto,  List<Long> grupoProdutoFranquiaIds  )
 	{
 		jdbcTemplate.update( "UPDATE grupo_produto " +
@@ -93,23 +92,26 @@ public class GrupoProdutoDAO implements IGrupoProdutoRepository
 				grupoProduto.getCodigo() );
 	}
 
-	@Override
+	
 	public void deleteGrupoProduto( long id )
 	{
 		jdbcTemplate.update( "DELETE from grupo_produto WHERE codigo = ? ", id );
 	}
 
-	@Override
+	
 	public void updateSituacaoGrupoProduto( long id, boolean situacao )
 	{
 		jdbcTemplate.update( "UPDATE grupo_produto SET situacao = ? WHERE codigo = ?", situacao, id );
 	}
 
-	@Override
+	
 	public Page<GrupoProduto> listGrupoProdutosByFilters( String nome, Long codigo, PageRequest pageable )
 	{
 		if ( pageable == null ) pageable = new PageRequest( 0, 10 );
 
+		if(nome != null)
+			nome = nome.replaceAll( "'", "''" );
+			
 		String rowCountSql = "SELECT count(1) AS row_count FROM grupo_produto ";
 
 		int total =

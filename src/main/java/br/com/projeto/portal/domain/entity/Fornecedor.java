@@ -24,7 +24,7 @@ public class Fornecedor extends AbstractEntity
      *				 		     ATTRIBUTES
      *-------------------------------------------------------------------*/
 
-    private Integer idFornecedor;
+    private Integer codigo;
 
     private String razaoSocial;
 
@@ -80,11 +80,11 @@ public class Fornecedor extends AbstractEntity
      *							BEHAVIORS
      *-------------------------------------------------------------------*/
 
-    @Override
+    
     public String toString()
     {
         return "Fornecedor{" +
-                "idFornecedor=" + idFornecedor +
+                "codigo=" + codigo +
                 ", razaoSocial='" + razaoSocial + '\'' +
                 ", cnpj='" + cnpj + '\'' +
 

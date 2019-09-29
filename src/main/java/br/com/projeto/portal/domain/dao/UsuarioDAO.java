@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import br.com.projeto.portal.domain.entity.usuario.Usuario;
-import br.com.projeto.portal.domain.repository.IUsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -24,7 +23,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Qualifier("usuarioDao")
-public class UsuarioDAO implements IUsuarioRepository
+public class UsuarioDAO
 {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -34,7 +33,7 @@ public class UsuarioDAO implements IUsuarioRepository
 	@Autowired
 	FranquiaDAO franquiaDAO;
 
-	@Override
+	
 	public Usuario findUsuarioById(long id)
 	{
 		String sql = "SELECT * FROM usuario WHERE codigo = ?";
@@ -46,7 +45,7 @@ public class UsuarioDAO implements IUsuarioRepository
 		return usuario;
 	}
 
-	@Override
+	
 	public void insertUsuario( Usuario usuario )
 	{
 		jdbcTemplate.update(
@@ -71,7 +70,7 @@ public class UsuarioDAO implements IUsuarioRepository
 				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 	}
 
-	@Override
+	
 	public void updateUsuario( Usuario usuario )
 	{
 		jdbcTemplate.update("UPDATE usuario " +
@@ -98,20 +97,26 @@ public class UsuarioDAO implements IUsuarioRepository
 				usuario.getCodigo());
 	}
 
-	@Override
+	
 	public void deleteUsuario(long id){
 		jdbcTemplate.update("DELETE from usuario WHERE codigo = ? ", id);
 	}
 
-	@Override
+	
 	public void updateSituacaoUsuario(long id, boolean situacao){
 		jdbcTemplate.update("UPDATE usuario SET situacao = ? WHERE codigo = ?", situacao, id);
 	}
 
-	@Override
+	
 	public Page<Usuario> listUsuariosByFilters( String nome, Boolean situacao, String email, PageRequest pageable )
 	{
 		if(pageable == null) pageable = new PageRequest(0, 10);
+
+		if(nome != null)
+			nome = nome.replaceAll( "'", "''" );
+		
+		if(email != null)
+			email = email.replaceAll( "'", "''" );
 
 		String rowCountSql = "SELECT count(1) AS row_count FROM usuario " ;
 

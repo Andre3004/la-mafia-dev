@@ -118,7 +118,7 @@ export class GrupoProdutoFormComponent implements OnInit
   }
 
   public displayFn(franquia?: Franquia): string | undefined {
-    return franquia ? franquia.franquia : undefined;
+    return franquia ? `${franquia.codigo} - ${franquia.franquia}` : undefined;
   }
 
   /*-------------------------------------------------------------------
@@ -178,6 +178,14 @@ export class GrupoProdutoFormComponent implements OnInit
    /*-------------------------------------------------------------------
   *                           Franquias
   *-------------------------------------------------------------------*/
+
+ public redirect()
+ {
+   var win = window.open(`http://localhost:4200/#/franquia`, '_blank');
+   win.focus();
+ }
+
+
  
  public addFranquia()
  {

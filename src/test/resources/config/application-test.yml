@@ -1,6 +1,5 @@
 #GENERAL
 spring:
-
   #DATA SOURCE
   datasource:
     url: jdbc:postgresql://localhost:5432/${spring.application.name}-test

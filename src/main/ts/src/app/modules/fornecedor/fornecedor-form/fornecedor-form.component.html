@@ -9,7 +9,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Código</mat-label>
-        <input uppercaserequired matInput [(ngModel)]="fornecedor.idFornecedor" name="idFornecedor" [disabled]="true">
+        <input uppercaserequired matInput [(ngModel)]="fornecedor.codigo" name="codigo" [disabled]="true">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
@@ -94,23 +94,21 @@
         <label>{{fornecedor?.cidade?.estado?.estado}}</label>
       </div>
 
-      <mat-form-field  fxFlex appearance="outline">
-        <mat-label>Cidade</mat-label>
-        <input required uppercase type="text" matInput [matAutocomplete]="autoCidade" #inputFilterCidade
-          [disabled]="fornecedor?.cidade?.idCidade" [(ngModel)]="fornecedor.cidade" name="cidade"
-          (ngModelChange)="onListCidades(inputFilterCidade.value);">
+      <auto-complete-with-redirect
+          fxFlex
+          title="Cidade"
+          link="cidade"
+          key="codigo"
+          displayKey="cidade"
+          [displayId]="true"
+          [list]="{values: cidades}"
+          [itemSelected]="{selected: fornecedor.cidade}"
+          (onFilterChange)="onListCidades($event)"
+          (onSelect)="fornecedor.cidade = $event"
+          (onDelete)="fornecedor.cidade = null"
+      >
+      </auto-complete-with-redirect>
 
-        <button *ngIf="fornecedor?.cidade?.idCidade" (click)="fornecedor.cidade = null; onListCidades('');" matTooltip="Remover cidade" matSuffix
-          mat-icon-button class="tc-grey-700 delete-button-hover">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </mat-form-field>
-
-      <mat-autocomplete [displayWith]="displayFnCidade" #autoCidade="matAutocomplete"
-        (optionSelected)="fornecedor.cidade = $event.option.value; onListCidades();">
-        <mat-option [value]="null">Nenhum</mat-option>
-        <mat-option *ngFor="let cidade of cidades" [value]="cidade">{{cidade?.cidade}}</mat-option>
-      </mat-autocomplete>
     </div>
 
     <div fxLayout="row" fxLayoutGap="30px">
@@ -126,19 +124,21 @@
         <input uppercase [(ngModel)]="fornecedor.inscricaoEstadual" name="inscricaoEstadual" matInput maxlength="144">
       </mat-form-field>
 
-      <mat-form-field fxFlex appearance="outline" class="push-left-md">
-        <mat-label>Condição de pagamento</mat-label>
-        <input required uppercase type="text" matInput [matAutocomplete]="autoCondicaoPagamento" #inputFilter
-          [(ngModel)]="fornecedor.condicaoPagamento" name="condicaoPagamento"
-          (ngModelChange)="onListCondicoesPagamento(inputFilter.value);">
-      </mat-form-field>
-
-      <mat-autocomplete [displayWith]="displayFnCondicaoPagamento" #autoCondicaoPagamento="matAutocomplete"
-        (optionSelected)="fornecedor.condicaoPagamento = $event.option.value; onListCondicoesPagamento();">
-        <mat-option [value]="null">Nenhum</mat-option>
-        <mat-option *ngFor="let condicaoPagamento of condicoesPagamento" [value]="condicaoPagamento">
-          {{condicaoPagamento?.codigo}}</mat-option>
-      </mat-autocomplete>
+      <auto-complete-with-redirect
+          fxFlex
+          title="Condição de pagamento"
+          link="cidade"
+          key="codigo"
+          [displayId]="true"
+          displayKey="condicaoPagamento"
+          [displayId]="false"
+          [list]="{values: condicoesPagamento}"
+          [itemSelected]="{selected: fornecedor.condicaoPagamento}"
+          (onFilterChange)="onListCondicoesPagamento($event)"
+          (onSelect)="fornecedor.condicaoPagamento = $event"
+          (onDelete)="fornecedor.condicaoPagamento = null"
+      >
+      </auto-complete-with-redirect>
 
     </div>
 

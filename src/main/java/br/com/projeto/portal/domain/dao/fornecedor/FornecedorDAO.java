@@ -14,7 +14,6 @@ import br.com.projeto.portal.domain.dao.cidade.CidadeDAO;
 import br.com.projeto.portal.domain.dao.estado.EstadoDAO;
 import br.com.projeto.portal.domain.dao.pais.PaisDAO;
 import br.com.projeto.portal.domain.entity.Fornecedor;
-import br.com.projeto.portal.domain.repository.IFornecedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -26,11 +25,10 @@ import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import br.com.projeto.portal.domain.repository.IFornecedorRepository;
 
 @Repository
 @Qualifier("fornecedorDao")
-public class FornecedorDAO implements IFornecedorRepository
+public class FornecedorDAO
 {
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -50,10 +48,10 @@ public class FornecedorDAO implements IFornecedorRepository
     CondicaoPagamentoDAO condicaoPagamentoDAO;
 
 
-    @Override
+    
     public Fornecedor findFornecedorById(int id)
     {
-        String sql = "SELECT * FROM fornecedor WHERE idFornecedor = ?";
+        String sql = "SELECT * FROM fornecedor WHERE codigo = ?";
 
         Fornecedor fornecedor = (Fornecedor) jdbcTemplate.queryForObject(sql,
                 new Object[] { id }, new BeanPropertyRowMapper(Fornecedor.class));
@@ -66,7 +64,7 @@ public class FornecedorDAO implements IFornecedorRepository
         return fornecedor;
     }
 
-    @Override
+    
     public void insertFornecedor( Fornecedor fornecedor )
     {
         jdbcTemplate.update(
@@ -95,9 +93,9 @@ public class FornecedorDAO implements IFornecedorRepository
                 fornecedor.getNumero(),
                 fornecedor.getBairro(),
                 fornecedor.getEmail(),
-                fornecedor.getCidade().getIdCidade(),
-                fornecedor.getEstado().getIdEstado(),
-                fornecedor.getPais().getIdPais(),
+                fornecedor.getCidade().getCodigo(),
+                fornecedor.getEstado().getCodigo(),
+                fornecedor.getPais().getCodigo(),
                 fornecedor.getCep(),
                 fornecedor.getSituacao(),
                 fornecedor.getInscricaoEstadual(),
@@ -105,7 +103,7 @@ public class FornecedorDAO implements IFornecedorRepository
                 Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
     }
 
-    @Override
+    
     public void updateFornecedor( Fornecedor fornecedor )
     {
         jdbcTemplate.update("UPDATE fornecedor " +
@@ -125,7 +123,7 @@ public class FornecedorDAO implements IFornecedorRepository
                         "inscricao_estadual = ?, " +
                         "condicao_pagamento_id = ?, " +
                         "updated = ? " +
-                        "WHERE idFornecedor = ?",
+                        "WHERE codigo = ?",
                 fornecedor.getRazaoSocial(),
                 fornecedor.getCnpj(),
                 fornecedor.getTelefone(),
@@ -134,29 +132,32 @@ public class FornecedorDAO implements IFornecedorRepository
                 fornecedor.getNumero(),
                 fornecedor.getBairro(),
                 fornecedor.getEmail(),
-                fornecedor.getCidade().getIdCidade(),
-                fornecedor.getEstado().getIdEstado(),
-                fornecedor.getPais().getIdPais(),
+                fornecedor.getCidade().getCodigo(),
+                fornecedor.getEstado().getCodigo(),
+                fornecedor.getPais().getCodigo(),
                 fornecedor.getCep(),
                 fornecedor.getInscricaoEstadual(),
                 fornecedor.getCondicaoPagamento().getCodigo(),
                 Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
-                fornecedor.getIdFornecedor());
+                fornecedor.getCodigo());
     }
 
 
 
-    @Override
+    
     public void deleteFornecedor(int id){
-        jdbcTemplate.update("DELETE from fornecedor WHERE idFornecedor = ? ", id);
+        jdbcTemplate.update("DELETE from fornecedor WHERE codigo = ? ", id);
     }
 
 
-    @Override
+    
     public Page<Fornecedor> listFornecedorsByFilters( String razaoSocial, PageRequest pageable )
     {
         if(pageable == null) pageable = new PageRequest(0, 10);
 
+        if(razaoSocial != null)
+            razaoSocial = razaoSocial.replaceAll( "'", "''" );
+            
         String rowCountSql = "SELECT count(1) AS row_count FROM fornecedor " ;
 
         int total =
@@ -179,7 +180,7 @@ public class FornecedorDAO implements IFornecedorRepository
         List<Fornecedor> fornecedores = jdbcTemplate.query(querySql,new RowMapper<Fornecedor>(){
             public Fornecedor mapRow( ResultSet rs, int row) throws SQLException {
                 Fornecedor f=new Fornecedor();
-                f.setIdFornecedor(rs.getInt(1));
+                f.setCodigo(rs.getInt(1));
                 f.setRazaoSocial(rs.getString(2));
                 f.setCnpj(rs.getString(3));
                 f.setCelular(rs.getString(5));
@@ -195,7 +196,7 @@ public class FornecedorDAO implements IFornecedorRepository
 
     public void updateSituacaoFornecedor( long id, boolean situacao )
     {
-        jdbcTemplate.update("UPDATE fornecedor SET situacao = ? WHERE idFornecedor = ?", situacao, id);
+        jdbcTemplate.update("UPDATE fornecedor SET situacao = ? WHERE codigo = ?", situacao, id);
 
     }
 }

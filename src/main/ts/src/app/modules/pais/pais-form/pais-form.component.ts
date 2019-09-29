@@ -27,15 +27,15 @@ export class PaisFormComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any
   )
   {
-    if (data.idPais != null)
+    if (data.codigo != null)
     {
-      this.onFindPaisById(data.idPais);
+      this.onFindPaisById(data.codigo);
     }
   }
 
   ngOnInit()
   {
-    if (this.data.idPais)
+    if (this.data.codigo)
       this.title = "Alterar país";
     else
       this.title = "Inserir país";
@@ -59,7 +59,7 @@ export class PaisFormComponent implements OnInit {
   {
 
 
-    if (!this.pais.idPais)
+    if (!this.pais.codigo)
     {
       this.paisService.insertPais(this.pais).subscribe(pais =>
       {

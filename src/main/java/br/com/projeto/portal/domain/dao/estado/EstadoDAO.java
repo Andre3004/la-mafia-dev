@@ -10,7 +10,6 @@ import java.util.List;
 
 import br.com.projeto.portal.domain.dao.pais.PaisDAO;
 import br.com.projeto.portal.domain.entity.Estado;
-import br.com.projeto.portal.domain.repository.IEstadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -22,11 +21,10 @@ import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import br.com.projeto.portal.domain.repository.IEstadoRepository;
 
 @Repository
 @Qualifier("estadoDao")
-public class EstadoDAO implements IEstadoRepository
+public class EstadoDAO
 {
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -36,65 +34,68 @@ public class EstadoDAO implements IEstadoRepository
     @Autowired
     PaisDAO paisDAO;
 
-    @Override
+    
     public Estado findEstadoById(int id)
     {
-        String sql = "SELECT * FROM estado WHERE idEstado = ?";
+        String sql = "SELECT * FROM estado WHERE codigo = ?";
 
         Estado estado = (Estado) jdbcTemplate.queryForObject(sql,
                 new Object[] { id }, new BeanPropertyRowMapper(Estado.class));
 
-        estado.setPais( paisDAO.findPaisById( estado.getIdPais() ) );
+        estado.setPais( paisDAO.findPaisById( estado.getCodigo() ) );
         return estado;
     }
 
-    @Override
+    
     public void insertEstado( Estado estado )
     {
         jdbcTemplate.update(
                 "INSERT INTO estado " +
                         "(estado  , " +
                         "uf, " +
-                        "idPais, " +
+                        "pais_id, " +
                         "situacao, " +
                         "created) VALUES (?, ?, ?, ?, ?)",
                 estado.getEstado(),
                 estado.getUf(),
-                estado.getPais().getIdPais(),
+                estado.getPais().getCodigo(),
                 estado.getSituacao(),
                 Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
     }
 
-    @Override
+    
     public void updateEstado( Estado estado )
     {
         jdbcTemplate.update("UPDATE estado " +
                         "SET " +
                         "estado= ?, " +
                         "uf= ?, " +
-                        "idPais= ?," +
+                        "pais_id= ?," +
                         "situacao= ?," +
                         "updated = ? " +
-                        "WHERE idEstado = ?",
+                        "WHERE codigo = ?",
                 estado.getEstado(),
                 estado.getUf(),
-                estado.getPais().getIdPais(),
+                estado.getPais().getCodigo(),
                 estado.getSituacao(),
                 Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
-                estado.getIdEstado());
+                estado.getCodigo());
     }
 
-    @Override
+    
     public void deleteEstado(int id){
-        jdbcTemplate.update("DELETE from estado WHERE idEstado = ? ", id);
+        jdbcTemplate.update("DELETE from estado WHERE codigo = ? ", id);
     }
 
 
-    @Override
+    
     public Page<Estado> listEstadosByFilters( String estado, PageRequest pageable )
     {
         if(pageable == null) pageable = new PageRequest(0, 100);
 
+        if(estado != null)
+            estado = estado.replaceAll( "'", "''" );
+            
         String rowCountSql = "SELECT count(1) AS row_count FROM estado " ;
 
         int total =
@@ -117,11 +118,11 @@ public class EstadoDAO implements IEstadoRepository
         List<Estado> estados = jdbcTemplate.query(querySql,new RowMapper<Estado>(){
             public Estado mapRow( ResultSet rs, int row) throws SQLException {
                 Estado e=new Estado();
-                e.setIdEstado(rs.getInt(1));
+                e.setCodigo(rs.getInt(1));
                 e.setEstado(rs.getString(2));
                 e.setUf(rs.getString(3));
                 e.setSituacao( rs.getBoolean( "situacao" ) );
-                e.setPais( paisDAO.findPaisById( rs.getInt( "idpais" )  ));
+                e.setPais( paisDAO.findPaisById( rs.getInt( "pais_id" )  ));
 
                 return e;
             }
@@ -131,7 +132,7 @@ public class EstadoDAO implements IEstadoRepository
 
     public void updateSituacaoEstado( long id, boolean situacao )
     {
-        jdbcTemplate.update("UPDATE estado SET situacao = ? WHERE idEstado = ?", situacao, id);
+        jdbcTemplate.update("UPDATE estado SET situacao = ? WHERE codigo = ?", situacao, id);
 
     }
 }

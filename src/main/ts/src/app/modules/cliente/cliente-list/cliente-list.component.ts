@@ -32,7 +32,7 @@ export class ClienteListComponent implements OnInit
        * Colunas da Grid
        */
     public tableColumns: ITdDataTableColumn[] = [
-        { name: 'idCliente', label: 'CÓDIGO' },
+        { name: 'codigo', label: 'CÓDIGO' },
         { name: 'cliente', label: 'CLIENTE', sortable: false },
         { name: 'celular', label: 'CELULAR', sortable: false },
         { name: 'cpf', label: 'CPF', sortable: false },
@@ -71,7 +71,7 @@ export class ClienteListComponent implements OnInit
         const dialogRef = this.dialog.open(ClienteFormComponent, {
             width: '900px',
             height: 'auto',
-            data: { idCliente: cliente ? cliente.idCliente : null }
+            data: { codigo: cliente ? cliente.codigo : null }
         });
 
         dialogRef.afterClosed().subscribe(clienteSaved =>
@@ -94,7 +94,7 @@ export class ClienteListComponent implements OnInit
             {
                 if (accept)
                 {
-                    this.clienteService.deleteCliente(cliente.idCliente).subscribe( result => {
+                    this.clienteService.deleteCliente(cliente.codigo).subscribe( result => {
                         this.openSnackBarService.openSuccess('Cliente excluído com sucesso.');
                         this.onListClientes();
                     }, err => {
@@ -110,7 +110,7 @@ export class ClienteListComponent implements OnInit
                         {
                             if (accept)
                             {
-                                this.clienteService.updateSituacaoCliente(cliente.idCliente, !cliente.situacao).subscribe( result => {
+                                this.clienteService.updateSituacaoCliente(cliente.codigo, !cliente.situacao).subscribe( result => {
                                     this.openSnackBarService.openSuccess('Cliente desativado com sucesso.');
                                     this.onListClientes();
                                 }, err => this.openSnackBarService.openError(err.message))
@@ -132,7 +132,7 @@ export class ClienteListComponent implements OnInit
             {
                 if (accept)
                 {
-                    this.clienteService.updateSituacaoCliente(cliente.idCliente, !cliente.situacao).subscribe( result => {
+                    this.clienteService.updateSituacaoCliente(cliente.codigo, !cliente.situacao).subscribe( result => {
                         this.openSnackBarService.openSuccess('Cliente ativado com sucesso.');
                         this.onListClientes();
                     }, err => this.openSnackBarService.openError(err.message))

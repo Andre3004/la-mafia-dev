@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import br.com.projeto.portal.domain.entity.mesa.Mesa;
-import br.com.projeto.portal.domain.repository.IMesaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Qualifier("mesaDao")
-public class MesaDAO implements IMesaRepository
+public class MesaDAO
 {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -31,7 +30,7 @@ public class MesaDAO implements IMesaRepository
 	@Autowired
 	AmbienteDAO ambienteDAO;
 
-	@Override
+	
 	public Mesa findMesaByNumeroMesa( long numeroMesa)
 	{
 		String sql = "SELECT * FROM mesa WHERE numero_mesa = ?";
@@ -43,7 +42,7 @@ public class MesaDAO implements IMesaRepository
 		return mesa;
 	}
 
-	@Override
+	
 	public void insertMesa( Mesa mesa )
 	{
 		jdbcTemplate.update(
@@ -58,7 +57,7 @@ public class MesaDAO implements IMesaRepository
 				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 	}
 
-	@Override
+	
 	public void updateMesa( Mesa mesa )
 	{
 		jdbcTemplate.update("UPDATE mesa " +
@@ -75,17 +74,17 @@ public class MesaDAO implements IMesaRepository
 				mesa.getNumeroMesa());
 	}
 
-	@Override
+	
 	public void deleteMesa(long numeroMesa){
 		jdbcTemplate.update("DELETE from mesa WHERE numero_mesa = ? ", numeroMesa);
 	}
 
-	@Override
+	
 	public void updateSituacaoMesa(long numeroMesa, boolean situacao){
 		jdbcTemplate.update("UPDATE mesa SET situacao = ? WHERE numero_mesa = ?", situacao, numeroMesa);
 	}
 
-	@Override
+	
 	public Page<Mesa> listMesasByFilters( Long numeroMesa, Long ambienteId, PageRequest pageable )
 	{
 		if(pageable == null) pageable = new PageRequest(0, 10);
@@ -125,7 +124,7 @@ public class MesaDAO implements IMesaRepository
 		return new PageImpl<>(mesas, pageable, total);
 	}
 
-	@Override
+	
 	public List<Mesa> findMesaByAmbienteId( long ambienteId )
 	{
 		String querySql = "SELECT * FROM mesa WHERE ambiente_id = " + ambienteId;

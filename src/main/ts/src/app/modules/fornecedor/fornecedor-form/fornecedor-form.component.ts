@@ -19,7 +19,7 @@ export class FornecedorFormComponent implements OnInit
     *-------------------------------------------------------------------*/
 
 
-  public fornecedor: any = { idFornecedor: 0 };
+  public fornecedor: any = { codigo: 0 };
 
   public maskCnpj = [/\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/];
 
@@ -47,9 +47,9 @@ export class FornecedorFormComponent implements OnInit
     @Inject(MAT_DIALOG_DATA) public data: any
   )
   {
-    if (data.idFornecedor != null)
+    if (data.codigo != null)
     {
-      this.onFindFornecedorById(data.idFornecedor);
+      this.onFindFornecedorById(data.codigo);
     }
 
     this.onListCidades("");
@@ -60,7 +60,7 @@ export class FornecedorFormComponent implements OnInit
   ngOnInit()
   {
 
-    if (this.data.idFornecedor)
+    if (this.data.codigo)
       this.title = "Alterar fornecedor";
     else
       this.title = "Inserir fornecedor";
@@ -140,7 +140,7 @@ export class FornecedorFormComponent implements OnInit
       return;
     }
 
-    if (!this.fornecedor.idFornecedor)
+    if (!this.fornecedor.codigo)
     {
       this.fornecedorService.insertFornecedor(this.fornecedor).subscribe(fornecedor =>
       {
@@ -234,7 +234,13 @@ export class FornecedorFormComponent implements OnInit
 
   public onListCondicoesPagamento(filter)
   {
-    this.condicaoPagamentoService.listCondicaoPagamentosByFilters(filter ? filter : "", null).subscribe(page =>
+    var codigo = null;
+    var condicaoPagamento = "";
+
+    if(isNaN(parseInt(filter))) condicaoPagamento = filter ? filter : "";
+    else codigo = parseInt(filter)
+
+    this.condicaoPagamentoService.listCondicaoPagamentosByFilters(codigo, condicaoPagamento, null).subscribe(page =>
     {
       this.condicoesPagamento = page.content.filter(c => c.situacao);
     })

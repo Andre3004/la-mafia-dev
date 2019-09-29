@@ -2,7 +2,6 @@
 package br.com.projeto.portal.domain.service;
 
 import java.time.LocalDateTime;
-import br.com.projeto.portal.domain.repository.IClienteRepository;
 
 import br.com.projeto.portal.domain.dao.cliente.ClienteDAO;
 import org.directwebremoting.annotations.RemoteProxy;
@@ -20,7 +19,7 @@ import br.com.projeto.portal.domain.entity.Cliente;
 @Service
 @RemoteProxy
 @Transactional
-public class ClienteService implements IClienteRepository
+public class ClienteService
 {
     /*-------------------------------------------------------------------
      *				 		     ATTRIBUTES
@@ -34,13 +33,13 @@ public class ClienteService implements IClienteRepository
      *				 		     SERVICES
      *-------------------------------------------------------------------*/
 
-    @Override
+    
     public Page<Cliente> listClientesByFilters( String cliente, PageRequest pageable )
     {
         return this.clienteDao.listClientesByFilters( cliente, pageable );
     }
 
-    @Override
+    
     public Cliente findClienteById( int id )
     {
         Cliente cliente = this.clienteDao.findClienteById( id );
@@ -48,7 +47,7 @@ public class ClienteService implements IClienteRepository
         return cliente;
     }
 
-    @Override
+    
     public void insertCliente( Cliente cliente )
     {
         cliente.setSituacao( true );
@@ -60,12 +59,12 @@ public class ClienteService implements IClienteRepository
         this.clienteDao.updateSituacaoCliente( id, situacao );
     }
 
-    @Override
+    
     public void updateCliente( Cliente cliente )
     {
 
 
-        Cliente clienteSaved = this.clienteDao.findClienteById( cliente.getIdCliente() );
+        Cliente clienteSaved = this.clienteDao.findClienteById( cliente.getCodigo() );
 
 
 
@@ -74,7 +73,7 @@ public class ClienteService implements IClienteRepository
         this.clienteDao.updateCliente( cliente );
     }
 
-    @Override
+    
     public void deleteCliente( int id )
     {
         Cliente cliente = this.findClienteById( id );

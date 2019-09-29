@@ -2,7 +2,6 @@
 package br.com.projeto.portal.domain.service;
 
 import java.time.LocalDateTime;
-import br.com.projeto.portal.domain.repository.IFornecedorRepository;
 
 import br.com.projeto.portal.domain.dao.fornecedor.FornecedorDAO;
 import org.directwebremoting.annotations.RemoteProxy;
@@ -20,7 +19,7 @@ import br.com.projeto.portal.domain.entity.Fornecedor;
 @Service
 @RemoteProxy
 @Transactional
-public class FornecedorService implements IFornecedorRepository
+public class FornecedorService
 {
     /*-------------------------------------------------------------------
      *				 		     ATTRIBUTES
@@ -34,13 +33,13 @@ public class FornecedorService implements IFornecedorRepository
      *				 		     SERVICES
      *-------------------------------------------------------------------*/
 
-    @Override
+    
     public Page<Fornecedor> listFornecedorsByFilters( String razaoSocial, PageRequest pageable )
     {
         return this.fornecedorDao.listFornecedorsByFilters( razaoSocial, pageable );
     }
 
-    @Override
+    
     public Fornecedor findFornecedorById( int id )
     {
         Fornecedor fornecedor = this.fornecedorDao.findFornecedorById( id );
@@ -52,7 +51,7 @@ public class FornecedorService implements IFornecedorRepository
 
 
 
-    @Override
+    
     public void insertFornecedor( Fornecedor fornecedor )
     {
         fornecedor.setSituacao( true );
@@ -65,12 +64,12 @@ public class FornecedorService implements IFornecedorRepository
     }
 
 
-    @Override
+    
     public void updateFornecedor( Fornecedor fornecedor )
     {
 
 
-        Fornecedor fornecedorSaved = this.fornecedorDao.findFornecedorById( fornecedor.getIdFornecedor() );
+        Fornecedor fornecedorSaved = this.fornecedorDao.findFornecedorById( fornecedor.getCodigo() );
 
 
         fornecedor.setUpdated( LocalDateTime.now() );
@@ -78,7 +77,7 @@ public class FornecedorService implements IFornecedorRepository
         this.fornecedorDao.updateFornecedor( fornecedor );
     }
 
-    @Override
+    
     public void deleteFornecedor( int id )
     {
         Fornecedor fornecedor = this.findFornecedorById( id );

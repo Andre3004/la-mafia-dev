@@ -29,7 +29,7 @@ export class FornecedorListComponent implements OnInit
     }
 
     public tableColumns: ITdDataTableColumn[] = [
-        { name: 'idFornecedor', label: 'CÓDIGO', sortable: false },
+        { name: 'codigo', label: 'CÓDIGO', sortable: false },
         { name: 'razaoSocial', label: 'RAZÃO SOCIAL', sortable: false },
         { name: 'celular', label: 'CELULAR', sortable: false },
         { name: 'cnpj', label: 'CNPJ', sortable: false },
@@ -70,7 +70,7 @@ export class FornecedorListComponent implements OnInit
         const dialogRef = this.dialog.open(FornecedorFormComponent, {
             width: '1000px',
             height: 'auto',
-            data: { idFornecedor: fornecedor ? fornecedor.idFornecedor : null }
+            data: { codigo: fornecedor ? fornecedor.codigo : null }
         });
 
         dialogRef.afterClosed().subscribe(fornecedorSaved =>
@@ -93,7 +93,7 @@ export class FornecedorListComponent implements OnInit
             {
                 if (accept)
                 {
-                    this.fornecedorService.deleteFornecedor(fornecedor.idFornecedor).subscribe( result => {
+                    this.fornecedorService.deleteFornecedor(fornecedor.codigo).subscribe( result => {
                         this.openSnackBarService.openSuccess('Fornecedor excluído com sucesso.');
                         this.onListFornecedores();
                     }, err => {
@@ -109,7 +109,7 @@ export class FornecedorListComponent implements OnInit
                         {
                             if (accept)
                             {
-                                this.fornecedorService.updateSituacaoFornecedor(fornecedor.idFornecedor, !fornecedor.situacao).subscribe( result => {
+                                this.fornecedorService.updateSituacaoFornecedor(fornecedor.codigo, !fornecedor.situacao).subscribe( result => {
                                     this.openSnackBarService.openSuccess('Fornecedor desativado com sucesso.');
                                     this.onListFornecedores();
                                 }, err => this.openSnackBarService.openError(err.message))
@@ -131,7 +131,7 @@ export class FornecedorListComponent implements OnInit
             {
                 if (accept)
                 {
-                    this.fornecedorService.updateSituacaoFornecedor(fornecedor.idFornecedor, !fornecedor.situacao).subscribe( result => {
+                    this.fornecedorService.updateSituacaoFornecedor(fornecedor.codigo, !fornecedor.situacao).subscribe( result => {
                         this.openSnackBarService.openSuccess('Fornecedor ativado com sucesso.');
                         this.onListFornecedores();
                     }, err => this.openSnackBarService.openError(err.message))

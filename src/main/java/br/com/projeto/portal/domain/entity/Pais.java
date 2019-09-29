@@ -18,7 +18,7 @@ public class Pais extends AbstractEntity
      *				 		     ATTRIBUTES
      *-------------------------------------------------------------------*/
 
-    private Integer idPais;
+    private Integer codigo;
 
     private String pais;
 
@@ -40,11 +40,11 @@ public class Pais extends AbstractEntity
      *							BEHAVIORS
      *-------------------------------------------------------------------*/
 
-    @Override
+    
     public String toString()
     {
         return "Pais{" +
-                "idPais=" + idPais +
+                "codigo=" + codigo +
                 ", pais='" + pais + '\'' +
                 ", sigla='" + sigla + '\'' +
                 ", ddi='" + ddi + '\'' +

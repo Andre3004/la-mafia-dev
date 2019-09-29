@@ -1,6 +1,7 @@
 package br.com.projeto.portal.domain.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,7 +11,6 @@ import br.com.projeto.portal.domain.dao.EstoqueDAO;
 import br.com.projeto.portal.domain.entity.compra.Compra;
 import br.com.projeto.portal.domain.entity.compra.ItemCompra;
 import br.com.projeto.portal.domain.entity.contasApagar.ContasAPagar;
-import br.com.projeto.portal.domain.repository.ICompraRepository;
 
 import org.directwebremoting.annotations.RemoteProxy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +18,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 @Service
 @RemoteProxy
 @Transactional
-public class CompraService implements ICompraRepository
+public class CompraService
 {
 	/*-------------------------------------------------------------------
 	 *				 		     ATTRIBUTES
@@ -34,24 +35,27 @@ public class CompraService implements ICompraRepository
 	@Autowired
 	private EstoqueDAO estoqueDAO;
 
+	private static ZoneId fusoHorarioDeSaoPaulo = ZoneId.of( "America/Sao_Paulo" );
+
+
 	/*-------------------------------------------------------------------
 	 *				 		     SERVICES
 	 *-------------------------------------------------------------------*/
 
-	@Override
-	public Page<Compra> listComprasByFilters( String modelo, String serie, String numNota, Long idFornecedor, PageRequest pageable )
+	
+	public Page<Compra> listComprasByFilters( String modelo, String serie, String numNota, Long codigo, PageRequest pageable )
 	{
-		return this.compraDao.listComprasByFilters( modelo, serie, numNota, idFornecedor, pageable );
+		return this.compraDao.listComprasByFilters( modelo, serie, numNota, codigo, pageable );
 	}
 
-	@Override
-	public Compra findCompraById( String modelo, String serie, String numNota, Long idFornecedor )
+	
+	public Compra findCompraById( String modelo, String serie, String numNota, Long codigo )
 	{
-		Compra compra = this.compraDao.findCompraById( modelo, serie, numNota, idFornecedor );
+		Compra compra = this.compraDao.findCompraById( modelo, serie, numNota, codigo );
 		return compra;
 	}
 
-	@Override
+	
 	public void insertCompra( Compra compra )
 	{
 		compra.setSituacao( true );
@@ -73,6 +77,9 @@ public class CompraService implements ICompraRepository
 				{
 					itemCompra.getCurrentEstoque().setSaldo( itemCompra.getCurrentEstoque().getSaldo().intValue() +  itemCompra.getQuantidade().intValue() );
 				}
+
+				itemCompra.getCurrentEstoque().setFornecedor( compra.getFornecedor() );
+				itemCompra.getCurrentEstoque().setDataUltimaCompra( LocalDateTime.now(fusoHorarioDeSaoPaulo) );
 
 				if(itemCompra.getCurrentEstoque().getCreated() == null)
 				{
@@ -98,19 +105,21 @@ public class CompraService implements ICompraRepository
 		}
 	}
 
-	@Override
-	public void updateSituacaoCompra( String modelo, String serie, String numNota, Long idFornecedor, boolean situacao )
+	
+	public void updateSituacaoCompra( String modelo, String serie, String numNota, Long codigo, boolean situacao )
 	{
-		Compra compra = this.findCompraById( modelo, serie, numNota, idFornecedor );
+		Compra compra = this.findCompraById( modelo, serie, numNota, codigo );
 		compra.getItensCompra().forEach( itemCompra -> {
 			if(situacao)
 				itemCompra.getCurrentEstoque().setSaldo( itemCompra.getCurrentEstoque().getSaldo().intValue() +  itemCompra.getQuantidade().intValue() );
 			else
 				itemCompra.getCurrentEstoque().setSaldo( itemCompra.getCurrentEstoque().getSaldo().intValue() -  itemCompra.getQuantidade().intValue() );
+
+			Assert.isTrue( itemCompra.getCurrentEstoque().getSaldo() >= 0, "Não foi possível cancelar a compra, pois não possui saldo suficiente em estoque para realizar o cancelamento.");
 			estoqueDAO.updateEstoque(itemCompra.getCurrentEstoque());
 		});
 
-		this.compraDao.updateSituacaoCompra( modelo, serie, numNota, idFornecedor, situacao );
+		this.compraDao.updateSituacaoCompra( modelo, serie, numNota, codigo, situacao );
 	}
 
 }

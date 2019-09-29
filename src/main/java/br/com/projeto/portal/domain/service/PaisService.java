@@ -2,7 +2,6 @@
 package br.com.projeto.portal.domain.service;
 
 import java.time.LocalDateTime;
-import br.com.projeto.portal.domain.repository.IPaisRepository;
 
 import br.com.projeto.portal.domain.dao.pais.PaisDAO;
 import org.directwebremoting.annotations.RemoteProxy;
@@ -20,7 +19,7 @@ import br.com.projeto.portal.domain.entity.Pais;
 @Service
 @RemoteProxy
 @Transactional
-public class PaisService implements IPaisRepository
+public class PaisService
 {
     /*-------------------------------------------------------------------
      *				 		     ATTRIBUTES
@@ -34,13 +33,13 @@ public class PaisService implements IPaisRepository
      *				 		     SERVICES
      *-------------------------------------------------------------------*/
 
-    @Override
+    
     public Page<Pais> listPaisesByFilters( String pais, PageRequest pageable )
     {
         return this.paisDao.listPaisesByFilters( pais, pageable );
     }
 
-    @Override
+    
     public Pais findPaisById( int id )
     {
         Pais pais = this.paisDao.findPaisById( id );
@@ -48,7 +47,7 @@ public class PaisService implements IPaisRepository
         return pais;
     }
 
-    @Override
+    
     public void insertPais( Pais pais )
     {
         pais.setSituacao( true );
@@ -60,12 +59,12 @@ public class PaisService implements IPaisRepository
         this.paisDao.updateSituacaoPais( id, situacao );
     }
 
-    @Override
+    
     public void updatePais( Pais pais )
     {
 
 
-        Pais paisSaved = this.paisDao.findPaisById( pais.getIdPais() );
+        Pais paisSaved = this.paisDao.findPaisById( pais.getCodigo() );
 
 
 
@@ -74,7 +73,7 @@ public class PaisService implements IPaisRepository
         this.paisDao.updatePais( pais );
     }
 
-    @Override
+    
     public void deletePais( int id )
     {
         Pais pais = this.findPaisById( id );

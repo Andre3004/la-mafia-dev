@@ -9,7 +9,6 @@ import java.util.List;
 import br.com.projeto.portal.domain.entity.Ambiente.Ambiente;
 import br.com.projeto.portal.domain.entity.Ambiente.AmbienteImagem;
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
-import br.com.projeto.portal.domain.repository.IAmbienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -23,7 +22,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Qualifier("ambienteDao")
-public class AmbienteDAO implements IAmbienteRepository
+public class AmbienteDAO 
 {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -33,7 +32,7 @@ public class AmbienteDAO implements IAmbienteRepository
 	@Autowired
 	FranquiaDAO franquiaDAO;
 
-	@Override
+	
 	public Ambiente findAmbienteById( long id)
 	{
 		String sql = "SELECT * FROM ambiente WHERE codigo = ?";
@@ -47,7 +46,7 @@ public class AmbienteDAO implements IAmbienteRepository
 		return ambiente;
 	}
 
-	@Override
+	
 	public Long insertAmbiente( Ambiente ambiente )
 	{
 		String sqlId = "SELECT max(codigo) FROM ambiente";
@@ -74,7 +73,7 @@ public class AmbienteDAO implements IAmbienteRepository
 		return id;
 	}
 
-	@Override
+	
 	public void updateAmbiente( Ambiente ambiente, List<Long> imagensDeletadasIds  )
 	{
 		jdbcTemplate.update("UPDATE ambiente " +
@@ -95,20 +94,23 @@ public class AmbienteDAO implements IAmbienteRepository
 				ambiente.getCodigo());
 	}
 
-	@Override
+	
 	public void deleteAmbiente(long id){
 		jdbcTemplate.update("DELETE from ambiente WHERE codigo = ? ", id);
 	}
 
-	@Override
+	
 	public void updateSituacaoAmbiente(long id, boolean situacao){
 		jdbcTemplate.update("UPDATE ambiente SET situacao = ? WHERE codigo = ?", situacao, id);
 	}
 
-	@Override
+	
 	public Page<Ambiente> listAmbientesByFilters( String nome, Long franquiaId, PageRequest pageable )
 	{
 		if(pageable == null) pageable = new PageRequest(0, 10);
+
+		if(nome != null)
+			nome = nome.replaceAll( "'", "''" );
 
 		String rowCountSql = "SELECT count(1) AS row_count FROM ambiente " ;
 
@@ -151,7 +153,7 @@ public class AmbienteDAO implements IAmbienteRepository
 	 *				 		     Arquivo
 	 *-------------------------------------------------------------------*/
 
-	@Override
+	
 	public List<AmbienteImagem> findAmbienteImagemByAmbienteId( long ambienteId)
 	{
 		String querySql = "SELECT * FROM ambiente_imagem WHERE ambiente_id = " + ambienteId;
@@ -161,7 +163,7 @@ public class AmbienteDAO implements IAmbienteRepository
 		return ambienteImagens;
 	}
 
-	@Override
+	
 	public void insertAmbienteImagem( AmbienteImagem ambienteImagem )
 	{
 		jdbcTemplate.update(
@@ -176,7 +178,7 @@ public class AmbienteDAO implements IAmbienteRepository
 						Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 	}
 
-	@Override
+	
 	public void updateAmbienteImagem( AmbienteImagem ambienteImagem )
 	{
 		jdbcTemplate.update("UPDATE ambiente " +
@@ -193,7 +195,7 @@ public class AmbienteDAO implements IAmbienteRepository
 				ambienteImagem.getCodigo());
 	}
 
-	@Override
+	
 	public void deleteAmbienteImagem( long id)
 	{
 		jdbcTemplate.update("DELETE from ambiente_imagem WHERE codigo = ? ", id);

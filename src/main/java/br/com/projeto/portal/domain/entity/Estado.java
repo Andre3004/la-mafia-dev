@@ -19,7 +19,7 @@ public class Estado extends AbstractEntity
      *				 		     ATTRIBUTES
      *-------------------------------------------------------------------*/
 
-    private Integer idEstado;
+    private Integer codigo;
 
     private String estado;
 
@@ -30,7 +30,7 @@ public class Estado extends AbstractEntity
     private Boolean situacao;
 
     //@Transient
-    private Integer idPais;
+    private Integer paisId;
 
 
     /*-------------------------------------------------------------------
@@ -44,14 +44,14 @@ public class Estado extends AbstractEntity
      *							BEHAVIORS
      *-------------------------------------------------------------------*/
 
-    @Override
+    
     public String toString()
     {
         return "Estado{" +
-                "idEstado=" + idEstado +
+                "codigo=" + codigo +
                 ", estado='" + estado + '\'' +
                 ", uf='" + uf + '\'' +
-                ", idPais='" + pais.getIdPais() + '\'' +
+                ", codigo='" + pais.getCodigo() + '\'' +
                 ", created=" + created +
                 ", updated=" + updated +
                 '}';

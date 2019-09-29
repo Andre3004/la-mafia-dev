@@ -12,7 +12,6 @@ import br.com.projeto.portal.domain.dao.cidade.CidadeDAO;
 import br.com.projeto.portal.domain.dao.estado.EstadoDAO;
 import br.com.projeto.portal.domain.dao.pais.PaisDAO;
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
-import br.com.projeto.portal.domain.repository.IFranquiaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -27,7 +26,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Qualifier("franquiaDao")
-public class FranquiaDAO implements IFranquiaRepository
+public class FranquiaDAO
 {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -43,7 +42,7 @@ public class FranquiaDAO implements IFranquiaRepository
 	@Autowired
 	PaisDAO paisDAO;
 
-	@Override
+	
 	public Franquia findFranquiaById(long id)
 	{
 		String sql = "SELECT * FROM franquia WHERE codigo = ?";
@@ -57,7 +56,7 @@ public class FranquiaDAO implements IFranquiaRepository
 		return franquia;
 	}
 
-	@Override
+	
 	public void insertFranquia( Franquia franquia )
 	{
 		jdbcTemplate.update(
@@ -87,14 +86,14 @@ public class FranquiaDAO implements IFranquiaRepository
 				franquia.getComplemento(),
 				franquia.getBairro(),
 				franquia.getCep(),
-				franquia.getCidade().getIdCidade(),
-				franquia.getEstado().getIdEstado(),
-				franquia.getPais().getIdPais(),
+				franquia.getCidade().getCodigo(),
+				franquia.getEstado().getCodigo(),
+				franquia.getPais().getCodigo(),
 				franquia.getTelefone(),
 				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 	}
 
-	@Override
+	
 	public void updateFranquia( Franquia franquia )
 	{
 		jdbcTemplate.update("UPDATE franquia " +
@@ -125,29 +124,35 @@ public class FranquiaDAO implements IFranquiaRepository
 				franquia.getComplemento(),
 				franquia.getBairro(),
 				franquia.getCep(),
-				franquia.getCidade().getIdCidade(),
-				franquia.getEstado().getIdEstado(),
-				franquia.getPais().getIdPais(),
+				franquia.getCidade().getCodigo(),
+				franquia.getEstado().getCodigo(),
+				franquia.getPais().getCodigo(),
 				franquia.getTelefone(),
 				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
 				franquia.getCodigo());
 	}
 
-	@Override
+	
 	public void deleteFranquia(long id){
 		jdbcTemplate.update("DELETE from franquia WHERE codigo = ? ", id);
 	}
 
-	@Override
+	
 	public void updateSituacaoFranquia(long id, boolean situacao){
 		jdbcTemplate.update("UPDATE franquia SET situacao = ? WHERE codigo = ?", situacao, id);
 	}
 
-	@Override
+	
 	public Page<Franquia> listFranquiasByFilters( String nome, String cnpj, PageRequest pageable )
 	{
 		if(pageable == null) pageable = new PageRequest(0, 10);
 
+		if(nome != null)
+			nome = nome.replaceAll( "'", "''" );
+		
+		if(cnpj != null)
+			cnpj = cnpj.replaceAll( "'", "''" );
+			
 		String rowCountSql = "SELECT count(1) AS row_count FROM franquia " ;
 
 		int total =

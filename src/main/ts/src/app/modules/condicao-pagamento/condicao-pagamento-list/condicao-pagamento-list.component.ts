@@ -24,7 +24,8 @@ export class CondicaoPagamentoListComponent implements OnInit
     public pageRequest: any = [];
 
     public filters = {
-        codigo: null
+        codigo: null,
+        condicaoPagamento: ""
     }
 
     public masks = TextMasks;
@@ -34,6 +35,7 @@ export class CondicaoPagamentoListComponent implements OnInit
        */
     public tableColumns: ITdDataTableColumn[] = [
         { name: 'codigo', label: 'CÓDIGO', sortable: false },
+        { name: 'condicaoPagamento', label: 'CONDIÇÃO DE PAGAMENTO', sortable: false },
         { name: 'multa', label: 'MULTA', sortable: false },
         { name: 'desconto', label: 'DESCONTO', sortable: false },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
@@ -59,7 +61,7 @@ export class CondicaoPagamentoListComponent implements OnInit
 
     ngOnInit()
     {
-        this.onListCondicaoPagamentos();
+        this.onListCondicaoPagamentos(true);
     }
 
     /*-------------------------------------------------------------------
@@ -158,7 +160,8 @@ export class CondicaoPagamentoListComponent implements OnInit
         }
 
         this.condicaoPagamentoService.listCondicaoPagamentosByFilters(
-            this.filters.codigo,
+            this.filters.codigo != null ? parseInt(this.filters.codigo) : null,
+            this.filters.condicaoPagamento,
             this.pageRequest.pageable
         ).subscribe((result) =>
         {
@@ -170,7 +173,8 @@ export class CondicaoPagamentoListComponent implements OnInit
     public clearFilters()
     {
         this.filters = {
-            codigo: null
+            codigo: null,
+            condicaoPagamento: ""
         }
         
         this.onListCondicaoPagamentos();

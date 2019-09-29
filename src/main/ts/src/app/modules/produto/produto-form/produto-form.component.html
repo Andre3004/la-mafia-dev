@@ -28,19 +28,21 @@
                     maxlength="50" placeholder="Digite a unidade comercial do produto">
             </mat-form-field>
 
-            <mat-form-field fxFlex appearance="outline" style="margin-left: 30px">
-                <mat-label>Grupo de produto</mat-label>
-                <input required type="text" matInput [matAutocomplete]="auto" #inputFilter [(ngModel)]="produto.grupoProduto"
-                    name="grupoProduto" (ngModelChange)="onListGrupoProdutos(inputFilter.value);">
-            </mat-form-field>
+            <auto-complete-with-redirect fxFlex 
+                style="margin-left: 30px"
+                title="Grupo de produto" 
+                link="grupo-produto" 
+                key="codigo" 
+                displayKey="grupoProduto"
+                [displayId]="true" 
+                [list]="{values: gruposProdutos}" 
+                [itemSelected]="{selected: produto.grupoProduto}"
+                (onFilterChange)="onListGrupoProdutos($event)" 
+                (onSelect)="produto.grupoProduto = $event"
+                (onDelete)="produto.grupoProduto = null">
+            </auto-complete-with-redirect>
 
-            <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
-                (optionSelected)="produto.grupoProduto = $event.option.value; onListGrupoProdutos();">
-                <mat-option [value]="null">Nenhum</mat-option>
-                <mat-option *ngFor="let grupoProduto of gruposProdutos" [value]="grupoProduto">
-                    {{grupoProduto.codigo}} - {{grupoProduto.grupoProduto}}
-                </mat-option>
-            </mat-autocomplete>
+
 
             <mat-form-field style="margin-left: 30px" *ngIf="produto?.grupoProduto?.exigeAno" fxFlex
                 appearance="outline">
@@ -98,12 +100,12 @@
 
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Fornecedor da ultima compra</mat-label>
-                <input value="-" matInput [disabled]="true">
+                <input value="{{produto?.currentEstoque?.fornecedor?.codigo}} - {{produto?.currentEstoque?.fornecedor?.razaoSocial}}" matInput [disabled]="true">
             </mat-form-field>
-
+           
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Data da ultima compra</mat-label>
-                <input value="-" matInput [disabled]="true">
+                <input [value]="produto?.currentEstoque?.dataUltimaCompra | date:'dd/MM/yyyy hh:mm:ss'" matInput [disabled]="true">
             </mat-form-field>
 
         </div>

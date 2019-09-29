@@ -1,7 +1,6 @@
 package br.com.projeto.portal.application.security;
 
 import br.com.projeto.portal.domain.entity.usuario.Usuario;
-//import br.com.projeto.portal.domain.repository.IUsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

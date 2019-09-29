@@ -1,7 +1,7 @@
 CREATE SCHEMA IF NOT EXISTS public;
 
 CREATE TABLE pais(
-	idPais serial NOT NULL PRIMARY KEY,
+	codigo serial NOT NULL PRIMARY KEY,
 	pais varchar(144) NOT NULL UNIQUE,
 	sigla varchar(144) NOT NULL,
 	ddi varchar(144) NOT NULL unique,
@@ -12,10 +12,10 @@ CREATE TABLE pais(
 
 
 CREATE TABLE estado(
-	idEstado serial NOT NULL PRIMARY KEY,
+	codigo serial NOT NULL PRIMARY KEY,
 	estado varchar(144) NOT NULL UNIQUE,
 	uf varchar(144) NOT NULL,
-	idPais int  references pais(idPais),
+	pais_id int  references pais(codigo),
 	created TIMESTAMP,
 	updated TIMESTAMP,
      situacao boolean NOT NULL
@@ -23,10 +23,10 @@ CREATE TABLE estado(
 
 
 CREATE TABLE cidade(
-	idCidade serial NOT NULL PRIMARY KEY,
+	codigo serial NOT NULL PRIMARY KEY,
 	cidade varchar(144) NOT NULL UNIQUE,
 	ddd varchar(144) NOT NULL,
-	idEstado int  references estado(idEstado) NOT NULL,
+	estado_id int  references estado(codigo) NOT NULL,
 	created TIMESTAMP,
 	updated TIMESTAMP,
   situacao boolean NOT NULL
@@ -124,7 +124,7 @@ CREATE TABLE mesa (
 );
 
 CREATE TABLE cliente(
-	idCliente serial NOT NULL PRIMARY KEY,
+	codigo serial NOT NULL PRIMARY KEY,
 	cliente varchar(144) NOT NULL,
 	apelido varchar(144),
 	cpf varchar(144) NOT NULL unique,
@@ -142,27 +142,6 @@ CREATE TABLE cliente(
 );
 
 
-CREATE TABLE fornecedor(
-	idFornecedor serial NOT NULL PRIMARY KEY,
-	razaoSocial varchar(144) NOT NULL,
-	cnpj varchar(144) NOT NULL unique,
-	telefone varchar(144) NOT NULL ,
-	celular varchar(144) NOT NULL,
-	endereco varchar(144) NOT NULL,
-	numero varchar(144) NOT NULL,
-	bairro varchar(144) NOT NULL,
-	email varchar(144) ,
-	cidade_id bigint REFERENCES cidade NOT NULL,
-	estado_id bigint REFERENCES estado NOT NULL,
-	pais_id bigint REFERENCES pais NOT NULL,
-	condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
-	cep varchar(144) NOT NULL,
-	created TIMESTAMP,
-	updated TIMESTAMP,
-  situacao boolean NOT NULL,
-  inscricao_estadual varchar(144)
-);
-
 CREATE TABLE produto (
 	codigo serial PRIMARY KEY,
 	created TIMESTAMP NOT NULL,
@@ -175,9 +154,7 @@ CREATE TABLE produto (
 	nome_arquivo varchar(144),
 	unidade_comercial varchar(144),
 	codigo_barras varchar(144),
-	grupo_produto_id bigint REFERENCES grupo_produto NOT NULL,
-	fornecedor_id bigint REFERENCES fornecedor,
-	estoque_id bigint REFERENCES estoque
+	grupo_produto_id bigint REFERENCES grupo_produto NOT NULL
 );
 
 
@@ -201,6 +178,7 @@ CREATE TABLE forma_pagamento (
 
 CREATE TABLE condicao_pagamento (
 	codigo serial PRIMARY KEY,
+    condicao_pagamento character varying(144) NOT NULL UNIQUE,
 	created TIMESTAMP NOT NULL,
 	updated TIMESTAMP,
   juros decimal,
@@ -208,6 +186,28 @@ CREATE TABLE condicao_pagamento (
   desconto decimal,
   situacao boolean NOT NULL,
 	prazo boolean NOT NULL
+);
+
+
+CREATE TABLE fornecedor(
+	codigo serial NOT NULL PRIMARY KEY,
+	razaoSocial varchar(144) NOT NULL,
+	cnpj varchar(144) NOT NULL unique,
+	telefone varchar(144) NOT NULL ,
+	celular varchar(144) NOT NULL,
+	endereco varchar(144) NOT NULL,
+	numero varchar(144) NOT NULL,
+	bairro varchar(144) NOT NULL,
+	email varchar(144) ,
+	cidade_id bigint REFERENCES cidade NOT NULL,
+	estado_id bigint REFERENCES estado NOT NULL,
+	pais_id bigint REFERENCES pais NOT NULL,
+	condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
+	cep varchar(144) NOT NULL,
+	created TIMESTAMP,
+	updated TIMESTAMP,
+  situacao boolean NOT NULL,
+  inscricao_estadual varchar(144)
 );
 
 CREATE TABLE condicao_pagamento_parcela (
@@ -227,10 +227,10 @@ CREATE TABLE condicao_pagamento_parcela (
 CREATE TABLE compra(
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
-    modelo character varying(144) NOT NULL,
-    serie character varying(144) NOT NULL,
-    numero_nota character varying(144) NOT NULL,
-    fornecedor_id bigint REFERENCES fornecedor NOT NULL,
+    modelo character varying(144) UNIQUE NOT NULL,
+    serie character varying(144) UNIQUE NOT NULL,
+    numero_nota character varying(144) UNIQUE NOT NULL,
+    fornecedor_id bigint REFERENCES fornecedor UNIQUE NOT NULL,
     usuario_id bigint REFERENCES usuario,
     condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
     data_chegada TIMESTAMP NOT NULL,
@@ -245,16 +245,17 @@ CREATE TABLE compra(
 CREATE TABLE contas_a_pagar(
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
-    modelo character varying(144) NOT NULL,
-    serie character varying(144) NOT NULL,
-    numero_nota character varying(144) NOT NULL,
-    fornecedor_id bigint REFERENCES fornecedor NOT NULL,
+    modelo character varying(144) NOT NULL REFERENCES compra(modelo),
+    serie character varying(144) NOT NULL  REFERENCES compra(serie),
+    numero_nota character varying(144) NOT NULL  REFERENCES compra(numero_nota),
+    fornecedor_id bigint REFERENCES fornecedor NOT NULL REFERENCES compra(fornecedor_id),
 	numero_parcela int NOT NULL,
 	data_vencimento TIMESTAMP NOT NULL,
 	valor_parcela decimal NOT NULL,
     situacao boolean NOT NULL,
 	PRIMARY KEY(modelo, serie, numero_nota,fornecedor_id, numero_parcela)
 );
+
 
 CREATE TABLE item_compra(
     created TIMESTAMP NOT NULL,
@@ -274,6 +275,8 @@ CREATE TABLE estoque(
     updated TIMESTAMP,
     franquia_id bigint REFERENCES franquia,
     produto_id bigint REFERENCES produto,
+    fornecedor_id bigint REFERENCES fornecedor,
+    data_ultima_compra TIMESTAMP,
 	saldo int,
 	preco_custo decimal NOT NULL,
 	preco_venda decimal,

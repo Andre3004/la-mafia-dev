@@ -15,7 +15,6 @@ import br.com.projeto.portal.domain.entity.compra.Compra;
 import br.com.projeto.portal.domain.entity.compra.ItemCompra;
 import br.com.projeto.portal.domain.entity.contasApagar.ContasAPagar;
 import br.com.projeto.portal.domain.entity.produto.Produto;
-import br.com.projeto.portal.domain.repository.ICompraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -29,7 +28,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Qualifier("compraDAO")
-public class CompraDAO implements ICompraRepository {
+public class CompraDAO {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -49,7 +48,7 @@ public class CompraDAO implements ICompraRepository {
 	@Autowired
 	ProdutoDAO produtoDAO;
 
-	@Override
+	
 	public void insertCompra( Compra compra )
 	{
 		jdbcTemplate.update(
@@ -70,7 +69,7 @@ public class CompraDAO implements ICompraRepository {
 				compra.getModelo(),
 				compra.getSerie(),
 				compra.getNumeroNota(),
-				compra.getFornecedor().getIdFornecedor(),
+				compra.getFornecedor().getCodigo(),
 				compra.getUsuario().getCodigo(),
 				compra.getCondicaoPagamento().getCodigo(),
 				Timestamp.valueOf(compra.getDataChegada()),
@@ -82,7 +81,7 @@ public class CompraDAO implements ICompraRepository {
 				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 	}
 
-	@Override
+	
 	public Compra findCompraById( String modelo, String serie, String numNota, Long fornecedorId)
 	{
 		String sql = "SELECT * FROM compra WHERE modelo = ? AND serie = ? AND numero_nota = ? AND fornecedor_id = ? ";
@@ -112,11 +111,18 @@ public class CompraDAO implements ICompraRepository {
 		jdbcTemplate.update("UPDATE compra SET situacao = ? WHERE modelo = ? AND serie = ? AND numero_nota = ? AND fornecedor_id = ?", situacao, modelo,serie,numNota,fornecedorId);
 	}
 
-	@Override
+	
 	public Page<Compra> listComprasByFilters( String modelo, String serie, String numNota, Long fornecedorId, PageRequest pageable )
 	{
 		if(pageable == null) pageable = new PageRequest(0, 100);
 
+		if(modelo != null)
+			modelo = modelo.replaceAll( "'", "''" );
+		if(serie != null)
+			serie = serie.replaceAll( "'", "''" );
+		if(numNota != null)
+			numNota = numNota.replaceAll( "'", "''" );
+			
 		String rowCountSql = "SELECT count(1) AS row_count FROM compra " ;
 
 		Long total =
@@ -185,7 +191,7 @@ public class CompraDAO implements ICompraRepository {
 				itemCompra.getCompra().getModelo(),
 				itemCompra.getCompra().getSerie(),
 				itemCompra.getCompra().getNumeroNota(),
-				itemCompra.getCompra().getFornecedor().getIdFornecedor(),
+				itemCompra.getCompra().getFornecedor().getCodigo(),
 				itemCompra.getCodigo(),
 				itemCompra.getQuantidade(),
 				itemCompra.getValorUnitario(),
@@ -203,14 +209,14 @@ public class CompraDAO implements ICompraRepository {
 				itemCompra.getCompra().getModelo(),
 				itemCompra.getCompra().getSerie(),
 				itemCompra.getCompra().getNumeroNota(),
-				itemCompra.getCompra().getFornecedor().getIdFornecedor(),
+				itemCompra.getCompra().getFornecedor().getCodigo(),
 				itemCompra.getCodigo(),
 				itemCompra.getQuantidade(),
 				itemCompra.getValorUnitario(),
 				itemCompra.getCompra().getModelo(),
 				itemCompra.getCompra().getSerie(),
 				itemCompra.getCompra().getNumeroNota(),
-				itemCompra.getCompra().getFornecedor().getIdFornecedor(),
+				itemCompra.getCompra().getFornecedor().getCodigo(),
 				itemCompra.getCodigo());
 	}
 
@@ -230,7 +236,7 @@ public class CompraDAO implements ICompraRepository {
 				contasAPagar.getModelo(),
 				contasAPagar.getSerie(),
 				contasAPagar.getNumeroNota(),
-				contasAPagar.getFornecedor().getIdFornecedor(),
+				contasAPagar.getFornecedor().getCodigo(),
 				contasAPagar.getNumero_parcela(),
 				Timestamp.valueOf(contasAPagar.getDataVencimento().atTime( 0,0,0 )),
 				contasAPagar.getValorParcela(),

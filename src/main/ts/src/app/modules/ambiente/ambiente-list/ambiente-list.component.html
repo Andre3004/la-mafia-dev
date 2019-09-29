@@ -5,16 +5,20 @@
 			<input uppercase matInput placeholder="Pesquisar por nome" maxlength="144" [(ngModel)]="filters.nome">
 		</mat-form-field>
 
-		<mat-form-field fxFlex="20" appearance="outline">
-			<mat-label>Franquia</mat-label>
-			<input type="text" matInput [matAutocomplete]="auto" [(ngModel)]="franquiaFilter" name="franquiaFilter"
-				(ngModelChange)="onListFranquias();">
-		</mat-form-field>
-
-		<mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete" (optionSelected)="filters.franquia = $event.option.value; onListFranquias();" >
-			<mat-option [value]="null">Nenhum</mat-option>
-			<mat-option *ngFor="let franquia of franquias" [value]="franquia">{{franquia.franquia}}</mat-option>
-		</mat-autocomplete>
+		<auto-complete-with-redirect
+			fxFlex
+			title="Franquia"
+			key="codigo"
+			link="franquia"
+			displayKey="franquia"
+			[displayId]="true"
+			[list]="{values: franquias}"
+			[itemSelected]="{selected: filters.franquia}"
+			(onFilterChange)="franquiaFilter = $event; onListFranquias()"
+			(onSelect)="filters.franquia = $event"
+			(onDelete)="filters.franquia = {}"
+		>
+		</auto-complete-with-redirect>
 
 		<div fxFlex></div>
 

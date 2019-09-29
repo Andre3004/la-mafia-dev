@@ -26,7 +26,7 @@ export class EstadoListComponent implements OnInit
 
     }
     public tableColumns: ITdDataTableColumn[] = [
-        { name: 'idEstado', label: 'CÓDIGO' },
+        { name: 'codigo', label: 'CÓDIGO' },
         { name: 'estado', label: 'ESTADO' },
         { name: 'uf', label: 'UF' },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
@@ -77,7 +77,7 @@ export class EstadoListComponent implements OnInit
         const dialogRef = this.dialog.open(EstadoFormComponent, {
             width: '600px',
             height: 'auto',
-            data: { idEstado: estado ? estado.idEstado : null }
+            data: { codigo: estado ? estado.codigo : null }
         });
 
         dialogRef.afterClosed().subscribe(estadoSaved =>
@@ -101,7 +101,7 @@ export class EstadoListComponent implements OnInit
             {
                 if (accept)
                 {
-                    this.estadoService.deleteEstado(estado.idEstado).subscribe( result => {
+                    this.estadoService.deleteEstado(estado.codigo).subscribe( result => {
                         this.openSnackBarService.openSuccess('Estado excluído com sucesso.');
                         this.onListEstados();
                     }, err => {
@@ -117,7 +117,7 @@ export class EstadoListComponent implements OnInit
                         {
                             if (accept)
                             {
-                                this.estadoService.updateSituacaoEstado(estado.idEstado, !estado.situacao).subscribe( result => {
+                                this.estadoService.updateSituacaoEstado(estado.codigo, !estado.situacao).subscribe( result => {
                                     this.openSnackBarService.openSuccess('Estado desativado com sucesso.');
                                     this.onListEstados();
                                 }, err => this.openSnackBarService.openError(err.message))
@@ -139,7 +139,7 @@ export class EstadoListComponent implements OnInit
             {
                 if (accept)
                 {
-                    this.estadoService.updateSituacaoEstado(estado.idEstado, !estado.situacao).subscribe( result => {
+                    this.estadoService.updateSituacaoEstado(estado.codigo, !estado.situacao).subscribe( result => {
                         this.openSnackBarService.openSuccess('Estado ativado com sucesso.');
                         this.onListEstados();
                     }, err => this.openSnackBarService.openError(err.message))

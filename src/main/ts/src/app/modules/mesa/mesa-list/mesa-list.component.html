@@ -2,19 +2,16 @@
 	<mat-toolbar-row fxLayoutGap="30px">
 		<mat-form-field fxFlex="20" appearance="outline">
 			<mat-label>Número da mesa</mat-label>
-			<input matInput [textMask]="{mask: textMasks.getNumbersOnlyMask(3), guide: false}" placeholder="Pesquisar por número da mesa" [(ngModel)]="filters.numeroMesa">
+			<input matInput [textMask]="{mask: textMasks.getNumbersOnlyMask(3), guide: false}"
+				placeholder="Pesquisar por número da mesa" [(ngModel)]="filters.numeroMesa">
 		</mat-form-field>
 
-		<mat-form-field fxFlex="20" appearance="outline">
-			<mat-label>Ambiente</mat-label>
-			<input type="text" matInput [matAutocomplete]="auto" [(ngModel)]="ambienteFilter" name="ambienteFilter"
-				(ngModelChange)="onListAmbientes();">
-		</mat-form-field>
 
-		<mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete" (optionSelected)="filters.ambiente = $event.option.value; onListAmbientes();" >
-			<mat-option [value]="null">Nenhum</mat-option>
-			<mat-option *ngFor="let ambiente of ambientes" [value]="ambiente">{{ambiente.ambiente}}</mat-option>
-		</mat-autocomplete>
+		<auto-complete-with-redirect fxFlex title="Ambiente" link="ambiente" key="codigo" displayKey="ambiente"
+			[displayId]="true" [list]="{values: ambientes}" [itemSelected]="{selected: filters.ambiente}"
+			(onFilterChange)="ambienteFilter = $event; onListAmbientes($event)" (onSelect)="filters.ambiente = $event"
+			(onDelete)="filters.ambiente = null">
+		</auto-complete-with-redirect>
 
 		<div fxFlex></div>
 
@@ -33,7 +30,7 @@
 <mat-card>
 
 	<td-data-table *ngIf="pageRequest?.content?.length > 0" #dataTable [data]="pageRequest.content"
-		[columns]="tableColumns" [clickable]="true" >
+		[columns]="tableColumns" [clickable]="true">
 
 		<ng-template tdDataTableTemplate="numeroMesa" let-mesa="row">
 			<span class="text-truncate">

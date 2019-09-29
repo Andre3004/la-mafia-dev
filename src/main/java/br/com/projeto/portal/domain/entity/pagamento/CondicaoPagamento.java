@@ -19,6 +19,8 @@ public class CondicaoPagamento extends AbstractEntity
 
 	private Long codigo;
 
+	private String condicaoPagamento;
+
 	private Double juros;
 
 	private Double multa;
