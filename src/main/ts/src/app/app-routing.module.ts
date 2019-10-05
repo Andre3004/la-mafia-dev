@@ -57,6 +57,10 @@ const routes: Routes = [
   {
     path: 'forma-pagamento',
     loadChildren : () => import('../app/modules/forma-pagamento/forma-pagamento.module').then(m => m.FormaPagamentoModule)
+  },
+  {
+    path: 'contas-a-pagar',
+    loadChildren : () => import('../app/modules/contas-a-pagar/contas-a-pagar.module').then(m => m.ContasAPagarModule)
   }
 ];
 

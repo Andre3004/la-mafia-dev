@@ -131,7 +131,6 @@ public class GrupoProdutoService
 			}
 		}
 
-		//TODO validar se existe registros relacionados, se existe só desativa
 		GrupoProduto grupoProduto = this.findGrupoProdutoById( id );
 		if(grupoProduto.getAnexoUuid() != null) this.removeArquivo( grupoProduto.getAnexoUuid() );
 

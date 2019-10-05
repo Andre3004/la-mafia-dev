@@ -24,6 +24,7 @@ export class FormaPagamentoListComponent implements OnInit
 
     }
     public tableColumns: ITdDataTableColumn[] = [
+        { name: 'codigo', label: 'CÓDIGO' },
         { name: 'formaPagamento', label: 'FORMA PAGAMENTO' },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
         { name: 'opcoes', label: 'OPÇÕES', tooltip: 'Opções', width: 250 }

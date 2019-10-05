@@ -227,10 +227,10 @@ CREATE TABLE condicao_pagamento_parcela (
 CREATE TABLE compra(
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
-    modelo character varying(144) UNIQUE NOT NULL,
-    serie character varying(144) UNIQUE NOT NULL,
-    numero_nota character varying(144) UNIQUE NOT NULL,
-    fornecedor_id bigint REFERENCES fornecedor UNIQUE NOT NULL,
+    modelo character varying(144)  NOT NULL,
+    serie character varying(144)  NOT NULL,
+    numero_nota character varying(144)  NOT NULL,
+    fornecedor_id bigint REFERENCES fornecedor  NOT NULL,
     usuario_id bigint REFERENCES usuario,
     condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
     data_chegada TIMESTAMP NOT NULL,
@@ -242,13 +242,14 @@ CREATE TABLE compra(
 	PRIMARY KEY(modelo, serie, numero_nota, fornecedor_id )
 );
 
+
 CREATE TABLE contas_a_pagar(
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
-    modelo character varying(144) NOT NULL REFERENCES compra(modelo),
-    serie character varying(144) NOT NULL  REFERENCES compra(serie),
-    numero_nota character varying(144) NOT NULL  REFERENCES compra(numero_nota),
-    fornecedor_id bigint REFERENCES fornecedor NOT NULL REFERENCES compra(fornecedor_id),
+    modelo character varying(144) NOT NULL,
+    serie character varying(144) NOT NULL ,
+    numero_nota character varying(144) NOT NULL,
+    fornecedor_id bigint REFERENCES fornecedor NOT NULL,
 	numero_parcela int NOT NULL,
 	data_vencimento TIMESTAMP NOT NULL,
 	valor_parcela decimal NOT NULL,

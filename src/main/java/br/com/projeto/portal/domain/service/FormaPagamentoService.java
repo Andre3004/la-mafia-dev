@@ -21,8 +21,6 @@ public class FormaPagamentoService{
 
 	@Autowired
 	private FormaPagamentoDAO formaPagamentoDAO;
-
-
 	
 	public Page<FormaPagamento> listFormaPagamentoByFilters( String formaPagamento, PageRequest pageable )
 	{

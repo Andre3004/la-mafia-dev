@@ -117,7 +117,6 @@ public class CondicaoPagamentoService
 			}
 		}
 
-		//TODO validar se existe registros relacionados, se existe só desativa
 		this.condicaoPagamentoDao.deleteCondicaoPagamento( id );
 	}
 

@@ -119,7 +119,6 @@ public class UsuarioService
 	
 	public void deleteUsuario( long id )
 	{
-		//TODO validar se existe registros relacionados, se existe só desativa
 		Usuario usuario = this.findUsuarioById( id );
 		if ( usuario.getAnexoUuid() != null )
 		{

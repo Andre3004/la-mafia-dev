@@ -1,21 +1,20 @@
 import { Component, OnInit } from '@angular/core';
-import { CompraFormComponent } from '../compra-form/compra-form.component';
 import { MatDialog } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { TdDialogService, ITdDataTableColumn, IPageChangeEvent } from '@covalent/core';
 import { PaginationService } from 'src/app/common/pagination/pagination.service';
-import { AmbienteService, FornecedorService, CompraService } from 'src/generated/services'; //CompraService, 
+import { AmbienteService, FornecedorService, ContasAPagarService } from 'src/generated/services'; //contasAPagarService, 
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
 import { Ambiente, Usuario, Fornecedor, Compra } from 'src/generated/entities'; //Compra, 
 import { TextMasks } from 'src/app/common/mask/text-masks';
 
 
 @Component({
-    selector: 'app-compra-list',
-    templateUrl: './compra-list.component.html',
-    styleUrls: ['./compra-list.component.scss']
+    selector: 'app-contas-a-pagar-list',
+    templateUrl: './contas-a-pagar-list.component.html',
+    styleUrls: ['./contas-a-pagar-list.component.scss']
 })
-export class CompraListComponent implements OnInit
+export class ContasAPagarListComponent implements OnInit
 {
 
     /*-------------------------------------------------------------------
@@ -36,17 +35,18 @@ export class CompraListComponent implements OnInit
      * Colunas da Grid
      */
     public tableColumns: ITdDataTableColumn[] = [
+        { name: 'numero_parcela', label: 'NÚMERO DA PARCELA', sortable: false },
         { name: 'modelo', label: 'MODELO', sortable: false },
         { name: 'serie', label: 'SERIE', sortable: false },
         { name: 'numeroNota', label: 'NUMERO DA NOTA', sortable: false },
         { name: 'fornecedor', label: 'FORNECEDOR', sortable: false },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
-        { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 150 }
     ];
 
     public fornecedores: Fornecedor[] = [];
 
-    constructor(public dialog: MatDialog, private compraService: CompraService,
+    constructor(public dialog: MatDialog,
+        private contasAPagarService: ContasAPagarService,
         private paginationService: PaginationService,
         private openSnackBarService: OpenSnackBarService,
         private _dialogService: TdDialogService,
@@ -57,7 +57,7 @@ export class CompraListComponent implements OnInit
 
     ngOnInit()
     {
-        this.onListComprasByFilters(true);
+        this.onListContasAPagar(true);
         this.onListFornecedores("");
     }
 
@@ -65,31 +65,16 @@ export class CompraListComponent implements OnInit
     *                           BEHAVIORS
     *-------------------------------------------------------------------*/
 
-
-    public openForm(compra: Compra, isDetail: boolean = false)
-    {
-        const dialogRef = this.dialog.open(CompraFormComponent, {
-            width: '1200px',
-            height: 'auto',
-            data: { isDetail, compra }
-        });
-
-        dialogRef.afterClosed().subscribe(() =>
-        {
-            this.onListComprasByFilters();
-        });
-    }
-
     /**
       */
-    public onListComprasByFilters(filters: Boolean = true): void
+    public onListContasAPagar(filters: Boolean = true): void
     {
         if (filters)
         {
             this.pageRequest.pageable.page = 0;
         }
 
-        this.compraService.listComprasByFilters(
+        this.contasAPagarService.listContasAPagarByFilters(
             this.filters.modelo,
             this.filters.serie,
             this.filters.numeroNota,
@@ -112,7 +97,7 @@ export class CompraListComponent implements OnInit
         }
 
 
-        this.onListComprasByFilters();
+        this.onListContasAPagar();
     }
 
 
@@ -121,52 +106,8 @@ export class CompraListComponent implements OnInit
         this.pageRequest.pageable.page = pagingEvent.page - 1;
         this.pageRequest.pageable.size = pagingEvent.pageSize;
 
-        this.onListComprasByFilters();
+        this.onListContasAPagar(false);
     }
-
-    public atualizarSituacaoCompra(compra: Compra)
-    {
-        if(compra.situacao)
-        {
-            this._dialogService.openConfirm({
-                message: "Tem certeza que deseja cancelar esta compra ?",
-                title: "Cancelar compra",
-                cancelButton: 'CANCELAR',
-                acceptButton: 'CONFIRMAR',
-                width: '500px'
-            }).afterClosed().subscribe((accept: boolean) =>
-            {
-                if (accept)
-                {
-                    this.compraService.updateSituacaoCompra(compra.modelo, compra.serie, compra.numeroNota, compra.fornecedor.codigo, !compra.situacao).subscribe( result => {
-                        this.openSnackBarService.openSuccess('Compra cancelada com sucesso.');
-                        this.onListComprasByFilters();
-                    }, err => this.openSnackBarService.openError(err.message, 10000))
-                }
-            });
-        }
-        else
-        {
-            this._dialogService.openConfirm({
-                message: "Tem certeza que deseja restaurar esta compra ?",
-                title: "Restaurar compra",
-                cancelButton: 'CANCELAR',
-                acceptButton: 'CONFIRMAR',
-                width: '500px'
-            }).afterClosed().subscribe((accept: boolean) =>
-            {
-                if (accept)
-                {
-                    this.compraService.updateSituacaoCompra(compra.modelo, compra.serie, compra.numeroNota, compra.fornecedor.codigo, !compra.situacao).subscribe( result => {
-                        this.openSnackBarService.openSuccess('Compra restaurar com sucesso.');
-                        this.onListComprasByFilters();
-                    }, err => this.openSnackBarService.openError(err.message))
-                }
-            });
-        }
-    }
-
-
 
     /////////////////MODEL
 

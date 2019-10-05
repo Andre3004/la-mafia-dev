@@ -13,7 +13,7 @@ import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.
 export class FormaPagamentoFormComponent implements OnInit {
   public title = "";
 
-  public formaPagamento: any = {};
+  public formaPagamento: any = { codigo: 0};
 
 
 

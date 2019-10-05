@@ -48,6 +48,8 @@ public class CompraDAO {
 	@Autowired
 	ProdutoDAO produtoDAO;
 
+	@Autowired
+	ContasAPagarDAO contasAPagarDAO;
 	
 	public void insertCompra( Compra compra )
 	{
@@ -93,18 +95,11 @@ public class CompraDAO {
 		compra.setCondicaoPagamento( this.condicaoPagamentoDAO.findCondicaoPagamentoById( compra.getCondicaoPagamentoId() ) );
 
 		compra.setItensCompra(this.findItemCompraById(modelo,serie,numNota,fornecedorId));
-		compra.setContasAPagar(this.findContasAPagar(modelo,serie,numNota,fornecedorId));
+		compra.setContasAPagar(this.contasAPagarDAO.findContasAPagar(modelo,serie,numNota,fornecedorId));
 		return compra;
 	}
 
-	private List<ContasAPagar> findContasAPagar( String modelo, String serie, String numNota, Long fornecedorId )
-	{
-		String querySql = "SELECT * FROM contas_a_pagar WHERE modelo = '" + modelo + "' AND  serie = '" + serie + "' AND numero_nota = '" + numNota + "' AND fornecedor_id = " + fornecedorId + " ;" ;
 
-		List<ContasAPagar> contasApagar = jdbcTemplate.query(querySql, new BeanPropertyRowMapper(ContasAPagar.class));
-
-		return contasApagar;
-	}
 
 	public void updateSituacaoCompra( String modelo, String serie, String numNota, Long fornecedorId, boolean situacao )
 	{
@@ -220,29 +215,7 @@ public class CompraDAO {
 				itemCompra.getCodigo());
 	}
 
-	public void insertContaAPagar( ContasAPagar contasAPagar )
-	{
-		jdbcTemplate.update(
-				"INSERT INTO contas_a_pagar " +
-						"(modelo, " +
-						"serie, " +
-						"numero_nota, " +
-						"fornecedor_id, " +
-						"numero_parcela, " +
-						"data_vencimento, " +
-						"valor_parcela, " +
-						"situacao, " +
-						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-				contasAPagar.getModelo(),
-				contasAPagar.getSerie(),
-				contasAPagar.getNumeroNota(),
-				contasAPagar.getFornecedor().getCodigo(),
-				contasAPagar.getNumero_parcela(),
-				Timestamp.valueOf(contasAPagar.getDataVencimento().atTime( 0,0,0 )),
-				contasAPagar.getValorParcela(),
-				true,
-				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)));
-	}
+
 
 }
 

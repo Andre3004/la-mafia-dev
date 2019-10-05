@@ -92,7 +92,6 @@ public class FranquiaService
 	
 	public void deleteFranquia( long id )
 	{
-		//TODO validar se existe registros relacionados, se existe só desativa
 		Franquia franquia = this.findFranquiaById( id );
 		if(franquia.getAnexoUuid() != null) this.removeArquivo( franquia.getAnexoUuid() );
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ArquivoService, AmbienteService, FornecedorService, ProdutoService, CondicaoPagamentoService, CompraService } from 'src/generated/services'; //CompraService
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
@@ -22,7 +22,7 @@ export class CompraFormComponent implements OnInit
 
   public title = "";
 
-  public compra: Compra = { condicaoPagamento: {}, itensCompra: [], contasAPagar: [], created: new Date() };//Compra = { numeroCompra: 0 };
+  public compra: Compra = { condicaoPagamento: {}, itensCompra: [], contasAPagar: [], created: new Date(), frete: 0, seguro: 0, despesa: 0 };//Compra = { numeroCompra: 0 };
 
   public textMasks = TextMasks;
 
@@ -86,6 +86,10 @@ export class CompraFormComponent implements OnInit
 
   public onSubmit(): void
   {
+    this.compra.serie = this.compra.serie.trim(); 
+    this.compra.numeroNota = this.compra.numeroNota.trim(); 
+    this.compra.modelo = this.compra.modelo.trim(); 
+    
     this.compra.contasAPagar.forEach((conta, i) =>
     {
       conta.serie = this.compra.serie;
@@ -233,7 +237,7 @@ export class CompraFormComponent implements OnInit
   public onSelectProduto(produto: Produto)
   {
     this.itemCompra = produto;
-    this.itemCompra.valorUnitario = 0;
+    this.itemCompra.valorUnitario = produto.currentEstoque.precoVenda;
     this.onListProdutos('');
   }
 
@@ -291,6 +295,11 @@ export class CompraFormComponent implements OnInit
     return valorTotalCompra || 0;
   }
 
+  get getValorTotalNota()
+  {
+    return this.getValorTotalCompra + this.compra.despesa + this.compra.frete + this.compra.seguro;
+  }
+
   public getNumeroDocumento(i)
   {
     // modelo/serie/numero/numeroParcela
@@ -300,5 +309,16 @@ export class CompraFormComponent implements OnInit
   public getValorParcela(i)
   {
     return ((this.getValorTotalCompra + this.compra.frete + this.compra.despesa + this.compra.seguro) * (this.compra.condicaoPagamento.parcelas[i].porcentagem / 100)).toFixed(2);
+  }
+
+  public onChangeTipoFrete()
+  {
+    if(this.compra.tipoFrete == 'PAGO_PELO_FORNECEDOR')
+    {
+      this.compra.frete =  0;
+      this.compra.seguro = 0;
+      this.compra.despesa = 0;
+    }
+
   }
 }

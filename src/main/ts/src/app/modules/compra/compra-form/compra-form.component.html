@@ -47,18 +47,24 @@
           >
           </auto-complete-with-redirect>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Data emissão</mat-label>
-            <input matInput required [max]="dataHoje" [matDatepicker]="created" [(ngModel)]="compra.created" [disabled]="isDetail || compra.condicaoPagamento.codigo"  name="created">
-            <mat-datepicker-toggle matSuffix [for]="created"></mat-datepicker-toggle>
-            <mat-datepicker #created></mat-datepicker>
+          <mat-form-field appearance="outline" class="data-with-double-suffix">
+            <mat-label>Data emissão *</mat-label>
+            <input matInput required [max]="dataHoje" [matDatepicker]="created" [(ngModel)]="compra.created" name="created" disabled>
+            <mat-datepicker-toggle  [ngStyle]="{'color': !compra.created ? 'red' : 'black' }" matSuffix [for]="created" [disabled]="isDetail || compra.condicaoPagamento.codigo" ></mat-datepicker-toggle>
+            <button *ngIf="compra.created && !isDetail" matSuffix mat-icon-button (click)="compra.created = null; compra.dataChegada = null" matTooltip="Remover data de emissão">
+              <mat-icon>clear</mat-icon>
+            </button>
+            <mat-datepicker #created disabled="false"></mat-datepicker>
           </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Data Chegada</mat-label>
-            <input matInput required [min]="compra.created"  [matDatepicker]="startDate" [(ngModel)]="compra.dataChegada" [disabled]="isDetail || compra.condicaoPagamento.codigo"  name="dataChegada">
-            <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
-            <mat-datepicker #startDate></mat-datepicker>
+          
+          <mat-form-field appearance="outline" class="data-with-double-suffix">
+            <mat-label>Data Chegada *</mat-label>
+            <input matInput required [min]="compra.created"  disabled [matDatepicker]="startDate" [(ngModel)]="compra.dataChegada"   name="dataChegada">
+            <mat-datepicker-toggle matSuffix [for]="startDate" [ngStyle]="{'color': !compra.dataChegada ? 'red' : 'black' }" [disabled]="isDetail || compra.condicaoPagamento.codigo || !compra.created"></mat-datepicker-toggle>
+            <button *ngIf="compra.dataChegada && !isDetail" matSuffix mat-icon-button (click)="compra.dataChegada = null" matTooltip="Remover data de chegada">
+              <mat-icon>clear</mat-icon>
+            </button>
+            <mat-datepicker #startDate  disabled="false"></mat-datepicker>
           </mat-form-field>
 
         </div>
@@ -67,7 +73,7 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Tipo de frete</mat-label>
-            <mat-select required [(ngModel)]="compra.tipoFrete" name="tipoFrete" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
+            <mat-select required [(ngModel)]="compra.tipoFrete" (ngModelChange)="onChangeTipoFrete()" name="tipoFrete" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
               <mat-option [value]="'PAGO_PELO_DESTINATARIO'">
                 Pago pelo destinatário
               </mat-option>
@@ -76,6 +82,7 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
+          
 
 
           <mat-form-field fxFlex appearance="outline">
@@ -87,7 +94,7 @@
               decimal: ',',
               precision: 2,
               allowNegative: false
-            }" maxlength="9" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
+            }" maxlength="9" [disabled]="isDetail || compra.condicaoPagamento.codigo || compra?.tipoFrete == 'PAGO_PELO_FORNECEDOR'" >
           </mat-form-field>
 
           <mat-form-field fxFlex appearance="outline">
@@ -99,7 +106,7 @@
               decimal: ',',
               precision: 2,
               allowNegative: false
-            }" maxlength="9" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
+            }" maxlength="9" [disabled]="isDetail || compra.condicaoPagamento.codigo || compra?.tipoFrete == 'PAGO_PELO_FORNECEDOR'" >
           </mat-form-field>
 
           <mat-form-field fxFlex appearance="outline">
@@ -111,14 +118,14 @@
               decimal: ',',
               precision: 2,
               allowNegative: false
-            }" maxlength="9" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
+            }" maxlength="9" [disabled]="isDetail || compra.condicaoPagamento.codigo || compra?.tipoFrete == 'PAGO_PELO_FORNECEDOR'" >
           </mat-form-field>
         </div>
 
       </form>
     </mat-tab>
 
-    <mat-tab label="ITENS DA COMPRA" [disabled]="informacoesForm?.invalid">
+    <mat-tab label="ITENS DA COMPRA" [disabled]="informacoesForm?.invalid || !compra.created || !compra.dataChegada">
 
       <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="30px" class="pad-sm push-bottom-sm">
 
@@ -154,7 +161,7 @@
             [list]="{values: produtos}"
             [itemSelected]="{selected: itemCompra}"
             (onFilterChange)="onListProdutos($event)"
-            (onSelect)="itemCompra = $event"
+            (onSelect)="onSelectProduto($event)"
             (onDelete)="itemCompra = {}"
           >
 
@@ -235,9 +242,17 @@
       >
       </auto-complete-with-redirect>
 
-      <div fxLayout="column" class="pad-sm">
+     
+        
+      <div fxLayout="row" fxLayoutAlign="space-between center" >
         <label class="bold">CONTAS À PAGAR</label>
+
+        <div fxLayout="column">
+          <label class="bold">TOTAL DA NOTA</label>
+          <label>{{getValorTotalNota | number:'.2':'pt'}}</label>
+        </div>
       </div>
+  
 
       <mat-expansion-panel *ngFor="let contaAPagar of compra.contasAPagar; let i = index" class="push-sm">
         <mat-expansion-panel-header>
@@ -259,14 +274,14 @@
             <input matInput [disabled]="true" [value]="contaAPagar.dataVencimento | date:'dd/MM/yyyy'">
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" fxFlex>
             <mat-label>Número do documento</mat-label>
             <input matInput [disabled]="true" [value]="getNumeroDocumento(i)">
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Valor da parcela</mat-label>
-            <input matInput [disabled]="true" value="{{contaAPagar.valorParcela}}">
+            <input matInput [disabled]="true" value="{{contaAPagar.valorParcela | number:'.2':'pt'}}">
           </mat-form-field>
 
         </div>

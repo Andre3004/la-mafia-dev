@@ -108,7 +108,6 @@ public class ProdutoService
 	
 	public void deleteProduto( long id )
 	{
-		//TODO validar se existe registros relacionados, se existe só desativa
 		Produto produto = this.findProdutoById( id );
 		if(produto.getAnexoUuid() != null) this.removeArquivo( produto.getAnexoUuid() );
 

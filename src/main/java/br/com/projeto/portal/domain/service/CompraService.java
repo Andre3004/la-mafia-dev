@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.dao.CompraDAO;
+import br.com.projeto.portal.domain.dao.ContasAPagarDAO;
 import br.com.projeto.portal.domain.dao.EstoqueDAO;
 import br.com.projeto.portal.domain.entity.compra.Compra;
 import br.com.projeto.portal.domain.entity.compra.ItemCompra;
@@ -34,6 +35,9 @@ public class CompraService
 
 	@Autowired
 	private EstoqueDAO estoqueDAO;
+
+	@Autowired
+	private ContasAPagarDAO contasAPagarDAO;
 
 	private static ZoneId fusoHorarioDeSaoPaulo = ZoneId.of( "America/Sao_Paulo" );
 
@@ -100,12 +104,11 @@ public class CompraService
 		{
 			for ( ContasAPagar contasAPagar : compra.getContasAPagar() )
 			{
-				compraDao.insertContaAPagar( contasAPagar );
+				contasAPagarDAO.insertContaAPagar( contasAPagar );
 			}
 		}
 	}
 
-	
 	public void updateSituacaoCompra( String modelo, String serie, String numNota, Long codigo, boolean situacao )
 	{
 		Compra compra = this.findCompraById( modelo, serie, numNota, codigo );
