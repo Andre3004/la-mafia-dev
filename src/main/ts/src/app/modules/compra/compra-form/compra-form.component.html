@@ -49,18 +49,18 @@
 
           <mat-form-field appearance="outline" class="data-with-double-suffix">
             <mat-label>Data emissão *</mat-label>
-            <input matInput required [max]="dataHoje" [matDatepicker]="created" [(ngModel)]="compra.created" name="created" disabled>
-            <mat-datepicker-toggle  [ngStyle]="{'color': !compra.created ? 'red' : 'black' }" matSuffix [for]="created" [disabled]="isDetail || compra.condicaoPagamento.codigo" ></mat-datepicker-toggle>
-            <button *ngIf="compra.created && !isDetail" matSuffix mat-icon-button (click)="compra.created = null; compra.dataChegada = null" matTooltip="Remover data de emissão">
+            <input matInput required [max]="dataHoje" [matDatepicker]="dataEmissao" [(ngModel)]="compra.dataEmissao" name="dataEmissao" disabled>
+            <mat-datepicker-toggle  [ngStyle]="{'color': !compra.dataEmissao ? 'red' : 'black' }" matSuffix [for]="dataEmissao" [disabled]="isDetail || compra.condicaoPagamento.codigo" ></mat-datepicker-toggle>
+            <button *ngIf="compra.dataEmissao && !isDetail" matSuffix mat-icon-button (click)="compra.dataEmissao = null; compra.dataChegada = null" matTooltip="Remover data de emissão">
               <mat-icon>clear</mat-icon>
             </button>
-            <mat-datepicker #created disabled="false"></mat-datepicker>
+            <mat-datepicker #dataEmissao disabled="false"></mat-datepicker>
           </mat-form-field>
           
           <mat-form-field appearance="outline" class="data-with-double-suffix">
             <mat-label>Data Chegada *</mat-label>
-            <input matInput required [min]="compra.created"  disabled [matDatepicker]="startDate" [(ngModel)]="compra.dataChegada"   name="dataChegada">
-            <mat-datepicker-toggle matSuffix [for]="startDate" [ngStyle]="{'color': !compra.dataChegada ? 'red' : 'black' }" [disabled]="isDetail || compra.condicaoPagamento.codigo || !compra.created"></mat-datepicker-toggle>
+            <input matInput required [min]="compra.dataEmissao"  disabled [matDatepicker]="startDate" [(ngModel)]="compra.dataChegada"   name="dataChegada">
+            <mat-datepicker-toggle matSuffix [for]="startDate" [ngStyle]="{'color': !compra.dataChegada ? 'red' : 'black' }" [disabled]="isDetail || compra.condicaoPagamento.codigo || !compra.dataEmissao"></mat-datepicker-toggle>
             <button *ngIf="compra.dataChegada && !isDetail" matSuffix mat-icon-button (click)="compra.dataChegada = null" matTooltip="Remover data de chegada">
               <mat-icon>clear</mat-icon>
             </button>
@@ -125,7 +125,7 @@
       </form>
     </mat-tab>
 
-    <mat-tab label="ITENS DA COMPRA" [disabled]="informacoesForm?.invalid || !compra.created || !compra.dataChegada">
+    <mat-tab label="ITENS DA COMPRA" [disabled]="informacoesForm?.invalid || !compra.dataEmissao || !compra.dataChegada">
 
       <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="30px" class="pad-sm push-bottom-sm">
 

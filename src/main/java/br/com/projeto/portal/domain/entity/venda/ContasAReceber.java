@@ -1,4 +1,4 @@
-package br.com.projeto.portal.domain.entity.contasApagar;
+package br.com.projeto.portal.domain.entity.venda;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,8 +16,8 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode
-@DataTransferObject(javascript = "ContasAPagar")
-public class ContasAPagar extends AbstractEntity
+@DataTransferObject(javascript = "ContasAReceber")
+public class ContasAReceber extends AbstractEntity
 {
 	/*-------------------------------------------------------------------
 	 *				 		     ATTRIBUTES
@@ -31,7 +31,7 @@ public class ContasAPagar extends AbstractEntity
 
 	private Integer numeroParcela;
 
-	private Long fornecedorId;
+	private Long clienteId;
 
 	private Long franquiaId;
 
@@ -45,9 +45,9 @@ public class ContasAPagar extends AbstractEntity
 
 	private Double multa;
 
-	private Double valorPago;
+	private Double valorRecebido;
 
-	private LocalDateTime dataPagamento;
+	private LocalDateTime dataRecebimento;
 
 	private Long formaPagamentoId;
 
@@ -58,13 +58,13 @@ public class ContasAPagar extends AbstractEntity
 	private Boolean situacao;
 
 	///////Transient values///////
-	private Fornecedor fornecedor;
+	private Cliente cliente;
 
 	private Franquia franquia;
 
 	private FormaPagamento formaPagamento;
 
-	public ContasAPagar()
+	public ContasAReceber()
 	{
 	}
 }

@@ -49,7 +49,7 @@ public class FornecedorDAO
 
 
     
-    public Fornecedor findFornecedorById(int id)
+    public Fornecedor findFornecedorById(Long id)
     {
         String sql = "SELECT * FROM fornecedor WHERE codigo = ?";
 
@@ -145,7 +145,7 @@ public class FornecedorDAO
 
 
     
-    public void deleteFornecedor(int id){
+    public void deleteFornecedor(Long id){
         jdbcTemplate.update("DELETE from fornecedor WHERE codigo = ? ", id);
     }
 
@@ -180,7 +180,7 @@ public class FornecedorDAO
         List<Fornecedor> fornecedores = jdbcTemplate.query(querySql,new RowMapper<Fornecedor>(){
             public Fornecedor mapRow( ResultSet rs, int row) throws SQLException {
                 Fornecedor f=new Fornecedor();
-                f.setCodigo(rs.getInt(1));
+                f.setCodigo(rs.getLong(1));
                 f.setRazaoSocial(rs.getString(2));
                 f.setCnpj(rs.getString(3));
                 f.setCelular(rs.getString(5));

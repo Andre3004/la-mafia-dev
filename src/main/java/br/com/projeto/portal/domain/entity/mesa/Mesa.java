@@ -19,7 +19,7 @@ public class Mesa extends AbstractEntity
 
 	private Ambiente ambiente;
 
-	private Integer quantidadeLugaresMesa;
+	private Integer quantidadeLugares;
 
 	private Boolean situacao;
 

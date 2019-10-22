@@ -24,7 +24,7 @@ public class Fornecedor extends AbstractEntity
      *				 		     ATTRIBUTES
      *-------------------------------------------------------------------*/
 
-    private Integer codigo;
+    private Long codigo;
 
     private String razaoSocial;
 

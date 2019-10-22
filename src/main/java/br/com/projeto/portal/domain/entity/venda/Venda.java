@@ -1,4 +1,4 @@
-package br.com.projeto.portal.domain.entity.compra;
+package br.com.projeto.portal.domain.entity.venda;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.directwebremoting.annotations.DataTransferObject;
 
+import br.com.projeto.portal.domain.entity.Cliente;
 import br.com.projeto.portal.domain.entity.Fornecedor;
 import br.com.projeto.portal.domain.entity.contasApagar.ContasAPagar;
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
@@ -18,8 +19,8 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode
-@DataTransferObject(javascript = "compra")
-public class Compra extends AbstractEntity
+@DataTransferObject(javascript = "Venda")
+public class Venda extends AbstractEntity
 {
 	/*-------------------------------------------------------------------
 	 *				 		     ATTRIBUTES
@@ -31,30 +32,20 @@ public class Compra extends AbstractEntity
 
 	private String numeroNota;
 
-	private Long fornecedorId;
+	private Long clienteId;
 
 	private Long franquiaId;
+
+	private LocalDateTime dataEmissao;
 
 	private Long usuarioId;
 
 	private Long condicaoPagamentoId;
 
-	private LocalDateTime dataChegada;
-
-	private TipoFrete tipoFrete;
-
-	private Double frete;
-
-	private Double seguro;
-
-	private Double despesa;
-
 	private Boolean situacao;
 
-	private LocalDateTime dataEmissao;
-
 	///////Transient values///////
-	private Fornecedor fornecedor;
+	private Cliente cliente;
 
 	private Franquia franquia;
 
@@ -62,20 +53,22 @@ public class Compra extends AbstractEntity
 
 	private CondicaoPagamento condicaoPagamento;
 
-	private List<ItemCompra> itensCompra = new ArrayList<>();
+	private List<ItemVenda> itensVenda = new ArrayList<>();
 
-	private List<ContasAPagar> contasAPagar = new ArrayList<>();
+	private List<ContasAReceber> contasAReceber = new ArrayList<>();
 
-	public Compra()
+	public Venda()
 	{
 
 	}
 
-	public Compra( String modelo, String numeroNota, String serie, Long fornecedorId )
+	public Venda( String serie, String modelo, String numeroNota, Long clienteId, Long franquiaId )
 	{
 		this.serie = serie;
 		this.numeroNota = numeroNota;
 		this.modelo = modelo;
-		this.fornecedorId = fornecedorId;
+		this.clienteId = clienteId;
+		this.franquiaId = franquiaId;
 	}
+
 }

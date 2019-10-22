@@ -61,49 +61,53 @@ public class CompraDAO {
 						"fornecedor_id, " +
 						"usuario_id, " +
 						"condicao_pagamento_id, " +
+						"data_emissao, " +
 						"data_chegada, " +
 						"tipo_frete, " +
 						"seguro, " +
 						"despesa, " +
 						"frete, " +
 						"situacao, " +
-						"created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+						"franquia_id, " +
+						"created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
 				compra.getModelo(),
 				compra.getSerie(),
 				compra.getNumeroNota(),
 				compra.getFornecedor().getCodigo(),
 				compra.getUsuario().getCodigo(),
 				compra.getCondicaoPagamento().getCodigo(),
+				Timestamp.valueOf(compra.getDataEmissao()),
 				Timestamp.valueOf(compra.getDataChegada()),
 				compra.getTipoFrete().toString(),
 				compra.getSeguro(),
 				compra.getDespesa(),
 				compra.getFrete(),
 				compra.getSituacao(),
+				compra.getFranquia().getCodigo(),
 				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 	}
 
 	
-	public Compra findCompraById( String modelo, String serie, String numNota, Long fornecedorId)
+	public Compra findCompraById( String modelo, String serie, String numNota, Long fornecedorId, Long franquiaId)
 	{
-		String sql = "SELECT * FROM compra WHERE modelo = ? AND serie = ? AND numero_nota = ? AND fornecedor_id = ? ";
+		String sql = "SELECT * FROM compra WHERE modelo = ? AND serie = ? AND numero_nota = ? AND fornecedor_id = ? AND franquia_id = ? ";
 
 		Compra compra = (Compra) jdbcTemplate.queryForObject(sql,
-				new Object[] { modelo,serie,numNota,fornecedorId }, new BeanPropertyRowMapper(Compra.class));
+				new Object[] { modelo,serie,numNota,fornecedorId, franquiaId }, new BeanPropertyRowMapper(Compra.class));
 
 		compra.setFornecedor( this.fornecedorDAO.findFornecedorById( compra.getFornecedorId() ) );
 		compra.setCondicaoPagamento( this.condicaoPagamentoDAO.findCondicaoPagamentoById( compra.getCondicaoPagamentoId() ) );
 
-		compra.setItensCompra(this.findItemCompraById(modelo,serie,numNota,fornecedorId));
+		compra.setItensCompra(this.findItemCompraById(modelo,serie,numNota,fornecedorId, franquiaId));
 		compra.setContasAPagar(this.contasAPagarDAO.findContasAPagar(modelo,serie,numNota,fornecedorId));
 		return compra;
 	}
 
 
 
-	public void updateSituacaoCompra( String modelo, String serie, String numNota, Long fornecedorId, boolean situacao )
+	public void updateSituacaoCompra( String modelo, String serie, String numNota, Long fornecedorId, Long franquiaId, boolean situacao )
 	{
-		jdbcTemplate.update("UPDATE compra SET situacao = ? WHERE modelo = ? AND serie = ? AND numero_nota = ? AND fornecedor_id = ?", situacao, modelo,serie,numNota,fornecedorId);
+		jdbcTemplate.update("UPDATE compra SET situacao = ? WHERE modelo = ? AND serie = ? AND numero_nota = ? AND fornecedor_id = ? AND franquia_id = ? ", situacao, modelo,serie,numNota,fornecedorId, franquiaId);
 	}
 
 	
@@ -146,7 +150,7 @@ public class CompraDAO {
 				c.setModelo(rs.getString("modelo"));
 				c.setSerie(rs.getString("serie"));
 				c.setNumeroNota(rs.getString("numero_nota"));
-				c.setFornecedor(fornecedorDAO.findFornecedorById(rs.getInt("fornecedor_id")));
+				c.setFornecedor(fornecedorDAO.findFornecedorById(rs.getLong("fornecedor_id")));
 				c.setSituacao( rs.getBoolean( "situacao" ) );
 				return c;
 			}
@@ -154,9 +158,9 @@ public class CompraDAO {
 		return new PageImpl<>(compras, pageable, total);
 	}
 
-	public List<ItemCompra> findItemCompraById( String modelo, String serie, String numNota, Long fornecedorId )
+	public List<ItemCompra> findItemCompraById( String modelo, String serie, String numNota, Long fornecedorId, Long franquiaId )
 	{
-		String querySql = "SELECT * FROM item_compra WHERE modelo = '" + modelo + "' AND  serie = '" + serie + "' AND numero_nota = '" + numNota + "' AND fornecedor_id = " + fornecedorId + " ;" ;
+		String querySql = "SELECT * FROM item_compra WHERE modelo = '" + modelo + "' AND  serie = '" + serie + "' AND numero_nota = '" + numNota + "' AND franquia_id = " + franquiaId + " AND fornecedor_id = " + fornecedorId + " ;" ;
 
 		List<ItemCompra> itemCompras = jdbcTemplate.query(querySql, new BeanPropertyRowMapper(ItemCompra.class));
 
@@ -182,14 +186,16 @@ public class CompraDAO {
 						"produto_id, " +
 						"quantidade, " +
 						"valor_unitario, " +
-						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-				itemCompra.getCompra().getModelo(),
-				itemCompra.getCompra().getSerie(),
-				itemCompra.getCompra().getNumeroNota(),
-				itemCompra.getCompra().getFornecedor().getCodigo(),
+						"franquia_id, " +
+						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				itemCompra.getModelo(),
+				itemCompra.getSerie(),
+				itemCompra.getNumeroNota(),
+				itemCompra.getFornecedor().getCodigo(),
 				itemCompra.getCodigo(),
 				itemCompra.getQuantidade(),
 				itemCompra.getValorUnitario(),
+				itemCompra.getFranquia().getCodigo(),
 				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)));
 	}
 
@@ -200,22 +206,18 @@ public class CompraDAO {
 						"produto_id = ?, " +
 						"quantidade = ?, " +
 						"valor_unitario = ?, " +
-						"WHERE modelo = ? AND serie = ? AND numero_nota = ? AND fornecedor_id = ? AND produto_id = ? ",
-				itemCompra.getCompra().getModelo(),
-				itemCompra.getCompra().getSerie(),
-				itemCompra.getCompra().getNumeroNota(),
-				itemCompra.getCompra().getFornecedor().getCodigo(),
+						"WHERE modelo = ? AND serie = ? AND numero_nota = ? AND fornecedor_id = ? AND franquia_id = ? AND produto_id = ? ",
 				itemCompra.getCodigo(),
 				itemCompra.getQuantidade(),
 				itemCompra.getValorUnitario(),
-				itemCompra.getCompra().getModelo(),
-				itemCompra.getCompra().getSerie(),
-				itemCompra.getCompra().getNumeroNota(),
-				itemCompra.getCompra().getFornecedor().getCodigo(),
-				itemCompra.getCodigo());
+
+				itemCompra.getModelo(),
+				itemCompra.getSerie(),
+				itemCompra.getNumeroNota(),
+				itemCompra.getFornecedor().getCodigo(),
+				itemCompra.getFranquia().getCodigo(),
+				itemCompra.getCodigo() );
 	}
-
-
 
 }
 

@@ -49,17 +49,21 @@ public class ContasAPagarDAO
 						"serie, " +
 						"numero_nota, " +
 						"fornecedor_id, " +
+						"franquia_id, " +
 						"numero_parcela, " +
 						"data_vencimento, " +
+						"data_emissao, " +
 						"valor_parcela, " +
 						"situacao, " +
-						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 				contasAPagar.getModelo(),
 				contasAPagar.getSerie(),
 				contasAPagar.getNumeroNota(),
 				contasAPagar.getFornecedor().getCodigo(),
-				contasAPagar.getNumero_parcela(),
+				contasAPagar.getFranquia().getCodigo(),
+				contasAPagar.getNumeroParcela(),
 				Timestamp.valueOf(contasAPagar.getDataVencimento().atTime( 0,0,0 )),
+				Timestamp.valueOf(contasAPagar.getDataEmissao().atTime( 0,0,0 )),
 				contasAPagar.getValorParcela(),
 				true,
 				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)));
@@ -102,11 +106,11 @@ public class ContasAPagarDAO
 			public ContasAPagar mapRow( ResultSet rs, int row) throws SQLException
 			{
 				ContasAPagar c = new ContasAPagar();
-				c.setNumero_parcela(rs.getInt("numero_parcela"));
+				c.setNumeroParcela(rs.getInt("numero_parcela"));
 				c.setModelo(rs.getString("modelo"));
 				c.setSerie(rs.getString("serie"));
 				c.setNumeroNota(rs.getString("numero_nota"));
-				c.setFornecedor(fornecedorDAO.findFornecedorById(rs.getInt("fornecedor_id")));
+				c.setFornecedor(fornecedorDAO.findFornecedorById(rs.getLong("fornecedor_id")));
 				c.setSituacao( rs.getBoolean( "situacao" ) );
 				return c;
 			}

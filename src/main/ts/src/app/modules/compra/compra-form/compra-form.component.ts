@@ -96,7 +96,7 @@ export class CompraFormComponent implements OnInit
       conta.modelo = this.compra.modelo;
       conta.numeroNota = this.compra.numeroNota;
       conta.fornecedor = this.compra.fornecedor;
-      conta.numero_parcela = i + 1;
+      conta.numeroParcela = i + 1;
     })
 
     this.compra.itensCompra.forEach((itemCompra, i) =>

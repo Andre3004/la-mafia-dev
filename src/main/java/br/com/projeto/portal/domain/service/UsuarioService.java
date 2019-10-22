@@ -69,8 +69,6 @@ public class UsuarioService
 	
 	public void insertUsuario( Usuario usuario )
 	{
-		try
-		{
 			if ( usuario.getAnexo() != null )
 			{
 				this.insertArquivo( usuario );
@@ -81,13 +79,6 @@ public class UsuarioService
 			usuario.setPerfilUsuario( PerfilUsuario.USUARIO ); //FIXME deixa no front-end;
 
 			this.usuarioDao.insertUsuario( usuario );
-		}
-		catch ( Exception e )
-		{
-			e.printStackTrace();
-			System.out.println( "Ocorreu um erro ao executar o insert: "
-					+ e.getMessage() );
-		}
 	}
 
 	

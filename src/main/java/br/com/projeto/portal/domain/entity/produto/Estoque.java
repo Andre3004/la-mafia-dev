@@ -41,7 +41,7 @@ public class Estoque implements Serializable
 
 
 	//@Transient
-	private Integer fornecedorId;
+	private Long fornecedorId;
 
 	protected LocalDateTime created;
 

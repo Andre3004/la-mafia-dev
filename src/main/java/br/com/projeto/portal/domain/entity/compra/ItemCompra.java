@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import br.com.projeto.portal.domain.entity.Fornecedor;
+import br.com.projeto.portal.domain.entity.franquia.Franquia;
 import br.com.projeto.portal.domain.entity.produto.Produto;
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
 
@@ -29,16 +30,23 @@ public class ItemCompra extends Produto
 
 	private String numeroNota;
 
+	private Long fornecedorId;
+
+	private Long produtoId;
+
+	private Long franquiaId;
+
 	private Long quantidade;
 
 	private Double valorUnitario;
 
+	///////Transient values///////
+	private Fornecedor fornecedor;
+
 	private Double custoUnitario; //calculado
 
-	///////Transient values///////
-	private Compra compra;
+	private Franquia franquia;
 
-	private Long produtoId;
 
 	public ItemCompra()
 	{
@@ -52,5 +60,18 @@ public class ItemCompra extends Produto
 		Double custoUnitario = this.custoUnitario != null ? this.custoUnitario : 0.0;
 
 		this.custoUnitario = ( saldo * precoCusto + quantidade * custoUnitario ) / (saldo + quantidade);
+	}
+
+	public void setCompra( Compra compra )
+	{
+		this.modelo = compra.getModelo();
+		this.serie = compra.getModelo();
+		this.numeroNota = compra.getModelo();
+		this.fornecedor = compra.getFornecedor();
+	}
+
+	public Compra getCompra ( )
+	{
+		return null;
 	}
 }

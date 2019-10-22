@@ -1,5 +1,6 @@
 package br.com.projeto.portal.domain.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -55,7 +56,7 @@ public class CompraService
 	
 	public Compra findCompraById( String modelo, String serie, String numNota, Long codigo )
 	{
-		Compra compra = this.compraDao.findCompraById( modelo, serie, numNota, codigo );
+		Compra compra = this.compraDao.findCompraById( modelo, serie, numNota, codigo, ContextHolder.getAuthenticatedUser().getFranquia().getCodigo() );
 		return compra;
 	}
 
@@ -64,6 +65,8 @@ public class CompraService
 	{
 		compra.setSituacao( true );
 		compra.setUsuario( ContextHolder.getAuthenticatedUser() );
+		compra.setFranquia( ContextHolder.getAuthenticatedUser().getFranquia() );
+
 		this.compraDao.insertCompra( compra );
 
 		if ( compra.getItensCompra() != null && compra.getItensCompra().size() > 0 )
@@ -71,6 +74,8 @@ public class CompraService
 			for ( ItemCompra itemCompra : compra.getItensCompra() )
 			{
 				itemCompra.setCompra( compra );
+				itemCompra.setFranquia( ContextHolder.getAuthenticatedUser().getFranquia() );
+
 				itemCompra.calculeCustoUnitario();
 
 				if(itemCompra.getCurrentEstoque().getCreated() == null)
@@ -104,6 +109,8 @@ public class CompraService
 		{
 			for ( ContasAPagar contasAPagar : compra.getContasAPagar() )
 			{
+				contasAPagar.setDataEmissao( LocalDate.now() );
+				contasAPagar.setFranquia( ContextHolder.getAuthenticatedUser().getFranquia() );
 				contasAPagarDAO.insertContaAPagar( contasAPagar );
 			}
 		}
@@ -122,7 +129,15 @@ public class CompraService
 			estoqueDAO.updateEstoque(itemCompra.getCurrentEstoque());
 		});
 
-		this.compraDao.updateSituacaoCompra( modelo, serie, numNota, codigo, situacao );
+		compra.getContasAPagar().forEach( contasAPagar -> {
+
+			contasAPagar.setSituacao( false );
+			//TODO VALIDAR SE A CONTA A PAGAR NÃO FOI DADO BAIXA AINDA
+			//Assert.isTrue( itemCompra.getCurrentEstoque().getSaldo() >= 0, "Não foi possível cancelar a compra, pois não possui saldo suficiente em estoque para realizar o cancelamento.");
+
+		});
+
+		this.compraDao.updateSituacaoCompra( modelo, serie, numNota, codigo, ContextHolder.getAuthenticatedUser().getFranquia().getCodigo(),  situacao );
 	}
 
 }

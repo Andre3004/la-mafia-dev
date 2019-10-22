@@ -40,7 +40,7 @@ public class FornecedorService
     }
 
     
-    public Fornecedor findFornecedorById( int id )
+    public Fornecedor findFornecedorById( Long id )
     {
         Fornecedor fornecedor = this.fornecedorDao.findFornecedorById( id );
 
@@ -78,7 +78,7 @@ public class FornecedorService
     }
 
     
-    public void deleteFornecedor( int id )
+    public void deleteFornecedor( Long id )
     {
         Fornecedor fornecedor = this.findFornecedorById( id );
         this.fornecedorDao.deleteFornecedor( id );

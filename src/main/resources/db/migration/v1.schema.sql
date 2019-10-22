@@ -90,7 +90,6 @@ CREATE TABLE grupo_produto (
 );
 
 
-CREATE TABLE ambiente (
   codigo serial PRIMARY KEY,
 	created TIMESTAMP NOT NULL,
 	updated TIMESTAMP,
@@ -227,10 +226,13 @@ CREATE TABLE condicao_pagamento_parcela (
 CREATE TABLE compra(
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
+
     modelo character varying(144)  NOT NULL,
     serie character varying(144)  NOT NULL,
     numero_nota character varying(144)  NOT NULL,
     fornecedor_id bigint REFERENCES fornecedor  NOT NULL,
+    franquia_id bigint REFERENCES franquia  NOT NULL,
+
     usuario_id bigint REFERENCES usuario,
     condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
     data_chegada TIMESTAMP NOT NULL,
@@ -239,22 +241,35 @@ CREATE TABLE compra(
     seguro character varying(144) NOT NULL,
     despesa character varying(144) NOT NULL,
     situacao boolean NOT NULL,
-	PRIMARY KEY(modelo, serie, numero_nota, fornecedor_id )
+    data_emissao TIMESTAMP NOT NULL,
+	PRIMARY KEY(modelo, serie, numero_nota, fornecedor_id, franquia_id )
 );
 
 
 CREATE TABLE contas_a_pagar(
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
-    modelo character varying(144) NOT NULL,
-    serie character varying(144) NOT NULL ,
-    numero_nota character varying(144) NOT NULL,
-    fornecedor_id bigint REFERENCES fornecedor NOT NULL,
+
+    modelo character varying(144)  NOT NULL,
+    serie character varying(144)  NOT NULL,
+    numero_nota character varying(144)  NOT NULL,
 	numero_parcela int NOT NULL,
+    fornecedor_id bigint REFERENCES fornecedor  NOT NULL,
+    franquia_id bigint REFERENCES franquia  NOT NULL,
+
+    data_emissao TIMESTAMP NOT NULL,
+    situacao_liquidez boolean,
+    desconto decimal,
+	juros decimal,
+	multa decimal,
+	valor_pago decimal,
+	data_pagamento TIMESTAMP,
+    forma_pagamento_id bigint REFERENCES forma_pagamento,
+
 	data_vencimento TIMESTAMP NOT NULL,
 	valor_parcela decimal NOT NULL,
     situacao boolean NOT NULL,
-	PRIMARY KEY(modelo, serie, numero_nota,fornecedor_id, numero_parcela)
+	PRIMARY KEY(modelo, serie, numero_nota, numero_parcela, fornecedor_id, franquia_id )
 );
 
 
@@ -266,9 +281,10 @@ CREATE TABLE item_compra(
 	numero_nota character varying(144) NOT NULL,
 	fornecedor_id bigint REFERENCES fornecedor NOT NULL,
 	produto_id  bigint REFERENCES produto NOT NULL,
+	franquia_id bigint REFERENCES franquia NOT NULL,
 	quantidade decimal NOT NULL,
 	valor_unitario decimal NOT NULL,
-	PRIMARY KEY( modelo, serie, numero_nota, fornecedor_id, produto_id)
+	PRIMARY KEY( modelo, serie, numero_nota, fornecedor_id, produto_id, franquia_id)
 );
 
 CREATE TABLE estoque(
@@ -283,5 +299,68 @@ CREATE TABLE estoque(
 	preco_venda decimal,
 	PRIMARY KEY (franquia_id, produto_id)
 );
+
+CREATE TABLE venda(
+    created TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+
+    modelo character varying(144)  NOT NULL,
+    serie character varying(144)  NOT NULL,
+    numero_nota character varying(144)  NOT NULL,
+    cliente_id bigint REFERENCES fornecedor  NOT NULL,
+    franquia_id bigint REFERENCES franquia  NOT NULL,
+
+    data_emissao TIMESTAMP NOT NULL,
+    usuario_id bigint REFERENCES usuario,
+    condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
+    situacao boolean NOT NULL,
+	PRIMARY KEY(modelo, serie, numero_nota, cliente_id, franquia_id )
+);
+
+CREATE TABLE item_venda(
+    created TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+
+    modelo character varying(144)  NOT NULL,
+    serie character varying(144)  NOT NULL,
+    numero_nota character varying(144)  NOT NULL,
+    produto_id  bigint REFERENCES produto NOT NULL,
+    cliente_id bigint REFERENCES fornecedor  NOT NULL,
+    franquia_id bigint REFERENCES franquia  NOT NULL,
+
+
+	quantidade decimal NOT NULL,
+	valor_venda decimal NOT NULL,
+
+	PRIMARY KEY(modelo, serie, numero_nota, produto_id, cliente_id, franquia_id )
+);
+
+
+CREATE TABLE contas_a_receber(
+    created TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+
+    modelo character varying(144)  NOT NULL,
+    serie character varying(144)  NOT NULL,
+    numero_nota character varying(144)  NOT NULL,
+	numero_parcela int NOT NULL,
+    cliente_id bigint REFERENCES fornecedor  NOT NULL,
+    franquia_id bigint REFERENCES franquia  NOT NULL,
+
+    data_emissao TIMESTAMP NOT NULL,
+    situacao_liquidez boolean,
+    desconto decimal,
+	juros decimal,
+	multa decimal,
+	valor_recebido decimal,
+	data_recebimento TIMESTAMP,
+    forma_pagamento_id bigint REFERENCES forma_pagamento,
+
+	data_vencimento TIMESTAMP NOT NULL,
+	valor_parcela decimal NOT NULL,
+    situacao boolean NOT NULL,
+	PRIMARY KEY(modelo, serie, numero_nota, numero_parcela, cliente_id, franquia_id )
+);
+
 
 SET search_path = public, pg_catalog;

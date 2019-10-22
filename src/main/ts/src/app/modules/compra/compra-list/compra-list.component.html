@@ -74,10 +74,10 @@
 				<mat-icon class="tc-grey-700 edit-button-hover">visibility</mat-icon>
 			</button>
 
-			<button *ngIf="!compra.situacao" matTooltip="Restaurar compra"
+			<!-- <button *ngIf="!compra.situacao" matTooltip="Restaurar compra"
 				(click)="$event.stopPropagation(); atualizarSituacaoCompra(compra)" stopPropagation mat-icon-button>
 				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
-			</button>
+			</button> -->
 
 			<button *ngIf="compra.situacao" matTooltip="Cancelar compra"
 				(click)="$event.stopPropagation(); atualizarSituacaoCompra(compra)" stopPropagation mat-icon-button>

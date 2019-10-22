@@ -52,7 +52,7 @@ public class MesaDAO
 						"situacao, " +
 						"created) VALUES (?, ?, ?, ?)",
 				mesa.getAmbiente().getCodigo(),
-				mesa.getQuantidadeLugaresMesa(),
+				mesa.getQuantidadeLugares(),
 				mesa.getSituacao(),
 				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 	}
@@ -68,7 +68,7 @@ public class MesaDAO
 						"updated = ? " +
 						"WHERE numero_mesa = ?",
 				mesa.getAmbiente().getCodigo(),
-				mesa.getQuantidadeLugaresMesa(),
+				mesa.getQuantidadeLugares(),
 				mesa.getSituacao(),
 				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
 				mesa.getNumeroMesa());

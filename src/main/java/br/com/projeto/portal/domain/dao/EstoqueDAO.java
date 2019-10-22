@@ -94,7 +94,7 @@ public class EstoqueDAO
 				e.setPrecoCusto(rs.getDouble("preco_custo"));
 				e.setPrecoVenda(rs.getDouble("preco_venda"));
 				e.setCreated( rs.getTimestamp( "created" ).toLocalDateTime() );
-				e.setFornecedorId(rs.getInt("fornecedor_id") != 0 ? rs.getInt("fornecedor_id") : null);
+				e.setFornecedorId(rs.getLong("fornecedor_id") != 0 ? rs.getLong("fornecedor_id") : null);
 				e.setDataUltimaCompra( rs.getTimestamp( "data_ultima_compra" ) != null ? rs.getTimestamp( "data_ultima_compra" ).toLocalDateTime() : null );
 				e.setSaldo(rs.getInt("saldo"));
 

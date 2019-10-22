@@ -35,7 +35,7 @@ export class ContasAPagarListComponent implements OnInit
      * Colunas da Grid
      */
     public tableColumns: ITdDataTableColumn[] = [
-        { name: 'numero_parcela', label: 'NÚMERO DA PARCELA', sortable: false },
+        { name: 'numeroParcela', label: 'NÚMERO DA PARCELA', sortable: false },
         { name: 'modelo', label: 'MODELO', sortable: false },
         { name: 'serie', label: 'SERIE', sortable: false },
         { name: 'numeroNota', label: 'NUMERO DA NOTA', sortable: false },
