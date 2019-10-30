@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AmbienteListComponent } from './ambiente-list/ambiente-list.component';
+import { AuthGuard } from 'src/app/common/autenticacao/auth-guard.service';
 
 const ambienteRoutes: Routes = [
     {
@@ -13,8 +14,9 @@ const ambienteRoutes: Routes = [
                 data      : {
                     title : 'Ambientes',
                 }, 
+                canActivate: [AuthGuard]
             }
-        ]
+        ],
     },
 
 ];

@@ -13,7 +13,7 @@
 
 		<div fxFlex></div>
 
-		<button color="primary" class="white-btn" (click)="openForm()" mat-raised-button>ADICIONAR
+		<button *ngIf="!isFranquiado" color="primary" class="white-btn" (click)="openForm()" mat-raised-button>ADICIONAR
 			NOVO PRODUTO</button>
 	</mat-toolbar-row>
 
@@ -47,12 +47,12 @@
 				<mat-icon class="tc-grey-700 edit-button-hover">edit</mat-icon>
 			</button>
 
-			<button *ngIf="!produto.situacao" matTooltip="Ativar produto"
+			<button *ngIf="!produto.situacao && !isFranquiado" matTooltip="Ativar produto"
 				(click)="$event.stopPropagation(); atualizarSituacaoProduto(produto)" mat-icon-button>
 				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
 			</button>
 
-			<button *ngIf="produto.situacao" matTooltip="Excluir/Desativar produto"
+			<button *ngIf="produto.situacao && !isFranquiado"  matTooltip="Excluir/Desativar produto"
 				(click)="$event.stopPropagation(); atualizarSituacaoProduto(produto)" mat-icon-button>
 				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
 			</button>

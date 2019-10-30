@@ -7,8 +7,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import br.com.projeto.portal.domain.entity.GrupoProdutoFranquia;
-import br.com.projeto.portal.domain.entity.franquia.Franquia;
 import br.com.projeto.portal.domain.entity.grupoProduto.GrupoProduto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -41,8 +39,6 @@ public class GrupoProdutoDAO
 		GrupoProduto grupoProduto = (GrupoProduto) jdbcTemplate.queryForObject( sql,
 				new Object[]{id}, new BeanPropertyRowMapper( GrupoProduto.class ) );
 
-		grupoProduto.setGrupoProdutoFranquia( findGrupoProdutoFranquiaById( id ) );
-
 		return grupoProduto;
 	}
 
@@ -74,7 +70,7 @@ public class GrupoProdutoDAO
 	}
 
 	
-	public void updateGrupoProduto( GrupoProduto grupoProduto,  List<Long> grupoProdutoFranquiaIds  )
+	public void updateGrupoProduto( GrupoProduto grupoProduto )
 	{
 		jdbcTemplate.update( "UPDATE grupo_produto " +
 						"SET " +
@@ -147,40 +143,4 @@ public class GrupoProdutoDAO
 		return new PageImpl<>( grupoProdutos, pageable, total );
 	}
 
-
-	/*-------------------------------------------------------------------
-	 *				 		     GRUPO PRODUTO FRANQUIA
-	 *-------------------------------------------------------------------*/
-
-
-
-	public List<GrupoProdutoFranquia> findGrupoProdutoFranquiaById( long grupoProdutoId )
-	{
-		String querySql = "SELECT * FROM grupo_produto_franquia WHERE grupo_produto_id = " + grupoProdutoId +" ;";
-
-		List<GrupoProdutoFranquia> grupoProdutoFranquias = jdbcTemplate.query(querySql, new BeanPropertyRowMapper(GrupoProdutoFranquia.class));
-
-		grupoProdutoFranquias.forEach( grupoProdutoFranquia -> {
-			grupoProdutoFranquia.setFranquia( franquiaDAO.findFranquiaById( grupoProdutoFranquia.getFranquiaId() ) );
-		} );
-
-		return grupoProdutoFranquias;
-	}
-
-	public void insertGrupoProdutoFranquia( GrupoProdutoFranquia grupoProdutoFranquia )
-	{
-		jdbcTemplate.update(
-				"INSERT INTO grupo_produto_franquia " +
-						"(grupo_produto_id, " +
-						"franquia_id, " +
-						"created) VALUES (?, ?, ?)",
-				grupoProdutoFranquia.getGrupoProduto().getCodigo(),
-				grupoProdutoFranquia.getFranquia().getCodigo(),
-				Timestamp.valueOf( LocalDateTime.now(this.fusoHorarioDeSaoPaulo) ) );
-	}
-
-	public void deleteGrupoProdutoFraquia( long franquiaId, long grupoProdutoId )
-	{
-		jdbcTemplate.update( "DELETE from grupo_produto_franquia WHERE franquia_id = " + franquiaId +" AND grupo_produto_id = " +grupoProdutoId+ " ;"  );
-	}
 }

@@ -1,8 +1,8 @@
 import { Component, OnInit, Inject, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { AmbienteService, ArquivoService, FranquiaService } from 'src/generated/services';
+import { AmbienteService, ArquivoService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
-import { Ambiente, Franquia, AmbienteImagem } from 'src/generated/entities';
+import { Ambiente, AmbienteImagem } from 'src/generated/entities';
 import { TextMasks } from 'src/app/common/mask/text-masks';
 import { DragScrollComponent } from 'ngx-drag-scroll';
 import { ITdDataTableColumn } from '@covalent/core';
@@ -20,11 +20,9 @@ export class AmbienteFormComponent implements OnInit
 
   public title = "";
 
-  public ambiente: Ambiente = { codigo:0, franquia: {}, ambienteImagems: [], mesas: [] };
+  public ambiente: Ambiente = { codigo:0, ambienteImagems: [], mesas: [] };
 
   public fotoImage: any[] = [];
-
-  public franquias: Franquia[];
 
   public textMasks = TextMasks;
 
@@ -39,7 +37,6 @@ export class AmbienteFormComponent implements OnInit
 
   constructor(
     private ambienteService: AmbienteService,
-    private franquiaService: FranquiaService,
     private openSnackBarService: OpenSnackBarService,
     public dialogRef: MatDialogRef<AmbienteFormComponent>,
     private arquivoService: ArquivoService,
@@ -52,7 +49,6 @@ export class AmbienteFormComponent implements OnInit
       this.onFindAmbienteById(data.ambienteId);
     }
 
-    this.onListFranquias("");
   }
 
   ngOnInit()
@@ -87,12 +83,6 @@ export class AmbienteFormComponent implements OnInit
 
     let anexoOld = null;
 
-    if( !this.ambiente.franquia || (this.ambiente.franquia && !this.ambiente.franquia.codigo))
-    {
-      this.openSnackBarService.openError("O campo franquia deve ser selecionado.");
-      return;
-    }
-
     if( this.ambiente.ambienteImagems && this.ambiente.ambienteImagems.length > 0)
       this.ambiente.ambienteImagems = this.ambiente.ambienteImagems.filter(ambienteImagem => ambienteImagem.anexo)
 
@@ -124,17 +114,6 @@ export class AmbienteFormComponent implements OnInit
       })
     }
 
-  }
-
-  public onListFranquias(filter)
-  {
-    this.franquiaService.listFranquiasByFilters(filter ? filter : "", "", null).subscribe( franquiaPage => {
-      this.franquias = franquiaPage.content.filter( c => c.situacao); 
-    })
-  }
-
-  public displayFn(franquia?: Franquia): string | undefined {
-    return franquia ? franquia.franquia : undefined;
   }
 
   /*-------------------------------------------------------------------

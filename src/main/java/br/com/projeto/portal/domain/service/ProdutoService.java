@@ -47,7 +47,13 @@ public class ProdutoService
 		return this.produtoDao.listProdutosByFilters( nome, codigo, pageable );
 	}
 
-	
+	public Page<Produto> listProdutosByFiltersToAssociation( String nome, Long codigo, PageRequest pageable )
+	{
+		return this.produtoDao.listProdutosByFiltersToAssociation( nome, codigo, pageable );
+	}
+
+
+
 	public Produto findProdutoById( long id )
 	{
 		Produto produto = this.produtoDao.findProdutoById( id );

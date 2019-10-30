@@ -40,7 +40,7 @@ public class ClienteService
     }
 
     
-    public Cliente findClienteById( int id )
+    public Cliente findClienteById( Long id )
     {
         Cliente cliente = this.clienteDao.findClienteById( id );
 
@@ -74,7 +74,7 @@ public class ClienteService
     }
 
     
-    public void deleteCliente( int id )
+    public void deleteCliente( Long id )
     {
         Cliente cliente = this.findClienteById( id );
         this.clienteDao.deleteCliente( id );

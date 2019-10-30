@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.entity.pagamento.FormaPagamento;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -45,9 +46,11 @@ public class FormaPagamentoDAO{
 				"INSERT INTO forma_pagamento " +
 						"(forma_pagamento, " +
 						"situacao, " +
-						"created) VALUES (?, ?, ?)",
+						"franquia_id, " +
+						"created) VALUES (?, ?, ?, ?)",
 				formaPagamento.getFormaPagamento(),
 				formaPagamento.getSituacao(),
+				formaPagamento.getFranquia().getCodigo(),
 				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)));
 	}
 
@@ -93,7 +96,7 @@ public class FormaPagamentoDAO{
 		String selectAndFrom = "SELECT * " +
 				"FROM forma_pagamento ";
 
-		String where =  "WHERE forma_pagamento LIKE  '%" + formaPagamento + "%' ";
+		String where =  "WHERE  franquia_id = "+ ContextHolder.getAuthenticatedUser().getFranquia().getCodigo() +" AND forma_pagamento LIKE  '%" + formaPagamento + "%' ";
 
 
 		String pagination = "LIMIT " + pageable.getPageSize() + " " +

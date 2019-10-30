@@ -199,4 +199,50 @@ public class ProdutoDAO
 			produto.setCurrentEstoque( currentEstoque );
 		}
 	}
+
+	public Page<Produto> listProdutosByFiltersToAssociation( String nome, Long codigo, PageRequest pageable )
+	{
+		if ( pageable == null ) pageable = new PageRequest( 0, 10 );
+
+		if(nome != null)
+			nome = nome.replaceAll( "'", "''" );
+
+		String rowCountSql = "SELECT count(1) AS row_count FROM produto ";
+
+		int total =
+				jdbcTemplate.queryForObject(
+						rowCountSql,
+						new Object[]{}, ( rs, rowNum ) -> rs.getInt( 1 )
+				);
+
+		String selectAndFrom = "SELECT produto.codigo, produto.produto, produto.situacao, produto.unidade_comercial " +
+				"FROM produto, estoque ";
+
+		String where = "WHERE estoque.produto_id = produto.codigo AND estoque.franquia_id = "+ ContextHolder.getAuthenticatedUser().getFranquia().getCodigo();
+
+		where += " AND produto LIKE  '%" + nome + "%' ";
+
+		where += codigo != null ? "AND codigo = " + codigo + " " : "";
+
+		String pagination = "LIMIT " + pageable.getPageSize() + " " +
+				"OFFSET " + pageable.getOffset() + ";";
+
+		String querySql = selectAndFrom + where + pagination;
+
+		List<Produto> produtos = jdbcTemplate.query( querySql, new RowMapper<Produto>()
+		{
+			public Produto mapRow( ResultSet rs, int row ) throws SQLException
+			{
+				Produto e = new Produto();
+				e.setCodigo( rs.getLong( "codigo" ) );
+				e.setProduto( rs.getString( "produto" ) );
+				e.setSituacao( rs.getBoolean( "situacao" ) );
+				e.setUnidadeComercial( rs.getString( "unidade_comercial" ) );
+				setCurrentEstoque( e );
+
+				return e;
+			}
+		} );
+		return new PageImpl<>( produtos, pageable, total );
+	}
 }

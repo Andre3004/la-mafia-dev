@@ -3,6 +3,7 @@ package br.com.projeto.portal.domain.entity.pagamento;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.projeto.portal.domain.entity.franquia.Franquia;
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,6 +31,11 @@ public class CondicaoPagamento extends AbstractEntity
 	private Boolean situacao;
 
 	private Boolean prazo;
+
+	private Long franquiaId;
+
+	//@Transient
+	private Franquia franquia;
 
 	//@Transient
 	private List<CondicaoPagamentoParcela> parcelas = new ArrayList<>();

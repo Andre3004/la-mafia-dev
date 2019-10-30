@@ -1,10 +1,5 @@
 package br.com.projeto.portal.domain.entity.grupoProduto;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import br.com.projeto.portal.domain.entity.GrupoProdutoFranquia;
-import br.com.projeto.portal.domain.entity.franquia.Franquia;
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,8 +26,6 @@ public class GrupoProduto extends AbstractEntity
 	//@Transient
 	private FileTransfer anexo;
 
-	//@Transient
-	private List<GrupoProdutoFranquia> grupoProdutoFranquia = new ArrayList<>();
 	/*-------------------------------------------------------------------
 	 * 		 					CONSTRUCTORS
 	 *-------------------------------------------------------------------*/

@@ -1,0 +1,193 @@
+<mat-dialog-content>
+  <h2 mat-dialog-title>{{title}}</h2>
+
+
+  <form #qualificadorForm="ngForm" fxLayout="column">
+
+    <div class="push-top-md" fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex="20" appearance="outline">
+        <mat-label>Modelo</mat-label>
+        <input matInput required [(ngModel)]="contaAReceber.modelo" name="modelo" maxlength="144" [disabled]="contaAReceber.created" >
+      </mat-form-field>
+
+      <mat-form-field fxFlex="25" appearance="outline">
+        <mat-label>Serie</mat-label>
+        <input matInput required [(ngModel)]="contaAReceber.serie" name="serie" maxlength="144" [disabled]="contaAReceber.created">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Número da nota</mat-label>
+        <input matInput required [(ngModel)]="contaAReceber.numeroNota" name="numeroNota" maxlength="144" [disabled]="contaAReceber.created">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+          <mat-label>Número da parcela</mat-label>
+          <input matInput required [(ngModel)]="contaAReceber.numeroParcela" name="numeroParcela" currencyMask [disabled]="contaAReceber.created" [options]="{
+            align: 'left',
+            prefix: '',
+            thousands: '.',
+            precision: 0,
+            allowNegative: false
+          }" maxlength="5">
+        </mat-form-field>
+    </div>
+
+
+
+    <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign=" center">
+
+      <auto-complete-with-redirect
+        fxFlex
+        title="Cliente"
+        key="codigo"
+        link="cliente"
+        [isDetail]="contaAReceber.created"
+        [isDisable]="contaAReceber?.cliente?.codigo"
+        displayKey="cliente"
+        [displayId]="true"
+        [list]="{values: clientes}"
+        [itemSelected]="{selected: contaAReceber.cliente}"
+        (onFilterChange)="onListClientes($event)"
+        (onSelect)="contaAReceber.cliente = $event"
+        (onDelete)="contaAReceber.cliente = null"
+      >
+      </auto-complete-with-redirect>
+
+      <mat-form-field appearance="outline" class="data-with-double-suffix">
+        <mat-label>Data de emissão *</mat-label>
+        <input matInput required [max]="dataHoje" [matDatepicker]="dataEmissao" [(ngModel)]="contaAReceber.dataEmissao" name="dataEmissao" disabled>
+        <mat-datepicker-toggle [disabled]="contaAReceber.created" [ngStyle]="{'color': !contaAReceber.dataEmissao ? 'red' : 'black' }" matSuffix [for]="dataEmissao" ></mat-datepicker-toggle>
+        <button *ngIf="contaAReceber.dataEmissao && !contaAReceber.created"  matSuffix mat-icon-button (click)="contaAReceber.dataEmissao = null; contaAReceber.dataVencimento = null" matTooltip="Remover data de emissão">
+          <mat-icon>clear</mat-icon>
+        </button>
+        <mat-datepicker #dataEmissao disabled="false"></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="data-with-double-suffix">
+        <mat-label>Data de vencimento *</mat-label>
+        <input matInput required [min]="contaAReceber.dataEmissao" [matDatepicker]="dataVencimento" [(ngModel)]="contaAReceber.dataVencimento" name="dataVencimento" disabled>
+        <mat-datepicker-toggle [disabled]="contaAReceber.created" [ngStyle]="{'color': !contaAReceber.dataVencimento ? 'red' : 'black' }" matSuffix [for]="dataVencimento" ></mat-datepicker-toggle>
+        <button *ngIf="contaAReceber.dataVencimento && !contaAReceber.created" matSuffix mat-icon-button (click)="contaAReceber.dataVencimento = null" matTooltip="Remover data de vencimento">
+          <mat-icon>clear</mat-icon>
+        </button>
+        <mat-datepicker #dataVencimento disabled="false"></mat-datepicker>
+      </mat-form-field>
+
+      <mat-checkbox fxFlex [disabled]="true" [(ngModel)]="contaAReceber.situacaoLiquidez" name="situacaoLiquidez">Recebido</mat-checkbox>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Desconto</mat-label>
+        <input matInput [disabled]="contaAReceber.situacaoLiquidez" [(ngModel)]="contaAReceber.desconto" name="desconto" currencyMask [options]="{
+          align: 'left',
+          prefix: '',
+          thousands: '.',
+          decimal: ',',
+          precision: 2,
+          allowNegative: false
+        }" maxlength="9" >
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Juros</mat-label>
+        <input matInput [disabled]="contaAReceber.situacaoLiquidez" [(ngModel)]="contaAReceber.juros" name="juros" currencyMask [options]="{
+          align: 'left',
+          prefix: '',
+          thousands: '.',
+          decimal: ',',
+          precision: 2,
+          allowNegative: false
+        }" maxlength="9" >
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Multa</mat-label>
+        <input matInput [disabled]="contaAReceber.situacaoLiquidez" [(ngModel)]="contaAReceber.multa" name="multa" currencyMask [options]="{
+          align: 'left',
+          prefix: '',
+          thousands: '.',
+          decimal: ',',
+          precision: 2,
+          allowNegative: false
+        }" maxlength="9" >
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline" *ngIf="contaAReceber.situacaoLiquidez">
+        <mat-label>Valor Recebido</mat-label>
+        <input matInput required [(ngModel)]="contaAReceber.valorRecebido"  name="valorRecebido" currencyMask disabled [options]="{
+            align: 'left',
+            prefix: '',
+            thousands: '.',
+            decimal: ',',
+            precision: 2,
+            allowNegative: false
+          }" maxlength="9">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+        <auto-complete-with-redirect
+          fxFlex
+          title="Forma de recebimento"
+          link="forma-recebimento"
+          [isDisable]="contaAReceber?.formaPagamento?.codigo"
+          displayKey="formaPagamento"
+          [displayId]="true"
+          [isDetail]="contaAReceber.created"
+          [list]="{values: formasPagamentos}"
+          [itemSelected]="{selected: contaAReceber.formaPagamento}"
+          (onFilterChange)="onListFormasPagamentos($event)"
+          (onSelect)="contaAReceber.formaPagamento = $event"
+          (onDelete)="contaAReceber.formaPagamento = null"
+        >
+        </auto-complete-with-redirect>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Valor parcela</mat-label>
+        <input matInput required [disabled]="contaAReceber.created" [(ngModel)]="contaAReceber.valorParcela" name="valorParcela" currencyMask [options]="{
+          align: 'left',
+          prefix: '',
+          thousands: '.',
+          decimal: ',',
+          precision: 2,
+          allowNegative: false
+        }" maxlength="9" >
+      </mat-form-field>
+
+      <mat-form-field *ngIf="contaAReceber.situacaoLiquidez" fxFlex appearance="outline">
+        <mat-label>Data do recebimento</mat-label>
+        <input matInput required disabled [value]="contaAReceber.dataRecebimento | date:'dd/MM/yyyy'" >
+      </mat-form-field>
+
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+  <div fxLayout="column">
+    <label> <label style="font-weight: bold">Data de criação:</label>
+      {{ contaAReceber.created ? (contaAReceber.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+      {{ contaAReceber.updated ? (contaAReceber.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+  </div>
+
+  <div>
+    <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+      color="primary">
+      SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
+  push-left-md bgc-grey-800">
+      CANCELAR
+    </button>
+  </div>
+</mat-dialog-actions>

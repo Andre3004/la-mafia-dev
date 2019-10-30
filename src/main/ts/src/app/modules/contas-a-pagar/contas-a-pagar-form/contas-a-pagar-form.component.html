@@ -1,0 +1,193 @@
+<mat-dialog-content>
+  <h2 mat-dialog-title>{{title}}</h2>
+
+
+  <form #qualificadorForm="ngForm" fxLayout="column">
+
+    <div class="push-top-md" fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex="20" appearance="outline">
+        <mat-label>Modelo</mat-label>
+        <input matInput required [(ngModel)]="contaAPagar.modelo" name="modelo" maxlength="144" [disabled]="contaAPagar.created" >
+      </mat-form-field>
+
+      <mat-form-field fxFlex="25" appearance="outline">
+        <mat-label>Serie</mat-label>
+        <input matInput required [(ngModel)]="contaAPagar.serie" name="serie" maxlength="144" [disabled]="contaAPagar.created">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Número da nota</mat-label>
+        <input matInput required [(ngModel)]="contaAPagar.numeroNota" name="numeroNota" maxlength="144" [disabled]="contaAPagar.created">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+          <mat-label>Número da parcela</mat-label>
+          <input matInput required [(ngModel)]="contaAPagar.numeroParcela" name="numeroParcela" currencyMask [disabled]="contaAPagar.created" [options]="{
+            align: 'left',
+            prefix: '',
+            thousands: '.',
+            precision: 0,
+            allowNegative: false
+          }" maxlength="5">
+        </mat-form-field>
+    </div>
+
+
+
+    <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign=" center">
+
+      <auto-complete-with-redirect
+        fxFlex
+        title="Fornecedor"
+        key="codigo"
+        link="fornecedor"
+        [isDetail]="contaAPagar.created"
+        [isDisable]="contaAPagar?.fornecedor?.codigo"
+        displayKey="razaoSocial"
+        [displayId]="true"
+        [list]="{values: fornecedores}"
+        [itemSelected]="{selected: contaAPagar.fornecedor}"
+        (onFilterChange)="onListFornecedores($event)"
+        (onSelect)="contaAPagar.fornecedor = $event"
+        (onDelete)="contaAPagar.fornecedor = null"
+      >
+      </auto-complete-with-redirect>
+
+      <mat-form-field appearance="outline" class="data-with-double-suffix">
+        <mat-label>Data de emissão *</mat-label>
+        <input matInput required [max]="dataHoje" [matDatepicker]="dataEmissao" [(ngModel)]="contaAPagar.dataEmissao" name="dataEmissao" disabled>
+        <mat-datepicker-toggle [disabled]="contaAPagar.created" [ngStyle]="{'color': !contaAPagar.dataEmissao ? 'red' : 'black' }" matSuffix [for]="dataEmissao" ></mat-datepicker-toggle>
+        <button *ngIf="contaAPagar.dataEmissao && !contaAPagar.created"  matSuffix mat-icon-button (click)="contaAPagar.dataEmissao = null; contaAPagar.dataVencimento = null" matTooltip="Remover data de emissão">
+          <mat-icon>clear</mat-icon>
+        </button>
+        <mat-datepicker #dataEmissao disabled="false"></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="data-with-double-suffix">
+        <mat-label>Data de vencimento *</mat-label>
+        <input matInput required [min]="contaAPagar.dataEmissao" [matDatepicker]="dataVencimento" [(ngModel)]="contaAPagar.dataVencimento" name="dataVencimento" disabled>
+        <mat-datepicker-toggle [disabled]="contaAPagar.created" [ngStyle]="{'color': !contaAPagar.dataVencimento ? 'red' : 'black' }" matSuffix [for]="dataVencimento" ></mat-datepicker-toggle>
+        <button *ngIf="contaAPagar.dataVencimento && !contaAPagar.created" matSuffix mat-icon-button (click)="contaAPagar.dataVencimento = null" matTooltip="Remover data de vencimento">
+          <mat-icon>clear</mat-icon>
+        </button>
+        <mat-datepicker #dataVencimento disabled="false"></mat-datepicker>
+      </mat-form-field>
+
+      <mat-checkbox fxFlex [disabled]="true" [(ngModel)]="contaAPagar.situacaoLiquidez" name="situacaoLiquidez">Pago</mat-checkbox>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Desconto</mat-label>
+        <input matInput [disabled]="contaAPagar.situacaoLiquidez" [(ngModel)]="contaAPagar.desconto" name="desconto" currencyMask [options]="{
+          align: 'left',
+          prefix: '',
+          thousands: '.',
+          decimal: ',',
+          precision: 2,
+          allowNegative: false
+        }" maxlength="9" >
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Juros</mat-label>
+        <input matInput [disabled]="contaAPagar.situacaoLiquidez" [(ngModel)]="contaAPagar.juros" name="juros" currencyMask [options]="{
+          align: 'left',
+          prefix: '',
+          thousands: '.',
+          decimal: ',',
+          precision: 2,
+          allowNegative: false
+        }" maxlength="9" >
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Multa</mat-label>
+        <input matInput [disabled]="contaAPagar.situacaoLiquidez" [(ngModel)]="contaAPagar.multa" name="multa" currencyMask [options]="{
+          align: 'left',
+          prefix: '',
+          thousands: '.',
+          decimal: ',',
+          precision: 2,
+          allowNegative: false
+        }" maxlength="9" >
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline" *ngIf="contaAPagar.situacaoLiquidez">
+        <mat-label>Valor Pago</mat-label>
+        <input matInput required [(ngModel)]="contaAPagar.valorPago"  name="valorPago" currencyMask disabled [options]="{
+            align: 'left',
+            prefix: '',
+            thousands: '.',
+            decimal: ',',
+            precision: 2,
+            allowNegative: false
+          }" maxlength="9">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+        <auto-complete-with-redirect
+          fxFlex
+          title="Forma de pagamento"
+          link="forma-pagamento"
+          [isDisable]="contaAPagar?.formaPagamento?.codigo"
+          displayKey="formaPagamento"
+          [displayId]="true"
+          [isDetail]="contaAPagar.created"
+          [list]="{values: formasPagamentos}"
+          [itemSelected]="{selected: contaAPagar.formaPagamento}"
+          (onFilterChange)="onListFormasPagamentos($event)"
+          (onSelect)="contaAPagar.formaPagamento = $event"
+          (onDelete)="contaAPagar.formaPagamento = null"
+        >
+        </auto-complete-with-redirect>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Valor parcela</mat-label>
+        <input matInput required [disabled]="contaAPagar.created" [(ngModel)]="contaAPagar.valorParcela" name="valorParcela" currencyMask [options]="{
+          align: 'left',
+          prefix: '',
+          thousands: '.',
+          decimal: ',',
+          precision: 2,
+          allowNegative: false
+        }" maxlength="9" >
+      </mat-form-field>
+
+      <mat-form-field *ngIf="contaAPagar.situacaoLiquidez" fxFlex appearance="outline">
+        <mat-label>Data do pagamento</mat-label>
+        <input matInput required disabled [value]="contaAPagar.dataPagamento | date:'dd/MM/yyyy'" >
+      </mat-form-field>
+
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+  <div fxLayout="column">
+    <label> <label style="font-weight: bold">Data de criação:</label>
+      {{ contaAPagar.created ? (contaAPagar.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+      {{ contaAPagar.updated ? (contaAPagar.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+  </div>
+
+  <div>
+    <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+      color="primary">
+      SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
+  push-left-md bgc-grey-800">
+      CANCELAR
+    </button>
+  </div>
+</mat-dialog-actions>

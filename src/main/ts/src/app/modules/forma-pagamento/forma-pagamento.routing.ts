@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { FormaPagamentoListComponent } from './forma-pagamento-list/forma-pagamento-list.component';
+import { AuthGuard } from 'src/app/common/autenticacao/auth-guard.service';
 
 const formaPagamentoRoutes: Routes = [
     {
@@ -12,9 +13,10 @@ const formaPagamentoRoutes: Routes = [
                 component: FormaPagamentoListComponent,
                 data: {
                     title: 'Forma de pagamento',
-                }
+                },
+                canActivate: [AuthGuard]
             }
-        ]
+        ],
     },
 
 ];

@@ -1,11 +1,8 @@
 package br.com.projeto.portal.domain.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import br.com.projeto.portal.domain.dao.GrupoProdutoDAO;
-import br.com.projeto.portal.domain.entity.GrupoProdutoFranquia;
 import br.com.projeto.portal.domain.entity.grupoProduto.GrupoProduto;
 import br.com.projeto.portal.infrastructure.arquivo.Arquivo;
 import br.com.projeto.portal.infrastructure.arquivo.ArquivoService;
@@ -68,48 +65,18 @@ public class GrupoProdutoService
 
 		Long grupoProdutoId = this.grupoProdutoDao.insertGrupoProduto( grupoProduto );
 
-		if(grupoProduto.getGrupoProdutoFranquia() != null && grupoProduto.getGrupoProdutoFranquia().size() > 0)
-		{
-			for ( GrupoProdutoFranquia grupoProdutoFranquia : grupoProduto.getGrupoProdutoFranquia() )
-			{
-				grupoProdutoFranquia.setGrupoProduto( new GrupoProduto(grupoProdutoId) );
-				grupoProdutoDao.insertGrupoProdutoFranquia( grupoProdutoFranquia );
-			}
-
-		}
-
 		return grupoProdutoId;
 	}
 
 	
-	public void updateGrupoProduto( GrupoProduto grupoProduto, List<Long> grupoProdutoFranquiaIds )
+	public void updateGrupoProduto( GrupoProduto grupoProduto)
 	{
 		if(grupoProduto.getAnexoUuid() == null && grupoProduto.getAnexo() != null)
 			this.insertArquivo( grupoProduto );
 
-		if(grupoProdutoFranquiaIds != null && grupoProdutoFranquiaIds.size() > 0)
-		{
-			for ( Long grupoProdutoFranquiaId : grupoProdutoFranquiaIds )
-			{
-				grupoProdutoDao.deleteGrupoProdutoFraquia(grupoProdutoFranquiaId,  grupoProduto.getCodigo() );
-			}
-		}
-
-		if(grupoProduto.getGrupoProdutoFranquia() != null && grupoProduto.getGrupoProdutoFranquia().size() > 0)
-		{
-			List<GrupoProdutoFranquia> toInsert = grupoProduto.getGrupoProdutoFranquia().stream().filter( grupoProdutoFranquia -> grupoProdutoFranquia.getCreated() == null ).collect( Collectors.toList() );
-
-			for ( GrupoProdutoFranquia grupoProdutoFranquia : toInsert )
-			{
-				grupoProdutoFranquia.setCreated( LocalDateTime.now() );
-				grupoProdutoFranquia.setGrupoProduto( grupoProduto );
-				grupoProdutoDao.insertGrupoProdutoFranquia( grupoProdutoFranquia );
-			}
-		}
-
 		grupoProduto.setUpdated( LocalDateTime.now() );
 
-		this.grupoProdutoDao.updateGrupoProduto( grupoProduto, grupoProdutoFranquiaIds );
+		this.grupoProdutoDao.updateGrupoProduto( grupoProduto );
 	}
 
 	
@@ -122,14 +89,6 @@ public class GrupoProdutoService
 	public void deleteGrupoProduto( long id )
 	{
 		GrupoProduto grupoProdutoSaved = this.grupoProdutoDao.findGrupoProdutoById( id );
-
-		if(grupoProdutoSaved.getGrupoProdutoFranquia() != null && grupoProdutoSaved.getGrupoProdutoFranquia().size() > 0)
-		{
-			for ( GrupoProdutoFranquia grupoProdutoFranquia : grupoProdutoSaved.getGrupoProdutoFranquia() )
-			{
-				grupoProdutoDao.deleteGrupoProdutoFraquia(grupoProdutoFranquia.getFranquia().getCodigo(), id );
-			}
-		}
 
 		GrupoProduto grupoProduto = this.findGrupoProdutoById( id );
 		if(grupoProduto.getAnexoUuid() != null) this.removeArquivo( grupoProduto.getAnexoUuid() );
@@ -154,12 +113,5 @@ public class GrupoProdutoService
 		this.arquivoService.deleteArquivo( uuid );
 	}
 
-	/*-------------------------------------------------------------------
- *				 		     GRUPO PRODUTO FRANQUIA
-	 *-------------------------------------------------------------------*/
 
-	public void insertGrupoProdutoFranquia( GrupoProdutoFranquia grupoProdutoFranquia )
-	{
-
-	}
 }

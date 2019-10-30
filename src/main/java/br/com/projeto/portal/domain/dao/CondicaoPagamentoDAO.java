@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.entity.pagamento.CondicaoPagamento;
 import br.com.projeto.portal.domain.entity.pagamento.CondicaoPagamentoParcela;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,8 @@ public class CondicaoPagamentoDAO
 						"desconto, " +
 						"situacao, " +
 						"prazo, " +
-						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+						"franquia_id, " +
+						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
 				id,
 				condicaoPagamento.getCondicaoPagamento(),
 				condicaoPagamento.getJuros(),
@@ -69,6 +71,7 @@ public class CondicaoPagamentoDAO
 				condicaoPagamento.getDesconto(),
 				condicaoPagamento.getSituacao(),
 				condicaoPagamento.getPrazo(),
+				condicaoPagamento.getFranquia().getCodigo(),
 				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 
 		return id;
@@ -125,7 +128,7 @@ public class CondicaoPagamentoDAO
 		String selectAndFrom = "SELECT * " +
 				"FROM condicao_pagamento ";
 
-		String where =  "WHERE condicao_pagamento LIKE  '%" + condicaoPagamento + "%' ";
+		String where =  "WHERE  franquia_id = "+ ContextHolder.getAuthenticatedUser().getFranquia().getCodigo() +" AND condicao_pagamento LIKE  '%" + condicaoPagamento + "%' ";
 
 		where += codigo != null ? "AND codigo = " + codigo + " " : "";
 

@@ -33,8 +33,8 @@
 
 		<div fxFlex></div>
 
-		<!-- <button color="primary" class="white-btn" (click)="openForm()" mat-raised-button>ADICIONAR
-			NOVA CONTA A PAGAR</button> -->
+		<button color="primary" class="white-btn" (click)="openForm()" mat-raised-button>ADICIONAR
+			NOVA CONTA A PAGAR</button>
 	</mat-toolbar-row>
 
 	<mat-toolbar-row fxLayoutGap="30px">
@@ -56,6 +56,39 @@
 
 		<ng-template fxLayoutAlign="end" tdDataTableTemplate="fornecedor" let-contasAPagar="row">
 			{{contasAPagar?.fornecedor?.codigo}} - {{contasAPagar?.fornecedor?.razaoSocial}}
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="situacaoLiquidez" let-contasAPagar="row">
+			<span *ngIf="contasAPagar.situacaoLiquidez">Pago</span>
+			<span *ngIf="!contasAPagar.situacaoLiquidez">Pendente</span>
+		</ng-template>
+
+		
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="opcoes" let-contaAPagar="row">
+
+			<button *ngIf="contaAPagar.situacaoLiquidez" matTooltip="Visualizar conta á pagar" stopPropagation  (click)="$event.stopPropagation(); openForm(contaAPagar)"
+				mat-icon-button>
+				<mat-icon class="tc-grey-700 edit-button-hover">visibility</mat-icon>
+			</button>
+
+			<button *ngIf="!contaAPagar.situacaoLiquidez" matTooltip="Editar contas á pagar" (click)="$event.stopPropagation(); openForm(contaAPagar)" mat-icon-button>
+				<mat-icon class="tc-grey-700 edit-button-hover">edit</mat-icon>
+			</button>
+			
+			<button *ngIf="!contaAPagar.situacaoLiquidez && contaAPagar.situacao" matTooltip="Realizar pagamento" (click)="$event.stopPropagation(); openFormPagamento(contaAPagar)" mat-icon-button>
+				<mat-icon class="tc-grey-700 edit-button-hover">attach_money</mat-icon>
+			</button>
+			
+			<button *ngIf="!contaAPagar.situacao && !contaAPagar.situacaoLiquidez && contaAPagar.isAvulso" matTooltip="Ativar contas á pagar"
+				(click)="$event.stopPropagation(); atualizarSituacaoContasAPagar(contaAPagar)" mat-icon-button>
+				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
+			</button>
+
+			<button *ngIf="contaAPagar.situacao && !contaAPagar.situacaoLiquidez && contaAPagar.isAvulso" matTooltip="Desativar contas á pagar"
+				(click)="$event.stopPropagation(); atualizarSituacaoContasAPagar(contaAPagar)" mat-icon-button>
+				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
+			</button>
+
 		</ng-template>
 
 	</td-data-table>

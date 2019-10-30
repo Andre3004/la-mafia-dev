@@ -2,8 +2,9 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ProdutoService, ArquivoService, GrupoProdutoService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
-import { Produto, GrupoProduto } from 'src/generated/entities';
+import { Produto, GrupoProduto, PerfilUsuario } from 'src/generated/entities';
 import { TextMasks } from 'src/app/common/mask/text-masks';
+import { AutenticacaoService } from 'src/app/common/autenticacao/autenticacao.service';
 
 @Component({
   selector: 'app-produto-form',
@@ -11,13 +12,13 @@ import { TextMasks } from 'src/app/common/mask/text-masks';
   styleUrls: ['./produto-form.component.scss']
 })
 export class ProdutoFormComponent implements OnInit
-{ 
+{
   /*-------------------------------------------------------------------
     *                           ATTRIBUTES
     *-------------------------------------------------------------------*/
   public title = "";
 
-  public produto: Produto = {codigo: 0, currentEstoque:{}};
+  public produto: Produto = { codigo: 0, currentEstoque: {} };
 
   public fotoImage: any;
 
@@ -25,7 +26,10 @@ export class ProdutoFormComponent implements OnInit
 
   public textMasks = TextMasks;
 
+  public isFranquiado = false;
+
   constructor(
+    private autenticacaoService: AutenticacaoService,
     private produtoService: ProdutoService,
     private grupoProdutoService: GrupoProdutoService,
     private openSnackBarService: OpenSnackBarService,
@@ -42,13 +46,18 @@ export class ProdutoFormComponent implements OnInit
     this.onListGrupoProdutos("");
   }
 
-  ngOnInit()
+  async ngOnInit()
   {
     if (this.data.produtoId)
       this.title = "Alterar produto";
     else
       this.title = "Inserir produto";
+
+      this.autenticacaoService.usuarioAutenticado().then( result => {
+        this.isFranquiado = this.autenticacaoService.isFranquiado;
+      });
   }
+
 
   /*-------------------------------------------------------------------
   *                           BEHAVIORS
@@ -69,13 +78,13 @@ export class ProdutoFormComponent implements OnInit
 
     let anexoOld = null;
 
-    if( !this.produto.grupoProduto || (this.produto.grupoProduto && !this.produto.grupoProduto.codigo))
+    if (!this.produto.grupoProduto || (this.produto.grupoProduto && !this.produto.grupoProduto.codigo))
     {
       this.openSnackBarService.openError("O campo grupo de produto deve ser selecionado.");
       return;
     }
 
-    if(this.produto.anexo && typeof(this.produto.anexo) == 'string')
+    if (this.produto.anexo && typeof (this.produto.anexo) == 'string')
     {
       anexoOld = this.produto.anexo;
       this.produto.anexo = null;
@@ -87,9 +96,10 @@ export class ProdutoFormComponent implements OnInit
       {
         this.openSnackBarService.openSuccess("Produto salvo com sucesso.");
         this.dialogRef.close(this.produto);
-      }, err => {
-        
-        if(anexoOld) this.produto.anexo = anexoOld;
+      }, err =>
+      {
+
+        if (anexoOld) this.produto.anexo = anexoOld;
 
         this.openSnackBarService.openError(err.message)
 
@@ -101,8 +111,9 @@ export class ProdutoFormComponent implements OnInit
       {
         this.openSnackBarService.openSuccess("Produto atualizado com sucesso.");
         this.dialogRef.close(this.produto);
-      }, err => {
-        if(anexoOld) this.produto.anexo = anexoOld;
+      }, err =>
+      {
+        if (anexoOld) this.produto.anexo = anexoOld;
         this.openSnackBarService.openError(err.message)
       })
     }
@@ -111,13 +122,15 @@ export class ProdutoFormComponent implements OnInit
 
   public onListGrupoProdutos(filter)
   {
-    this.grupoProdutoService.listGrupoProdutosByFilters(filter ? filter : "", isNaN(filter) || filter == null || filter == "" ? null : parseInt(filter.substring(0,9)), null).subscribe( grupoProdutoPage => {
-      this.gruposProdutos = grupoProdutoPage.content.filter( c => c.situacao); 
+    this.grupoProdutoService.listGrupoProdutosByFilters(filter ? filter : "", isNaN(filter) || filter == null || filter == "" ? null : parseInt(filter.substring(0, 9)), null).subscribe(grupoProdutoPage =>
+    {
+      this.gruposProdutos = grupoProdutoPage.content.filter(c => c.situacao);
     })
   }
 
-  public displayFn(grupoProduto?: GrupoProduto): string | undefined {
-    return grupoProduto ?  grupoProduto.codigo +" - "+ grupoProduto.grupoProduto : undefined;
+  public displayFn(grupoProduto?: GrupoProduto): string | undefined
+  {
+    return grupoProduto ? grupoProduto.codigo + " - " + grupoProduto.grupoProduto : undefined;
   }
 
   /*-------------------------------------------------------------------

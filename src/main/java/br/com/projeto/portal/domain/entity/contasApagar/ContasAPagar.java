@@ -1,5 +1,6 @@
 package br.com.projeto.portal.domain.entity.contasApagar;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -17,8 +18,11 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode
 @DataTransferObject(javascript = "ContasAPagar")
-public class ContasAPagar extends AbstractEntity
+public class ContasAPagar  implements Serializable
 {
+
+	private static final long serialVersionUID = 1L;
+
 	/*-------------------------------------------------------------------
 	 *				 		     ATTRIBUTES
 	 *-------------------------------------------------------------------*/
@@ -56,6 +60,11 @@ public class ContasAPagar extends AbstractEntity
 	private Double valorParcela;
 
 	private Boolean situacao;
+
+	private Boolean isAvulso;
+
+	protected LocalDateTime created;
+	protected LocalDateTime updated;
 
 	///////Transient values///////
 	private Fornecedor fornecedor;

@@ -2,18 +2,18 @@
 
     <mat-sidenav #sidenav mode="over">
 
-        <div style="    background-color: #b71c1c;padding-bottom: 10px;"class="pad-left-md push-bottom-md" fxLayout="row" fxLayoutAlign="space-between center">
+        <div style="background-color: #b71c1c;padding-bottom: 10px;"class="pad-left-md push-bottom-md" fxLayout="row" fxLayoutAlign="space-between center">
             <h3 style="color: white">MENU</h3>
 
             <img src="../../../assets/logo.png" style="width: 100px; margin-top: 10px; margin-right: 10px">
         </div>
         <p *ngFor="let menu of menus; last as last">
-            <button (click)="sidenav.toggle()" routerLink="{{menu.router}}" fxLayoutAlign="start center" style="width: 100%; margin-bottom: 10px;" mat-button>
+            <button *ngIf="(menu.onlyFranquiador && !isFranquiado) || (!menu.onlyFranquiador && isFranquiado)" (click)="sidenav.toggle()" routerLink="{{menu.router}}" fxLayoutAlign="start center" style="width: 100%; margin-bottom: 10px;" mat-button>
                 <mat-icon style="font-size: 20px !important;">{{menu.icon}}</mat-icon>
                 <label class="push-left-md" style="font-size: 20px !important;">{{menu.title}}</label>
             </button>
 
-            <mat-divider *ngIf="!last" ></mat-divider>
+            <mat-divider *ngIf="!last && (menu.onlyFranquiador && !isFranquiado || !menu.onlyFranquiador && isFranquiado)" ></mat-divider>
         </p>
     </mat-sidenav>
 
@@ -23,11 +23,12 @@
             <button mat-icon-button (click)="sidenav.toggle()">
                 <mat-icon>menu</mat-icon>
             </button>
-            <h2 style="font-size: 20px !important;font-weight: bold;; color: white; margin-left: 10px !important;" >{{title | uppercase}}</h2>
-            <!-- <breadcrumb [allowBootstrap]="true"></breadcrumb> -->
+            <h2 *ngIf="title" style="font-size: 20px !important;font-weight: bold;; color: white; margin-left: 10px !important;" >{{title | uppercase}}</h2>
+            <h2 *ngIf="!title" style="font-size: 20px !important;font-weight: bold;; color: white; margin-left: 10px !important;" >{{'produto' | uppercase}}</h2>
 
-
-            <button mat-button class="push-left-md" [matMenuTriggerFor]="menu">
+            <div fxFlex></div>
+            <button mat-button class="push-right-md" [matMenuTriggerFor]="menu">
+                    <mat-icon>exit_to_app</mat-icon>
             </button>
             <mat-menu #menu="matMenu" [overlapTrigger]="false">
                 <button (click)="logout()" class="pad-left-lg" mat-menu-item>

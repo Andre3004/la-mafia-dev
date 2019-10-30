@@ -8,6 +8,7 @@ import { ProdutoService, FranquiaService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
 import { Franquia, Produto } from 'src/generated/entities';
 import { TextMasks } from 'src/app/common/mask/text-masks';
+import { AutenticacaoService } from 'src/app/common/autenticacao/autenticacao.service';
 
 
 @Component({
@@ -42,6 +43,8 @@ export class ProdutoListComponent implements OnInit
 
     public masks = TextMasks;
 
+    public isFranquiado = false;
+
     /**
      * 
      * @param dialog 
@@ -50,7 +53,9 @@ export class ProdutoListComponent implements OnInit
      * @param openSnackBarService 
      * @param produtoService 
      */
-    constructor(public dialog: MatDialog,
+    constructor(
+        private autenticacaoService: AutenticacaoService,
+        public dialog: MatDialog,
         private _dialogService: TdDialogService,
         private paginationService: PaginationService,
         private openSnackBarService: OpenSnackBarService,
@@ -60,9 +65,13 @@ export class ProdutoListComponent implements OnInit
         this.pageRequest = paginationService.pageRequest('nome', 'ASC', 10);
     }
 
-    ngOnInit()
+
+    async ngOnInit()
     {
         this.onListProdutos();
+        this.autenticacaoService.usuarioAutenticado().then( result => {
+            this.isFranquiado = this.autenticacaoService.isFranquiado;
+        });
     }
 
     /*-------------------------------------------------------------------
@@ -79,18 +88,18 @@ export class ProdutoListComponent implements OnInit
 
         dialogRef.afterClosed().subscribe(produtoSaved =>
         {
-            if(produtoSaved) this.onListProdutos();
+            if (produtoSaved) this.onListProdutos();
         });
     }
 
 
     public atualizarSituacaoProduto(produto: Produto)
     {
-        if(produto.situacao)
+        if (produto.situacao)
         {
             this._dialogService.openConfirm({
                 message: "Tem certeza que deseja excluir este produto ?",
-                title: "Excluir produto" ,
+                title: "Excluir produto",
                 cancelButton: 'CANCELAR',
                 acceptButton: 'CONFIRMAR',
                 width: '500px'
@@ -98,10 +107,12 @@ export class ProdutoListComponent implements OnInit
             {
                 if (accept)
                 {
-                    this.produtoService.deleteProduto(produto.codigo).subscribe( result => {
+                    this.produtoService.deleteProduto(produto.codigo).subscribe(result =>
+                    {
                         this.openSnackBarService.openSuccess('Produto excluído com sucesso.');
                         this.onListProdutos();
-                    }, err => {
+                    }, err =>
+                    {
 
 
                         this._dialogService.openConfirm({
@@ -114,7 +125,8 @@ export class ProdutoListComponent implements OnInit
                         {
                             if (accept)
                             {
-                                this.produtoService.updateSituacaoProduto(produto.codigo, !produto.situacao).subscribe( result => {
+                                this.produtoService.updateSituacaoProduto(produto.codigo, !produto.situacao).subscribe(result =>
+                                {
                                     this.openSnackBarService.openSuccess('Produto desativado com sucesso.');
                                     this.onListProdutos();
                                 }, err => this.openSnackBarService.openError(err.message))
@@ -136,7 +148,8 @@ export class ProdutoListComponent implements OnInit
             {
                 if (accept)
                 {
-                    this.produtoService.updateSituacaoProduto(produto.codigo, !produto.situacao).subscribe( result => {
+                    this.produtoService.updateSituacaoProduto(produto.codigo, !produto.situacao).subscribe(result =>
+                    {
                         this.openSnackBarService.openSuccess('Produto ativado com sucesso.');
                         this.onListProdutos();
                     }, err => this.openSnackBarService.openError(err.message))
@@ -170,8 +183,8 @@ export class ProdutoListComponent implements OnInit
         }), (error) => { this.openSnackBarService.openError(error.message) }
     }
 
-   
-    
+
+
 
     public clearFilters()
     {

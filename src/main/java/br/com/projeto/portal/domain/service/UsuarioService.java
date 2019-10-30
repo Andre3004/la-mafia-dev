@@ -16,6 +16,7 @@ import org.directwebremoting.annotations.RemoteProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,17 +43,23 @@ public class UsuarioService
 	@Autowired
 	private ArquivoService arquivoService;
 
+	/**
+	 * Password encoder
+	 */
+	@Autowired
+	protected PasswordEncoder passwordEncoder;
+
 	/*-------------------------------------------------------------------
 	 *				 		     SERVICES
 	 *-------------------------------------------------------------------*/
 
-	
+
 	public Page<Usuario> listUsuariosByFilters( String nome, Boolean situacao, String email, PageRequest pageable )
 	{
 		return this.usuarioDao.listUsuariosByFilters( nome, situacao, email, pageable );
 	}
 
-	
+
 	public Usuario findUsuarioById( long id )
 	{
 		Usuario usuario = this.usuarioDao.findUsuarioById( id );
@@ -66,22 +73,24 @@ public class UsuarioService
 		return usuario;
 	}
 
-	
+
 	public void insertUsuario( Usuario usuario )
 	{
-			if ( usuario.getAnexo() != null )
-			{
-				this.insertArquivo( usuario );
-			}
+		if ( usuario.getAnexo() != null )
+		{
+			this.insertArquivo( usuario );
+		}
 
-			usuario.setSituacao( true );
+		final String encodedPassword = this.passwordEncoder.encode( usuario.getSenha() );
 
-			usuario.setPerfilUsuario( PerfilUsuario.USUARIO ); //FIXME deixa no front-end;
+		usuario.setSenha( encodedPassword );
 
-			this.usuarioDao.insertUsuario( usuario );
+		usuario.setSituacao( true );
+
+		this.usuarioDao.insertUsuario( usuario );
 	}
 
-	
+
 	public void updateUsuario( Usuario usuario )
 	{
 		if ( usuario.getAnexoUuid() == null && usuario.getAnexo() != null )
@@ -95,19 +104,24 @@ public class UsuarioService
 		{
 			usuario.setSenha( usuarioSaved.getSenha() );
 		}
+		else
+		{
+			final String encodedPassword = this.passwordEncoder.encode( usuario.getSenha() );
+			usuario.setSenha( encodedPassword );
+		}
 
 		usuario.setUpdated( LocalDateTime.now() );
 
 		this.usuarioDao.updateUsuario( usuario );
 	}
 
-	
+
 	public void updateSituacaoUsuario( long id, boolean situacao )
 	{
 		this.usuarioDao.updateSituacaoUsuario( id, situacao );
 	}
 
-	
+
 	public void deleteUsuario( long id )
 	{
 		Usuario usuario = this.findUsuarioById( id );

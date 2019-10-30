@@ -1,6 +1,6 @@
 {
 	"/": {
-		"target": "http://127.0.0.1:8080/",
+		"target": "http://localhost:8080/",
 		"changeOrigin": true,
 		"secure": false,
 		"pathRewrite": {
@@ -10,7 +10,7 @@
 	},
 
 	"/broker": {
-		"target": "http://127.0.0.1:8080/broker",
+		"target": "http://localhost:8080/broker",
 		"changeOrigin": true,
 		"secure": false,
 		"pathRewrite": {
@@ -20,7 +20,7 @@
 	},
 
 	"/static": {
-		"target": "http://127.0.0.1:8080/static",
+		"target": "http://localhost:8080/static",
 		"changeOrigin": true,
 		"secure": false,
 		"pathRewrite": {

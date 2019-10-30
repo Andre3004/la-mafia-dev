@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { EstadoListComponent } from './estado-list/estado-list.component';
+import { AuthGuard } from 'src/app/common/autenticacao/auth-guard.service';
 
 const estadoRoutes: Routes = [
     {
@@ -12,7 +13,9 @@ const estadoRoutes: Routes = [
                 component: EstadoListComponent,
                 data: {
                     title: 'Estados',
-                }
+                    onlyFranquiador: true
+                },
+                canActivate: [AuthGuard],
             }
         ]
     },

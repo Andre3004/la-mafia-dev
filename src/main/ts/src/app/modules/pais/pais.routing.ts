@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { PaisListComponent } from './pais-list/pais-list.component';
+import { AuthGuard } from 'src/app/common/autenticacao/auth-guard.service';
 
 const paisRoutes: Routes = [
     {
@@ -12,7 +13,9 @@ const paisRoutes: Routes = [
                 component: PaisListComponent,
                 data: {
                     title: 'Paises',
-                }
+                    onlyFranquiador: true
+                },
+                canActivate: [AuthGuard]
             }
         ]
     },

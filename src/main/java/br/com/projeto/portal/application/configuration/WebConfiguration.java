@@ -25,6 +25,8 @@ import org.springframework.web.filter.ForwardedHeaderFilter;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import br.com.eits.common.application.dwr.DwrAnnotationPostProcessor;
 import br.com.projeto.portal.application.configuration.settings.DWRSettings;

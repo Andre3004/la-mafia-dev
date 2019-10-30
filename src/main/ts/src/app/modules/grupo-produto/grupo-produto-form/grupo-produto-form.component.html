@@ -1,7 +1,5 @@
 <div fxLayoutAlign="space-between center">
     <h2 mat-dialog-title>{{title}}</h2>
-    <button color="accent" style="right: 0;" class="white-btn push-top-sm" (click)="addFranquia()"
-    mat-raised-button>ADICIONAR FRANQUIA</button>
 </div>
 
 <mat-dialog-content>
@@ -24,43 +22,6 @@
 
            
 
-        </div>
-
-
-        <div fxLayout="column" fxLayoutGap="30px">
-            <div style="max-height: 350px;overflow: auto;" fxLayout="row wrap">
-                <div *ngFor="let grupoProdutoFranquia of grupoProduto.grupoProdutoFranquia; let i = index">
-                    <div class="push-top-sm push-right-sm" fxLayoutAlign=" center">
-
-                        <mat-form-field fxFlex appearance="outline">
-                            <mat-label>Franquia</mat-label>
-                            <input type="text" matInput [matAutocomplete]="auto" #inputFilter
-                                [(ngModel)]="grupoProdutoFranquia.franquia" name="franquia{{i}}"
-                                (ngModelChange)="onListFranquias(inputFilter.value);"
-                                [disabled]="grupoProdutoFranquia?.franquia?.codigo">
-                            <button (click)="removeFranquia(i)" matSuffix atTooltip="Remover franquia" mat-icon-button>
-                                <mat-icon>delete</mat-icon>
-                            </button>
-        
-                        </mat-form-field>
-
-                        <mat-autocomplete [displayWith]="displayFn" #auto="matAutocomplete"
-                            (optionSelected)="grupoProdutoFranquia.franquia = $event.option.value; onListFranquias();">
-                            <mat-option [value]="null">Nenhum</mat-option>
-                            <mat-option *ngFor="let franquia of franquias" [value]="franquia">{{franquia?.codigo}} - {{franquia?.franquia}}
-                            </mat-option>
-                        </mat-autocomplete>
-
-                        <button (click)="redirect()" mat-mini-fab color="primary" style="margin: 0 0 22px 13px;" matTooltip="Ir para franquia">
-                            <mat-icon>
-                                launch
-                            </mat-icon>
-                        </button>
-
-                    </div>
-
-                </div>
-            </div>
         </div>
 
 

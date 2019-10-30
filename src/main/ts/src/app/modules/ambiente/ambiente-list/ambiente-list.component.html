@@ -5,21 +5,6 @@
 			<input uppercase matInput placeholder="Pesquisar por nome" maxlength="144" [(ngModel)]="filters.nome">
 		</mat-form-field>
 
-		<auto-complete-with-redirect
-			fxFlex
-			title="Franquia"
-			key="codigo"
-			link="franquia"
-			displayKey="franquia"
-			[displayId]="true"
-			[list]="{values: franquias}"
-			[itemSelected]="{selected: filters.franquia}"
-			(onFilterChange)="franquiaFilter = $event; onListFranquias()"
-			(onSelect)="filters.franquia = $event"
-			(onDelete)="filters.franquia = {}"
-		>
-		</auto-complete-with-redirect>
-
 		<div fxFlex></div>
 
 		<button color="primary" class="white-btn" (click)="openForm()" mat-raised-button>ADICIONAR
@@ -42,12 +27,6 @@
 		<ng-template tdDataTableTemplate="nome" let-ambiente="row">
 			<span class="text-truncate">
 				{{ ambiente?.ambiente}}
-			</span>
-		</ng-template>
-
-		<ng-template tdDataTableTemplate="franquia.nome" let-ambiente="row">
-			<span class="text-truncate">
-				{{ ambiente?.franquia?.franquia}}
 			</span>
 		</ng-template>
 

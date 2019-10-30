@@ -4,9 +4,9 @@ import { MatDialog } from '@angular/material';
 import { HttpClient } from '@angular/common/http';
 import { TdDialogService, ITdDataTableColumn, IPageChangeEvent } from '@covalent/core';
 import { PaginationService } from 'src/app/common/pagination/pagination.service';
-import { GrupoProdutoService, FranquiaService } from 'src/generated/services';
+import { GrupoProdutoService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
-import { Franquia, GrupoProduto } from 'src/generated/entities';
+import { GrupoProduto } from 'src/generated/entities';
 
 
 @Component({
@@ -25,12 +25,7 @@ export class GrupoProdutoListComponent implements OnInit
 
     public filters = {
         nome: '',
-        franquia: null
     }
-
-    public franquias: Franquia[];
-
-    public franquiaFilter: string = "";
 
     /**
        * Colunas da Grid
@@ -54,8 +49,7 @@ export class GrupoProdutoListComponent implements OnInit
         private _dialogService: TdDialogService,
         private paginationService: PaginationService,
         private openSnackBarService: OpenSnackBarService,
-        private grupoProdutoService: GrupoProdutoService,
-        private franquiaService: FranquiaService) 
+        private grupoProdutoService: GrupoProdutoService) 
     {
         this.pageRequest = paginationService.pageRequest('nome', 'ASC', 10);
     }
@@ -63,7 +57,6 @@ export class GrupoProdutoListComponent implements OnInit
     ngOnInit()
     {
         this.onListGrupoProdutos();
-        this.onListFranquias();
     }
 
     /*-------------------------------------------------------------------
@@ -167,7 +160,7 @@ export class GrupoProdutoListComponent implements OnInit
 
         this.grupoProdutoService.listGrupoProdutosByFilters(
             this.filters.nome,
-            this.filters.franquia != null ? this.filters.franquia.codigo : null,
+            null,
             this.pageRequest.pageable
         ).subscribe((result) =>
         {
@@ -175,31 +168,14 @@ export class GrupoProdutoListComponent implements OnInit
         }), (error) => { this.openSnackBarService.openError(error.message) }
     }
 
-    public onListFranquias()
-    {
-        this.franquiaService.listFranquiasByFilters(this.franquiaFilter ? this.franquiaFilter : "", "", null).subscribe(franquiaPage =>
-        {
-            this.franquias = franquiaPage.content;
-        })
-    }
-
-    public displayFn(franquia?: Franquia): string | undefined
-    {
-        return franquia ? franquia.franquia : undefined;
-    }
-
-
     public clearFilters()
     {
         this.filters = {
             nome: '',
-            franquia: null
         }
 
-        this.franquiaFilter = "";
 
         this.onListGrupoProdutos();
-        this.onListFranquias();
     }
 
 

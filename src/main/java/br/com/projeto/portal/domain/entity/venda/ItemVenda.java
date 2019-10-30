@@ -47,4 +47,18 @@ public class ItemVenda extends Produto
 	{
 	}
 
+	public void setVenda( Venda venda )
+	{
+		this.serie = venda.getSerie();
+		this.numeroNota = venda.getNumeroNota();
+		this.modelo = venda.getModelo();
+		this.cliente = venda.getCliente();
+		this.franquia = venda.getFranquia();
+	}
+
+	public Venda getVenda()
+	{
+		return null;
+	}
+
 }

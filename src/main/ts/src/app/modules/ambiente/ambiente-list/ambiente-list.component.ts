@@ -26,12 +26,9 @@ export class AmbienteListComponent implements OnInit
 
     public filters = {
         nome: '',
-        franquia: null
     }
 
-    public franquias: Franquia[];
 
-    public franquiaFilter: string = "";
 
     /**
        * Colunas da Grid
@@ -39,7 +36,6 @@ export class AmbienteListComponent implements OnInit
     public tableColumns: ITdDataTableColumn[] = [
         { name: 'codigo', label: 'CÓDIGO', sortable: false },
         { name: 'nome', label: 'AMBIENTE', sortable: false },
-        { name: 'franquia.nome', label: 'FRANQUIA', sortable: false },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
         { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 150 }
     ];
@@ -57,7 +53,6 @@ export class AmbienteListComponent implements OnInit
         private paginationService: PaginationService,
         private openSnackBarService: OpenSnackBarService,
         private ambienteService: AmbienteService,
-        private franquiaService: FranquiaService,
         public activatedRoute: ActivatedRoute) 
     {
         this.pageRequest = paginationService.pageRequest('nome', 'ASC', 10);
@@ -66,7 +61,6 @@ export class AmbienteListComponent implements OnInit
     ngOnInit()
     {        
         this.onListAmbientes();
-        this.onListFranquias();
     }
 
     /*-------------------------------------------------------------------
@@ -166,7 +160,6 @@ export class AmbienteListComponent implements OnInit
 
         this.ambienteService.listAmbientesByFilters(
             this.filters.nome,
-            this.filters.franquia != null ? this.filters.franquia.codigo : null,
             this.pageRequest.pageable
         ).subscribe((result) =>
         {
@@ -174,29 +167,16 @@ export class AmbienteListComponent implements OnInit
         }), (error) => { this.openSnackBarService.openError(error.message) }
     }
 
-    public onListFranquias()
-    {
-        this.franquiaService.listFranquiasByFilters(this.franquiaFilter ? this.franquiaFilter : "", "", null).subscribe( franquiaPage => {
-        this.franquias = franquiaPage.content; 
-        })
-    }
-
-    public displayFn(franquia?: Franquia): string | undefined {
-        return franquia ? franquia.franquia : undefined;
-    }
     
 
     public clearFilters()
     {
         this.filters = {
             nome: '',
-            franquia: null
         }
         
-        this.franquiaFilter = "";
 
         this.onListAmbientes();
-        this.onListFranquias();
     }
 
 

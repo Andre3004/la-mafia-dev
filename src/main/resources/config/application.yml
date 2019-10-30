@@ -41,7 +41,6 @@ log4j:
       
 #LOGGING
 logging.level:
-  org.hibernate: INFO
   org.directwebremoting: INFO
   org.springframework.web: INFO
   org.springframework.context.support: INFO

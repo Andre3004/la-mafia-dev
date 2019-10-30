@@ -43,7 +43,7 @@ public class ClienteDAO
     PaisDAO paisDAO;
 
     
-    public Cliente findClienteById(int id)
+    public Cliente findClienteById(Long id)
     {
         String sql = "SELECT * FROM cliente WHERE codigo = ?";
 
@@ -124,7 +124,7 @@ public class ClienteDAO
     }
 
     
-    public void deleteCliente(int id){
+    public void deleteCliente(Long id){
         jdbcTemplate.update("DELETE from cliente WHERE codigo = ? ", id);
     }
 
@@ -159,7 +159,7 @@ public class ClienteDAO
         List<Cliente> clientes = jdbcTemplate.query(querySql,new RowMapper<Cliente>(){
             public Cliente mapRow( ResultSet rs, int row) throws SQLException {
                 Cliente c=new Cliente();
-                c.setCodigo(rs.getInt(1));
+                c.setCodigo(rs.getLong(1));
                 c.setCliente(rs.getString(2));
                 c.setCpf(rs.getString(4));
                 c.setCelular(rs.getString(7));

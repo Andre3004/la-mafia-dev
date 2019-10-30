@@ -19,6 +19,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -33,7 +34,26 @@ public class UsuarioDAO
 	@Autowired
 	FranquiaDAO franquiaDAO;
 
-	
+
+	public Usuario findUsuarioByEmail(String email)
+	{
+		try
+		{
+			String sql = "SELECT * FROM usuario WHERE lower(email) = lower(?)";
+
+			Usuario usuario = (Usuario) jdbcTemplate.queryForObject(sql,
+					new Object[] { email }, new BeanPropertyRowMapper(Usuario.class));
+
+			if(usuario.getFranquiaId() != null)
+				usuario.setFranquia( franquiaDAO.findFranquiaById( usuario.getFranquiaId() ) );
+
+			return usuario;
+		}
+		catch ( Exception e ){
+			throw new UsernameNotFoundException( "Usuário ou senha incorretos." );
+		}
+	}
+
 	public Usuario findUsuarioById(long id)
 	{
 		String sql = "SELECT * FROM usuario WHERE codigo = ?";

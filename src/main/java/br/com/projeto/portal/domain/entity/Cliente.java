@@ -22,7 +22,7 @@ public class Cliente extends AbstractEntity
      *				 		     ATTRIBUTES
      *-------------------------------------------------------------------*/
 
-    private Integer codigo;
+    private Long codigo;
 
     private String cliente;
 

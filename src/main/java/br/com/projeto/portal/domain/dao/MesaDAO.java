@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.entity.mesa.Mesa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -97,14 +98,14 @@ public class MesaDAO
 						new Object[]{}, (rs, rowNum) -> rs.getInt(1)
 				);
 
-		String selectAndFrom = "SELECT * " +
-				"FROM mesa ";
+		String selectAndFrom = "SELECT mesa.numero_mesa, mesa.ambiente_id, mesa.situacao " +
+				"FROM mesa, ambiente ";
 
-		String where =  "";
+		String where =  "WHERE ambiente.codigo = mesa.ambiente_id AND ambiente.franquia_id = "+ ContextHolder.getAuthenticatedUser().getFranquia().getCodigo() +" " ;
 
-		where += numeroMesa != null && ambienteId != null ?	"WHERE numero_mesa = "+numeroMesa+" AND ambiente_id = "+ambienteId+ " " : "";
-		where += numeroMesa != null && ambienteId == null ?	"WHERE numero_mesa = "+numeroMesa+" " : "";
-		where += numeroMesa == null && ambienteId != null ?	"WHERE ambiente_id = "+ambienteId+ " " : "";
+		where += numeroMesa != null && ambienteId != null ?	" AND mesa.numero_mesa = "+numeroMesa+" AND mesa.ambiente_id = "+ambienteId+ " " : "";
+		where += numeroMesa != null && ambienteId == null ?	" AND mesa.numero_mesa = "+numeroMesa+" " : "";
+		where += numeroMesa == null && ambienteId != null ?	" AND mesa.ambiente_id = "+ambienteId+ " " : "";
 
 		String pagination = "LIMIT " + pageable.getPageSize() + " " +
 				"OFFSET " + pageable.getOffset() + ";";
@@ -114,7 +115,7 @@ public class MesaDAO
 		List<Mesa> mesas = jdbcTemplate.query(querySql,new RowMapper<Mesa>(){
 			public Mesa mapRow( ResultSet rs, int row) throws SQLException
 			{
-				Mesa e=new Mesa();
+				Mesa e = new Mesa();
 				e.setNumeroMesa(rs.getLong("numero_mesa"));
 				e.setAmbiente( ambienteDAO.findAmbienteById( rs.getLong("ambiente_id") ));
 				e.setSituacao( rs.getBoolean( "situacao" ) );

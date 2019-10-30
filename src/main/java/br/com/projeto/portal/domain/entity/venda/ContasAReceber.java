@@ -57,6 +57,8 @@ public class ContasAReceber extends AbstractEntity
 
 	private Boolean situacao;
 
+	private Boolean isAvulso;
+
 	///////Transient values///////
 	private Cliente cliente;
 

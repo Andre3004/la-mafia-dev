@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
+import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.dao.CondicaoPagamentoDAO;
 import br.com.projeto.portal.domain.dao.UsuarioDAO;
 import br.com.projeto.portal.domain.dao.fornecedor.FornecedorDAO;
@@ -15,6 +16,8 @@ import br.com.projeto.portal.domain.entity.compra.Compra;
 import br.com.projeto.portal.domain.entity.compra.ItemCompra;
 import br.com.projeto.portal.domain.entity.contasApagar.ContasAPagar;
 import br.com.projeto.portal.domain.entity.produto.Produto;
+import br.com.projeto.portal.domain.entity.venda.ItemVenda;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -134,7 +137,7 @@ public class CompraDAO {
 				"FROM compra ";
 
 
-		String where =  "WHERE modelo LIKE  '%" + modelo + "%' AND "+
+		String where =  "WHERE franquia_id = "+ ContextHolder.getAuthenticatedUser().getFranquia().getCodigo() +" AND modelo LIKE  '%" + modelo + "%' AND "+
 				"serie LIKE  '%" + serie + "%' AND " + "numero_nota LIKE  '%" + numNota + "%' ";
 
 		where += fornecedorId != null ?  "AND fornecedor_id = " + fornecedorId + " ": "";
@@ -217,6 +220,25 @@ public class CompraDAO {
 				itemCompra.getFornecedor().getCodigo(),
 				itemCompra.getFranquia().getCodigo(),
 				itemCompra.getCodigo() );
+	}
+
+	public void updateSituacaoItemCompra( ItemCompra itemCompra, Boolean situacao )
+	{
+		jdbcTemplate.update(
+				"UPDATE item_compra SET " +
+						"situacao = ?, "+
+						"WHERE modelo = ? AND " +
+						"serie = ? AND " +
+						"numero_nota = ? AND " +
+						"franquia_id = ? AND " +
+						"fornecedor_id = ? ",
+				situacao,
+
+				itemCompra.getModelo(),
+				itemCompra.getSerie(),
+				itemCompra.getNumeroNota(),
+				itemCompra.getFranquia().getCodigo(),
+				itemCompra.getFornecedor().getCodigo());
 	}
 
 }

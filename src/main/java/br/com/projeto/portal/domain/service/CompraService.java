@@ -119,22 +119,21 @@ public class CompraService
 	public void updateSituacaoCompra( String modelo, String serie, String numNota, Long codigo, boolean situacao )
 	{
 		Compra compra = this.findCompraById( modelo, serie, numNota, codigo );
-		compra.getItensCompra().forEach( itemCompra -> {
-			if(situacao)
-				itemCompra.getCurrentEstoque().setSaldo( itemCompra.getCurrentEstoque().getSaldo().intValue() +  itemCompra.getQuantidade().intValue() );
-			else
-				itemCompra.getCurrentEstoque().setSaldo( itemCompra.getCurrentEstoque().getSaldo().intValue() -  itemCompra.getQuantidade().intValue() );
 
+		//CANCELANDO OS ITENS DA COMPRA
+		compra.getItensCompra().forEach( itemCompra -> {
+
+			itemCompra.getCurrentEstoque().setSaldo( itemCompra.getCurrentEstoque().getSaldo().intValue() -  itemCompra.getQuantidade().intValue() );
 			Assert.isTrue( itemCompra.getCurrentEstoque().getSaldo() >= 0, "Não foi possível cancelar a compra, pois não possui saldo suficiente em estoque para realizar o cancelamento.");
+
+			compraDao.updateSituacaoItemCompra(itemCompra, false);
 			estoqueDAO.updateEstoque(itemCompra.getCurrentEstoque());
 		});
 
+		//CANCELANDO AS CONTAS A PAGAR
 		compra.getContasAPagar().forEach( contasAPagar -> {
-
-			contasAPagar.setSituacao( false );
-			//TODO VALIDAR SE A CONTA A PAGAR NÃO FOI DADO BAIXA AINDA
-			//Assert.isTrue( itemCompra.getCurrentEstoque().getSaldo() >= 0, "Não foi possível cancelar a compra, pois não possui saldo suficiente em estoque para realizar o cancelamento.");
-
+			Assert.isTrue( contasAPagar.getSituacaoLiquidez() == null || contasAPagar.getSituacaoLiquidez() != null && !contasAPagar.getSituacaoLiquidez(), "Não foi possível cancelar a compra, pois uma das contas á pagar, foi dado baixa.");
+			this.contasAPagarDAO.updateSituacaoContaAPagar( contasAPagar, false );
 		});
 
 		this.compraDao.updateSituacaoCompra( modelo, serie, numNota, codigo, ContextHolder.getAuthenticatedUser().getFranquia().getCodigo(),  situacao );

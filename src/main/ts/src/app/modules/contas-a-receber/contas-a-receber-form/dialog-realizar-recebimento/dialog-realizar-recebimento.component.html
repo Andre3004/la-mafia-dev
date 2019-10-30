@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>Realizar recebimento</h2>
+<mat-dialog-content>
+
+  <form #qualificadorForm="ngForm" fxLayoutGap="30px">
+    <mat-form-field appearance="outline" class="data-with-double-suffix">
+      <mat-label>Data de recebimento *</mat-label>
+      <input matInput required [min]="dataHoje" [matDatepicker]="dataRecebimento" [(ngModel)]="contaAReceber.dataRecebimento"
+        name="dataRecebimento" disabled>
+      <mat-datepicker-toggle [ngStyle]="{'color': !contaAReceber.dataRecebimento ? 'red' : 'black' }" matSuffix
+        [for]="dataRecebimento"></mat-datepicker-toggle>
+      <button *ngIf="contaAReceber.dataRecebimento" matSuffix mat-icon-button (click)="contaAReceber.dataRecebimento = null"
+        matTooltip="Remover data de recebimento">
+        <mat-icon>clear</mat-icon>
+      </button>
+      <mat-datepicker #dataRecebimento disabled="false"></mat-datepicker>
+    </mat-form-field>
+
+
+    <mat-form-field fxFlex appearance="outline">
+      <mat-label>Valor Recebido</mat-label>
+      <input matInput required [(ngModel)]="contaAReceber.valorRecebido" name="valorRecebido" currencyMask disabled [options]="{
+          align: 'left',
+          prefix: '',
+          thousands: '.',
+          decimal: ',',
+          precision: 2,
+          allowNegative: false
+        }" maxlength="9">
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions fxLayoutAlign="end end">
+
+  <button [disabled]="!contaAReceber.dataRecebimento" [mat-dialog-close]="contaAReceber" mat-raised-button class="white-btn" color="primary">
+      CONFIMAR RECEBIMENTO
+  </button>
+  <button mat-dialog-close mat-raised-button class="white-btn push-left-md bgc-grey-800">
+    CANCELAR
+  </button>
+
+</mat-dialog-actions>

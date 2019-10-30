@@ -1,6 +1,7 @@
 package br.com.projeto.portal.application.security;
 
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
+import br.com.projeto.portal.domain.entity.usuario.PerfilUsuario;
 import br.com.projeto.portal.domain.entity.usuario.Usuario;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
@@ -18,25 +19,26 @@ public class ContextHolder
 	 */
 	public static Usuario getAuthenticatedUser()
 	{
-//		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if ( authentication != null && authentication.getPrincipal() instanceof Usuario )
+		{
+			return (Usuario) authentication.getPrincipal();
+		}
+
+		throw new AuthenticationCredentialsNotFoundException( "O usuário não está autenticado" );
+
+//		Usuario usuario = new Usuario();
+//		Franquia franquia = new Franquia();
 //
-//		if ( authentication != null && authentication.getPrincipal() instanceof Usuario )
-//		{
-//			return (Usuario) authentication.getPrincipal();
-//		}
+//		franquia.setCodigo( 1L );
 //
-//		throw new AuthenticationCredentialsNotFoundException( "O usuário não está autenticado" );
-
-		Usuario usuario = new Usuario();
-		Franquia franquia = new Franquia();
-
-		franquia.setCodigo( 1L );
-
-		usuario.setCodigo( 11L );
-		usuario.setUsuario( "André" );
-		usuario.setFranquia( franquia );
-
-		return usuario;
+//		usuario.setCodigo( 11L );
+//		usuario.setUsuario( "André" );
+//		usuario.setPerfilUsuario( PerfilUsuario.FRANQUIADO );
+//		usuario.setFranquia( franquia );
+//
+//		return usuario;
 	}
 
 	/**

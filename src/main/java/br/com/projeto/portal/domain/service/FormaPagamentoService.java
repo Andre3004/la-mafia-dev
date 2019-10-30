@@ -1,5 +1,6 @@
 package br.com.projeto.portal.domain.service;
 
+import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.dao.FormaPagamentoDAO;
 import br.com.projeto.portal.domain.entity.pagamento.FormaPagamento;
 import org.directwebremoting.annotations.RemoteProxy;
@@ -38,6 +39,8 @@ public class FormaPagamentoService{
 	public void insertFormaPagamento( FormaPagamento formaPagamento )
 	{
 		formaPagamento.setSituacao( true );
+		formaPagamento.setFranquia( ContextHolder.getAuthenticatedUser().getFranquia() );
+
 		this.formaPagamentoDAO.insertFormaPagamento( formaPagamento );
 	}
 

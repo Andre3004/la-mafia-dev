@@ -1,8 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { GrupoProdutoService, ArquivoService, FranquiaService } from 'src/generated/services';
+import { GrupoProdutoService, ArquivoService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
-import { GrupoProduto, Franquia } from 'src/generated/entities';
+import { GrupoProduto } from 'src/generated/entities';
 
 @Component({
   selector: 'app-grupo-produto-form',
@@ -17,17 +17,12 @@ export class GrupoProdutoFormComponent implements OnInit
 
   public title = "";
 
-  public grupoProduto: GrupoProduto = { codigo:0, exigeAno: false, grupoProdutoFranquia: [] };
-
-  public grupoProdutoFranquiasToRemoved = [];
+  public grupoProduto: GrupoProduto = { codigo:0, exigeAno: false };
 
   public fotoImage: any;
 
-  public franquias: Franquia[];
-
   constructor(
     private grupoProdutoService: GrupoProdutoService,
-    private franquiaService: FranquiaService,
     private openSnackBarService: OpenSnackBarService,
     public dialogRef: MatDialogRef<GrupoProdutoFormComponent>,
     private arquivoService: ArquivoService,
@@ -39,7 +34,6 @@ export class GrupoProdutoFormComponent implements OnInit
       this.onFindGrupoProdutoById(data.grupoProdutoId);
     }
 
-    this.onListFranquias("");
   }
 
   ngOnInit()
@@ -68,14 +62,6 @@ export class GrupoProdutoFormComponent implements OnInit
 
     let anexoOld = null;
 
-    if( !this.grupoProduto.grupoProdutoFranquia || (this.grupoProduto.grupoProdutoFranquia && !this.grupoProduto.grupoProdutoFranquia.length))
-    {
-      this.openSnackBarService.openError("É necessário adicionar ao menos uma franquia.");
-      return;
-    }
-    else
-      this.grupoProduto.grupoProdutoFranquia = this.grupoProduto.grupoProdutoFranquia.filter( gp => gp.franquia);
-
     if(this.grupoProduto.anexo && typeof(this.grupoProduto.anexo) == 'string')
     {
       anexoOld = this.grupoProduto.anexo;
@@ -98,7 +84,7 @@ export class GrupoProdutoFormComponent implements OnInit
     }
     else
     {
-      this.grupoProdutoService.updateGrupoProduto(this.grupoProduto, this.grupoProdutoFranquiasToRemoved).subscribe(grupoProduto =>
+      this.grupoProdutoService.updateGrupoProduto(this.grupoProduto).subscribe(grupoProduto =>
       {
         this.openSnackBarService.openSuccess("Grupo de produto atualizado com sucesso.");
         this.dialogRef.close(this.grupoProduto);
@@ -108,17 +94,6 @@ export class GrupoProdutoFormComponent implements OnInit
       })
     }
 
-  }
-
-  public onListFranquias(filter)
-  {
-    this.franquiaService.listFranquiasByFilters(filter ? filter : "", "", null).subscribe( franquiaPage => {
-      this.franquias = franquiaPage.content.filter( c => c.situacao); 
-    })
-  }
-
-  public displayFn(franquia?: Franquia): string | undefined {
-    return franquia ? `${franquia.codigo} - ${franquia.franquia}` : undefined;
   }
 
   /*-------------------------------------------------------------------
@@ -172,32 +147,5 @@ export class GrupoProdutoFormComponent implements OnInit
       this.grupoProduto.anexo = null;
     }
   }
-
-
-
-   /*-------------------------------------------------------------------
-  *                           Franquias
-  *-------------------------------------------------------------------*/
-
- public redirect()
- {
-   var win = window.open(`http://localhost:4200/#/franquia`, '_blank');
-   win.focus();
- }
-
-
- 
- public addFranquia()
- {
-   this.grupoProduto.grupoProdutoFranquia.push({});
- }
-
- public removeFranquia(index)
- {
-   if(this.grupoProduto.grupoProdutoFranquia[index].created)
-       this.grupoProdutoFranquiasToRemoved.push(this.grupoProduto.grupoProdutoFranquia[index].franquia.codigo)
-
-   this.grupoProduto.grupoProdutoFranquia.splice(index, 1);
- }
 
 }

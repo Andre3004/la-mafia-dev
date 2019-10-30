@@ -2,7 +2,8 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { UsuarioService, FranquiaService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
-import { Franquia, Usuario } from 'src/generated/entities';
+import { Franquia, Usuario, PerfilUsuario, PerfilUsuarioValues } from 'src/generated/entities';
+import { AutenticacaoService } from 'src/app/common/autenticacao/autenticacao.service';
 
 @Component({
   selector: 'app-usuario-form',
@@ -19,7 +20,7 @@ export class UsuarioFormComponent implements OnInit
 
   public title = "";
 
-  public usuario: Usuario = { franquia: {}};
+  public usuario: Usuario = { franquia: {}, perfilUsuario: 'FRANQUIADO' };
 
   public maskCpf = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
 
@@ -29,12 +30,14 @@ export class UsuarioFormComponent implements OnInit
 
   public franquias: Franquia[];
 
+  public type: PerfilUsuario;
 
   constructor(
     private usuarioService: UsuarioService,
     private openSnackBarService: OpenSnackBarService,
     private franquiaService: FranquiaService,
     public dialogRef: MatDialogRef<UsuarioFormComponent>,
+    private autenticacaoService: AutenticacaoService,
     @Inject(MAT_DIALOG_DATA) public data: any
   )
   {
@@ -46,13 +49,20 @@ export class UsuarioFormComponent implements OnInit
     this.onListFranquias("");
   }
 
-  ngOnInit()
+
+
+  async ngOnInit()
   {
     if (this.data.usuarioId)
       this.title = "Alterar usuário";
     else
       this.title = "Inserir usuário";
+
+    this.type = this.autenticacaoService.usuario.perfilUsuario;
   }
+
+
+
 
   /*-------------------------------------------------------------------
   *                           BEHAVIORS
@@ -70,7 +80,7 @@ export class UsuarioFormComponent implements OnInit
   public onSubmit(): void
   {
 
-    if( !this.usuario.franquia || (this.usuario.franquia && !this.usuario.franquia.codigo))
+    if (!this.usuario.franquia || (this.usuario.franquia && !this.usuario.franquia.codigo))
     {
       this.openSnackBarService.openError("O campo franquia deve ser preenchido.");
       return;
@@ -87,27 +97,27 @@ export class UsuarioFormComponent implements OnInit
       }
     }
 
-    
+
     if (this.usuario.telefone) 
     {
-        var numb = this.usuario.telefone.match(/\d/g);
-        var numbString = numb.join("").toString();
+      var numb = this.usuario.telefone.match(/\d/g);
+      var numbString = numb.join("").toString();
 
-        if(numbString.length != 14)
-        {
-          this.openSnackBarService.openError('O campo telefone está inválido.');
-          return;
-        }
+      if (numbString.length != 14)
+      {
+        this.openSnackBarService.openError('O campo telefone está inválido.');
+        return;
+      }
     }
     else
     {
       this.usuario.telefone = this.usuario.telefone.replace(/\.|-/gi, '');
     }
 
-    if (this.usuario.senha && (this.usuario.senha != this.confSenha) )
+    if (this.usuario.senha && (this.usuario.senha != this.confSenha))
     {
-        this.openSnackBarService.openError('O campo senha e confimação não conferem.');
-        return;
+      this.openSnackBarService.openError('O campo senha e confimação não conferem.');
+      return;
     }
 
     if (!this.usuario.codigo)
@@ -176,12 +186,14 @@ export class UsuarioFormComponent implements OnInit
 
   public onListFranquias(filter)
   {
-    this.franquiaService.listFranquiasByFilters(filter ? filter : "", "", null).subscribe( franquiaPage => {
-      this.franquias = franquiaPage.content.filter( c => c.situacao); 
+    this.franquiaService.listFranquiasByFilters(filter ? filter : "", "", null).subscribe(franquiaPage =>
+    {
+      this.franquias = franquiaPage.content.filter(c => c.situacao);
     })
   }
 
-  public displayFn(franquia?: Franquia): string | undefined {
+  public displayFn(franquia?: Franquia): string | undefined
+  {
     return franquia ? franquia.franquia : undefined;
   }
 

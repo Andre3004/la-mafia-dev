@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.dao.CondicaoPagamentoDAO;
 import br.com.projeto.portal.domain.entity.pagamento.CondicaoPagamento;
 import br.com.projeto.portal.domain.entity.pagamento.CondicaoPagamentoParcela;
@@ -47,6 +48,7 @@ public class CondicaoPagamentoService
 	public Long insertCondicaoPagamento( CondicaoPagamento condicaoPagamento )
 	{
 		condicaoPagamento.setSituacao( true );
+		condicaoPagamento.setFranquia( ContextHolder.getAuthenticatedUser().getFranquia() );
 
 		Long condicaoPagamentoId = this.condicaoPagamentoDao.insertCondicaoPagamento( condicaoPagamento );
 

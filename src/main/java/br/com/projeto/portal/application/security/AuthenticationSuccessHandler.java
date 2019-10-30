@@ -1,5 +1,6 @@
 package br.com.projeto.portal.application.security;
 
+import br.com.projeto.portal.domain.dao.UsuarioDAO;
 import br.com.projeto.portal.domain.entity.usuario.Usuario;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
 	 *
 	 */
 	private static final Logger LOG = Logger.getLogger( AuthenticationSuccessHandler.class.getName() );
+
+	@Autowired
+	UsuarioDAO usuarioDAO;
 
 	/*-------------------------------------------------------------------
 	 * 		 					 ATTRIBUTES
@@ -43,14 +47,7 @@ public class AuthenticationSuccessHandler implements org.springframework.securit
 	{
 		try
 		{
-			//final Usuario usuario = this.userRepository.findOne( ContextHolder.getAuthenticatedUser().getId() );
-		//	usuario.setLastLogin( Calendar.getInstance() );
-			//this.userRepository.save( usuario );
-
-			//add the usuario in the response
-			//usuario.setPassword( null );
-			//usuario.setEndereco( null );
-			//response.getWriter().write( new ObjectMapper().writeValueAsString( usuario ) );
+			System.out.println("Autenticado");
 		}
 		catch ( Exception e )
 		{

@@ -4,35 +4,37 @@
 
   <form #qualificadorForm="ngForm" fxLayout="column">
 
-    <div fxLayout="row" >
+    <div fxLayout="row">
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Código</mat-label>
         <input uppercase matInput [(ngModel)]="usuario.codigo" [disabled]="true" name="codigo">
       </mat-form-field>
 
-      <auto-complete-with-redirect
-      class="push-left-md"
-			fxFlex
-			title="Franquia"
-			key="codigo"
-			link="franquia"
-			displayKey="franquia"
-			[displayId]="true"
-			[list]="{values: franquias}"
-			[itemSelected]="{selected: usuario.franquia}"
-			(onFilterChange)="franquiaFilter = $event; onListFranquias()"
-			(onSelect)="usuario.franquia = $event"
-			(onDelete)="usuario.franquia = {}"
-		>
-    </auto-complete-with-redirect>
-    
+      <mat-form-field fxFlex appearance="outline" class="push-left-md">
+        <mat-label>Perfil do usuário</mat-label>
+        <mat-select [(ngModel)]="usuario.perfilUsuario" name="perfilUsuario">
+          <mat-option [value]="'FRANQUIADOR'">Franquiador</mat-option>
+          <mat-option [value]="'FRANQUIADO'">Franquiado</mat-option>
+        </mat-select>
+      </mat-form-field>
+
     </div>
+
+
+    <div fxLayout="row" *ngIf="usuario.perfilUsuario == 'FRANQUIADO'">
+      <auto-complete-with-redirect fxFlex title="Franquia" key="codigo" link="franquia" displayKey="franquia"
+        [displayId]="true" [list]="{values: franquias}" [itemSelected]="{selected: usuario.franquia}"
+        (onFilterChange)="franquiaFilter = $event; onListFranquias()" (onSelect)="usuario.franquia = $event"
+        (onDelete)="usuario.franquia = {}">
+      </auto-complete-with-redirect>
+    </div>
+
 
     <div fxLayout="row">
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Usuário</mat-label>
-        <input uppercase  required [(ngModel)]="usuario.usuario" name="nome" matInput maxlength="144"
+        <input uppercase required [(ngModel)]="usuario.usuario" name="nome" matInput maxlength="144"
           placeholder="Digite o nome do usuário">
       </mat-form-field>
     </div>
@@ -41,8 +43,8 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>CPF</mat-label>
-        <input uppercase required [textMask]="{mask: maskCpf, guide: false}" [(ngModel)]="usuario.cpf" name="cpf" matInput
-          maxlength="144" placeholder="Digite seu cpf">
+        <input uppercase required [textMask]="{mask: maskCpf, guide: false}" [(ngModel)]="usuario.cpf" name="cpf"
+          matInput maxlength="144" placeholder="Digite seu cpf">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
@@ -57,8 +59,8 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>E-mail</mat-label>
-        <input uppercase required [(ngModel)]="usuario.email" email="true" name="email" type="email" matInput maxlength="144"
-          placeholder="Digite seu e-mail">
+        <input uppercase required [(ngModel)]="usuario.email" email="true" name="email" type="email" matInput
+          maxlength="144" placeholder="Digite seu e-mail">
       </mat-form-field>
 
     </div>
@@ -83,21 +85,21 @@
 
 <mat-dialog-actions fxLayoutAlign="space-between end">
 
-    <div fxLayout="column">
-        <label> <label style="font-weight: bold">Data de criação:</label>
-            {{ usuario.created ? (usuario.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
-        <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
-            {{ usuario.updated ? (usuario.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
-    </div>
+  <div fxLayout="column">
+    <label> <label style="font-weight: bold">Data de criação:</label>
+      {{ usuario.created ? (usuario.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+      {{ usuario.updated ? (usuario.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+  </div>
 
-    <div>
-  <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
-    color="primary">
-    SALVAR
-  </button>
-  <button mat-dialog-close mat-raised-button class="white-btn
+  <div>
+    <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+      color="primary">
+      SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
     push-left-md bgc-grey-800">
-    CANCELAR
-  </button>
-    </div>
+      CANCELAR
+    </button>
+  </div>
 </mat-dialog-actions>

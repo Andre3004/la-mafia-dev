@@ -29,26 +29,6 @@
 
                 </div>
 
-
-                <div fxLayout="row" fxLayoutAlign=" center">
-
-                    <auto-complete-with-redirect
-                        fxFlex
-                        title="Franquia"
-                        key="codigo"
-                        link="franquia"
-                        displayKey="franquia"
-                        [displayId]="true"
-                        [list]="{values: franquias}"
-                        [itemSelected]="{selected: ambiente.franquia}"
-                        (onFilterChange)="onListFranquias($event)"
-                        (onSelect)="ambiente.franquia = $event"
-                        (onDelete)="ambiente.franquia = {}"
-                    >
-                    </auto-complete-with-redirect>
-
-                </div>
-
                 <div fxLayout="row">
                     <mat-form-field fxFlex appearance="outline">
                         <mat-label>Descrição</mat-label>

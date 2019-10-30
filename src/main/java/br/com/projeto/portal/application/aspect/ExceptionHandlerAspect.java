@@ -105,7 +105,7 @@ public class ExceptionHandlerAspect
 	@AfterThrowing(pointcut = "within(@org.springframework.stereotype.Service *)", throwing = "exception")
 	public void handleException( JoinPoint joinPoint, org.springframework.dao.EmptyResultDataAccessException exception )
 	{
-		throw new EmptyResultDataAccessException( messageSource.getMessage( "repository.emptyResult", null, LocaleContextHolder.getLocale() ), 1 );
+		throw new IllegalArgumentException( "Usuário ou senha incorretos." );
 	}
 
 	/**

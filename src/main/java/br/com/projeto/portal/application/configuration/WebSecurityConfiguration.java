@@ -49,31 +49,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter
 		httpSecurity.csrf().disable();
 		httpSecurity.headers().frameOptions().disable();
 
-		httpSecurity
-				.authorizeRequests().antMatchers( "/**" ).permitAll()
-				.anyRequest()
-				.authenticated()
-				.and()
-				.formLogin()
-				.usernameParameter( "email" )
-				.passwordParameter( "password" )
-				.loginPage( "/authentication" )
-				.loginProcessingUrl( "/authenticate" )
-				.failureHandler( this.authenticationFailureHandler )
-				.successHandler( this.authenticationSuccessHandler )
-				.permitAll()
-				.and()
-				.logout()
-				.logoutUrl( "/logout" ).logoutSuccessUrl( "/" );
-
 //		httpSecurity
-//				.authorizeRequests()
+//				.authorizeRequests().antMatchers( "/**" ).permitAll()
 //				.anyRequest()
 //				.authenticated()
 //				.and()
 //				.formLogin()
 //				.usernameParameter( "email" )
-//				.passwordParameter( "senha" )
+//				.passwordParameter( "password" )
 //				.loginPage( "/authentication" )
 //				.loginProcessingUrl( "/authenticate" )
 //				.failureHandler( this.authenticationFailureHandler )
@@ -81,7 +64,24 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter
 //				.permitAll()
 //				.and()
 //				.logout()
-//				.logoutUrl( "/logout" );
+//				.logoutUrl( "/logout" ).logoutSuccessUrl( "/" );
+
+		httpSecurity
+				.authorizeRequests()
+				.anyRequest()
+				.authenticated()
+				.and()
+				.formLogin()
+				.usernameParameter( "email" )
+				.passwordParameter( "senha" )
+				.loginPage( "/autenticacao" )
+				.loginProcessingUrl( "/authenticate" )
+				.failureHandler( this.authenticationFailureHandler )
+				.successHandler( this.authenticationSuccessHandler )
+				.permitAll()
+				.and()
+				.logout()
+				.logoutUrl( "/logout" );
 	}
 
 	/**
@@ -95,10 +95,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter
 	}
 	
 	/**
-	 * 
+	 * configure
 	 */
-	@Bean
-	public UserDetailsService userDetailsService() {
-	    return super.userDetailsService();
-	}
+//	@Bean
+//	public UserDetailsService userDetailsService() {
+//	    return super.userDetailsService();
+//	}
 }

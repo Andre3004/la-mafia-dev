@@ -19,33 +19,12 @@ public class NavigationController
 	 *-------------------------------------------------------------------*/
 
 	/**
-	 * @return
-	 */
-	@RequestMapping("/")
-	public ModelAndView home()
-	{
-		ModelAndView model = new ModelAndView( "modules/home/index" );
-		model.getModel().put( "production", environment.acceptsProfiles( "production" ) );
-		return model;
-	}
-
-	/**
 	 *
 	 */
-	@RequestMapping(value = "/authentication")
+	@RequestMapping(value = "/autenticacao")
 	public ModelAndView authentication()
 	{
-		return new ModelAndView( "modules/authentication/index" );
+		return new ModelAndView( "index" );
 	}
-
-	/**
-	 * @return
-	 */
-	@RequestMapping("/incorporation-code")
-	public ModelAndView incorporation_code()
-	{
-		return new ModelAndView( "modules/public/index" );
-	}
-
 
 }

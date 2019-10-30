@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.dao.AmbienteDAO;
 import br.com.projeto.portal.domain.dao.MesaDAO;
 import br.com.projeto.portal.domain.entity.Ambiente.Ambiente;
@@ -49,9 +50,9 @@ public class AmbienteService
 	 *-------------------------------------------------------------------*/
 
 	
-	public Page<Ambiente> listAmbientesByFilters( String nome, Long ambienteId, PageRequest pageable )
+	public Page<Ambiente> listAmbientesByFilters( String nome, PageRequest pageable )
 	{
-		return this.ambienteDao.listAmbientesByFilters( nome, ambienteId, pageable );
+		return this.ambienteDao.listAmbientesByFilters( nome, ContextHolder.getAuthenticatedUser().getFranquia().getCodigo(), pageable );
 	}
 
 	
@@ -68,6 +69,7 @@ public class AmbienteService
 	public Long insertAmbiente( Ambiente ambiente )
 	{
 		ambiente.setSituacao( true );
+		ambiente.setFranquia( ContextHolder.getAuthenticatedUser().getFranquia() );
 		Long ambienteId = this.ambienteDao.insertAmbiente( ambiente );
 
 		if(ambiente.getAmbienteImagems() != null && ambiente.getAmbienteImagems().size() > 0)

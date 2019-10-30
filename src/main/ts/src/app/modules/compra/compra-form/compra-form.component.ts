@@ -176,12 +176,13 @@ export class CompraFormComponent implements OnInit
       for (let i = 0; i < this.compra.condicaoPagamento.parcelas.length; i++) 
       {
         var dateNow = new Date();
+        var parcela = this.compra.condicaoPagamento.parcelas[i];
         dateNow.setHours(0)
         dateNow.setMinutes(0);
 
 
-        var dataVencimento = dateNow.setDate(dateNow.getDate() + this.compra.condicaoPagamento.parcelas[i].dias);
-        this.compra.contasAPagar.push({ dataVencimento } as any) //completar isso com os atributos.
+        var dataVencimento = dateNow.setDate(dateNow.getDate() + parcela.dias);
+        this.compra.contasAPagar.push({ dataVencimento, formaPagamento: parcela.formaPagamento } as any) 
       }
 
       for (let i = 0; i < this.compra.contasAPagar.length - 1; i++)
@@ -223,7 +224,7 @@ export class CompraFormComponent implements OnInit
     if(isNaN(parseInt(filter))) produto = filter ? filter : "";
     else codigo = parseInt(filter)
 
-    this.produtoService.listProdutosByFilters(produto, codigo, null).subscribe(page =>
+    this.produtoService.listProdutosByFiltersToAssociation(produto, codigo, null).subscribe(page =>
     {
       this.produtos = page.content.filter(c => c.situacao).filter(c => !this.compra.itensCompra.map(i => i.codigo).includes(c.codigo));
     })

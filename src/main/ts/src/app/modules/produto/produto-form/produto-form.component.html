@@ -13,7 +13,7 @@
 
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Produto</mat-label>
-                <input uppercase required [(ngModel)]="produto.produto" name="nome" matInput maxlength="144"
+                <input uppercase required [(ngModel)]="produto.produto" [disabled]="isFranquiado" name="nome" matInput maxlength="144"
                     placeholder="Digite o nome do produto">
             </mat-form-field>
 
@@ -24,6 +24,7 @@
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Unidade comercial</mat-label>
                 <input uppercase  [(ngModel)]="produto.unidadeComercial" name="unidadeComercial" matInput
+                [disabled]="isFranquiado"
                     required
                     maxlength="50" placeholder="Digite a unidade comercial do produto">
             </mat-form-field>
@@ -35,6 +36,7 @@
                 key="codigo" 
                 displayKey="grupoProduto"
                 [displayId]="true" 
+                [isDetail]="isFranquiado"
                 [list]="{values: gruposProdutos}" 
                 [itemSelected]="{selected: produto.grupoProduto}"
                 (onFilterChange)="onListGrupoProdutos($event)" 
@@ -47,7 +49,7 @@
             <mat-form-field style="margin-left: 30px" *ngIf="produto?.grupoProduto?.exigeAno" fxFlex
                 appearance="outline">
                 <mat-label>Ano</mat-label>
-                <input [(ngModel)]="produto.ano" name="ano" matInput
+                <input [(ngModel)]="produto.ano" [disabled]="isFranquiado" name="ano" matInput
                     [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}"
                     placeholder="Digite o ano do produto">
             </mat-form-field>
@@ -81,7 +83,7 @@
 
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Código de barras</mat-label>
-                <input uppercase [(ngModel)]="produto.codigoBarras" name="codigoBarras" matInput
+                <input [disabled]="isFranquiado" uppercase [(ngModel)]="produto.codigoBarras" name="codigoBarras" matInput
                     [textMask]="{mask: textMasks.getNumbersOnlyMask(100), guide: false}"
                     placeholder="Digite o código de barras do produto">
             </mat-form-field>
@@ -91,7 +93,7 @@
 
             <mat-form-field fxFlex appearance="outline">
                 <mat-label>Descrição</mat-label>
-                <textarea uppercase [(ngModel)]="produto.descricao" name="descricao" matInput maxlength="144"
+                <textarea [disabled]="isFranquiado" uppercase [(ngModel)]="produto.descricao" name="descricao" matInput maxlength="144"
                     placeholder="Digite a descrição do produto"></textarea>
             </mat-form-field>
         </div>
@@ -110,7 +112,7 @@
 
         </div>
 
-        <div fxFlex style="background-color: #b71c1c; color: white; font-weight: bold;border-radius: 30px;"
+        <div *ngIf="!isFranquiado" fxFlex style="background-color: #b71c1c; color: white; font-weight: bold;border-radius: 30px;"
             fxLayoutAlign="space-between center">
             <label *ngIf="!fotoImage && !produto.anexoUuid" style="max-width: 400px;"
                 class="text-truncate push-left-md">

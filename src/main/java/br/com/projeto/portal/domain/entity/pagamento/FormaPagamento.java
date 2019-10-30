@@ -1,5 +1,6 @@
 package br.com.projeto.portal.domain.entity.pagamento;
 
+import br.com.projeto.portal.domain.entity.franquia.Franquia;
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,6 +20,11 @@ public class FormaPagamento extends AbstractEntity
 	private Boolean situacao;
 
 	private String formaPagamento;
+
+	private Long franquiaId;
+
+	///Transiente
+	private Franquia franquia;
 
 	/*-------------------------------------------------------------------
 	 * 		 					CONSTRUCTORS

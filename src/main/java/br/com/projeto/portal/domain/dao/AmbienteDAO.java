@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.entity.Ambiente.Ambiente;
 import br.com.projeto.portal.domain.entity.Ambiente.AmbienteImagem;
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
@@ -123,7 +124,7 @@ public class AmbienteDAO
 		String selectAndFrom = "SELECT * " +
 				"FROM ambiente ";
 
-		String where =  "WHERE ambiente LIKE  '%" + nome + "%' ";
+		String where =  "WHERE  franquia_id = "+ ContextHolder.getAuthenticatedUser().getFranquia().getCodigo() +" AND ambiente LIKE  '%" + nome + "%' ";
 
 		where += franquiaId != null ?	"AND franquia_id = " + franquiaId + "  " : "";
 
