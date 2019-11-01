@@ -56,6 +56,12 @@ export class AutoCompleteWithRedirectComponent<T> implements OnInit
 
     @Input()
     public list: listForRender<T> = { values: [] };
+
+    @Input()
+    public isList = false;
+
+    @Input()
+    public classes = "";
     /*-------------------------------------------------------------------
     *                           BEHAVIORs
     *-------------------------------------------------------------------*/
@@ -71,6 +77,8 @@ export class AutoCompleteWithRedirectComponent<T> implements OnInit
     {
     }
 
+    // 
+
     public displayFn(entity?: T)
     {
         if(this.displayId)
@@ -80,6 +88,20 @@ export class AutoCompleteWithRedirectComponent<T> implements OnInit
         else
         {
             return entity && entity[this.key] ? entity[this.displayKey] : '';
+        }
+    }
+
+    public addRequired(){
+        var elementInput = document.getElementsByClassName(this.classes)[0];
+        var elementLabel = document.getElementsByClassName(this.classes+"1")[0] as any;
+        var classes = ["ng-pristine", "ng-invalid", "mat-form-field-invalid", "mat-form-field-hide-placeholder", "ng-touched"]
+        if(!this.itemSelected.selected){
+            classes.forEach( c => {if(elementInput) elementInput.classList.add(c)})
+            elementLabel.style.color = "#e53935";
+        }
+        else{
+            classes.forEach( c => {if(elementInput) elementInput.classList.remove(c)})
+            elementLabel.style.color = "rgba(0, 0, 0, 0.6)";
         }
     }
 
@@ -93,6 +115,7 @@ export class AutoCompleteWithRedirectComponent<T> implements OnInit
     {
         this.itemSelected.selected = entity;
         this.onSelect.emit(entity);
+        this.addRequired();
     }
 
     public onDeleteEntity(event)
@@ -100,6 +123,7 @@ export class AutoCompleteWithRedirectComponent<T> implements OnInit
         this.itemSelected.selected = null;
         this.onDelete.emit();
         this.filterChange('');
+        this.addRequired();
     }
 
     public redirect()

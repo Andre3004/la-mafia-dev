@@ -56,7 +56,7 @@ CREATE TABLE usuario(
     email varchar(144) NOT NULL,
     senha varchar(144) NOT NULL,
     telefone varchar(144) NOT NULL,
-    cpf varchar(144) UNIQUE NOT NULL,
+    cpf varchar(144) NOT NULL,
     perfil_usuario int NOT NULL,
     situacao boolean NOT NULL,
     created TIMESTAMP NOT NULL,
@@ -113,24 +113,6 @@ CREATE TABLE mesa (
     situacao boolean NOT NULL
 );
 
-CREATE TABLE cliente(
-    codigo serial NOT NULL PRIMARY KEY,
-    cliente varchar(144) NOT NULL,
-    apelido varchar(144),
-    cpf varchar(144) NOT NULL unique,
-    sexo varchar(144) NOT NULL,
-    telefone varchar(144),
-    celular varchar(144) NOT NULL,
-    email varchar(144),
-    endereco varchar(144),
-    cidade_id bigint REFERENCES cidade NOT NULL,
-    estado_id bigint REFERENCES estado NOT NULL,
-    pais_id bigint REFERENCES pais NOT NULL,
-    created TIMESTAMP,
-    updated TIMESTAMP,
-    situacao boolean NOT NULL
-);
-
 CREATE TABLE produto (
     codigo serial PRIMARY KEY,
     created TIMESTAMP NOT NULL,
@@ -181,12 +163,20 @@ CREATE TABLE fornecedor(
     cidade_id bigint REFERENCES cidade NOT NULL,
     estado_id bigint REFERENCES estado NOT NULL,
     pais_id bigint REFERENCES pais NOT NULL,
-    condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
     cep varchar(144) NOT NULL,
     created TIMESTAMP,
     updated TIMESTAMP,
     situacao boolean NOT NULL,
     inscricao_estadual varchar(144)
+);
+
+CREATE TABLE condicao_pagamento_fornecedor(
+    fornecedor_id bigint REFERENCES fornecedor NOT NULL,
+    condicao_pagamento_id bigint REFERENCES condicao_pagamento,
+    franquia_id bigint REFERENCES franquia NOT NULL,
+    created TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+    primary key(fornecedor_id, franquia_id)
 );
 
 CREATE TABLE condicao_pagamento_parcela (
@@ -365,6 +355,26 @@ CREATE TABLE contas_a_receber(
         cliente_id,
         franquia_id
     )
+);
+
+CREATE TABLE cliente(
+    codigo serial NOT NULL PRIMARY KEY,
+    cliente varchar(144) NOT NULL,
+    apelido varchar(144),
+    cpf varchar(144) NOT NULL,
+    sexo varchar(144) NOT NULL,
+    telefone varchar(144),
+    celular varchar(144) NOT NULL,
+    email varchar(144),
+    endereco varchar(144),
+    cidade_id bigint REFERENCES cidade NOT NULL,
+    estado_id bigint REFERENCES estado NOT NULL,
+    pais_id bigint REFERENCES pais NOT NULL,
+    created TIMESTAMP,
+    updated TIMESTAMP,
+    situacao boolean NOT NULL,
+    franquia_id bigint REFERENCES franquia NOT NULL,
+    UNIQUE(cpf, franquia_id)
 );
 
 SET

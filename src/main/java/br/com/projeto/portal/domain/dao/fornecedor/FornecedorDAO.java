@@ -1,25 +1,24 @@
 package br.com.projeto.portal.domain.dao.fornecedor;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.dao.CondicaoPagamentoDAO;
-import br.com.projeto.portal.domain.dao.FormaPagamentoDAO;
+import br.com.projeto.portal.domain.dao.FranquiaDAO;
 import br.com.projeto.portal.domain.dao.cidade.CidadeDAO;
 import br.com.projeto.portal.domain.dao.estado.EstadoDAO;
 import br.com.projeto.portal.domain.dao.pais.PaisDAO;
+import br.com.projeto.portal.domain.entity.CondicaoPagamentoFornecedor;
 import br.com.projeto.portal.domain.entity.Fornecedor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import java.time.ZoneId;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -47,6 +46,9 @@ public class FornecedorDAO
     @Autowired
     CondicaoPagamentoDAO condicaoPagamentoDAO;
 
+    @Autowired
+    FranquiaDAO franquiaDAO;
+
 
     
     public Fornecedor findFornecedorById(Long id)
@@ -59,17 +61,22 @@ public class FornecedorDAO
         fornecedor.setEstado( estadoDAO.findEstadoById(fornecedor.getEstadoId()) );
         fornecedor.setCidade( cidadeDAO.findCidadeById( fornecedor.getCidadeId()) );
         fornecedor.setPais( paisDAO.findPaisById( fornecedor.getPaisId()) );
-        fornecedor.setCondicaoPagamento( condicaoPagamentoDAO.findCondicaoPagamentoById( fornecedor.getCondicaoPagamentoId()) );
 
         return fornecedor;
     }
 
     
-    public void insertFornecedor( Fornecedor fornecedor )
+    public Long insertFornecedor( Fornecedor fornecedor )
     {
+        String sqlId = "SELECT max(codigo) FROM fornecedor";
+        Long returnQuery = jdbcTemplate.queryForObject( sqlId, Long.class );
+        Long id = returnQuery == null ? 1 : returnQuery+1;
+
+
         jdbcTemplate.update(
                 "INSERT INTO fornecedor " +
-                        "(razaoSocial, " +
+                        "(codigo, " +
+                        "razaoSocial, " +
                         "cnpj, " +
                         "telefone, " +
                         "celular, " +
@@ -83,8 +90,8 @@ public class FornecedorDAO
                         "cep, " +
                         "situacao, " +
                         "inscricao_estadual, " +
-                        "condicao_pagamento_id, " +
                         "created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                id,
                 fornecedor.getRazaoSocial(),
                 fornecedor.getCnpj(),
                 fornecedor.getTelefone(),
@@ -99,10 +106,54 @@ public class FornecedorDAO
                 fornecedor.getCep(),
                 fornecedor.getSituacao(),
                 fornecedor.getInscricaoEstadual(),
+                Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
+
+        return id;
+
+    }
+
+    public void insertCondicaoPagamentoFornecedor(Fornecedor fornecedor){
+        jdbcTemplate.update(
+                "INSERT INTO condicao_pagamento_fornecedor " +
+                        "(fornecedor_id, " +
+                        "condicao_pagamento_id, " +
+                        "franquia_id, "+
+                        "created) VALUES (?,?,?,?)",
+                fornecedor.getCodigo(),
                 fornecedor.getCondicaoPagamento().getCodigo(),
+                ContextHolder.getAuthenticatedUser().getFranquia().getCodigo(),
                 Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
     }
 
+    public void updateCondicaoPagamentoFornecedor(Fornecedor fornecedor){
+        jdbcTemplate.update(
+                "UPDATE condicao_pagamento_fornecedor SET " +
+                        "condicao_pagamento_id = ?, " +
+                        "updated = ? " +
+                        "WHERE fornecedor_id = ? AND franquia_id = ?",
+                fornecedor.getCondicaoPagamento() != null ? fornecedor.getCondicaoPagamento().getCodigo() : null,
+                Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
+                fornecedor.getCodigo(),
+                ContextHolder.getAuthenticatedUser().getFranquia().getCodigo());
+    }
+
+    public CondicaoPagamentoFornecedor findCondicaoPagamentoFornecedorById( Long fornecedorId, Long franquiaId)
+    {
+        try{
+            String sql = "SELECT * FROM condicao_pagamento_fornecedor WHERE fornecedor_id = ? AND franquia_id = ?";
+
+            CondicaoPagamentoFornecedor condicaoPagamentoFornecedor = (CondicaoPagamentoFornecedor) jdbcTemplate.queryForObject(sql,
+                    new Object[] { fornecedorId ,  franquiaId}, new BeanPropertyRowMapper(CondicaoPagamentoFornecedor.class));
+
+            if(condicaoPagamentoFornecedor.getCondicaoPagamentoId() != null)
+                condicaoPagamentoFornecedor.setCondicaoPagamento( condicaoPagamentoDAO.findCondicaoPagamentoById( condicaoPagamentoFornecedor.getCondicaoPagamentoId()) );
+
+            return condicaoPagamentoFornecedor;
+        }
+        catch ( Exception e ){
+            return null;
+        }
+    }
     
     public void updateFornecedor( Fornecedor fornecedor )
     {
@@ -121,7 +172,6 @@ public class FornecedorDAO
                         "pais_id = ?, " +
                         "cep = ?, " +
                         "inscricao_estadual = ?, " +
-                        "condicao_pagamento_id = ?, " +
                         "updated = ? " +
                         "WHERE codigo = ?",
                 fornecedor.getRazaoSocial(),
@@ -137,7 +187,6 @@ public class FornecedorDAO
                 fornecedor.getPais().getCodigo(),
                 fornecedor.getCep(),
                 fornecedor.getInscricaoEstadual(),
-                fornecedor.getCondicaoPagamento().getCodigo(),
                 Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
                 fornecedor.getCodigo());
     }

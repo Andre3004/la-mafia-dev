@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.projeto.portal.domain.entity.Fornecedor;
+import br.com.projeto.portal.domain.entity.franquia.Franquia;
 import br.com.projeto.portal.domain.entity.grupoProduto.GrupoProduto;
 import br.com.projeto.portal.domain.entity.usuario.PerfilUsuario;
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;

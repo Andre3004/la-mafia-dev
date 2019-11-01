@@ -72,7 +72,7 @@ public class ProdutoDAO
 						"grupo_produto_id, " +
 						"codigo_barras, " +
 						"unidade_comercial, " +
-						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 				produto.getProduto(),
 				produto.getDescricao(),
 				produto.getAno(),

@@ -13,7 +13,7 @@ const fornecedorRoutes: Routes = [
                 component: FornecedorListComponent,
                 data: {
                     title: 'Fornecedores',
-                    onlyFranquiador: true
+                    ambos: true
                 },
                 canActivate: [AuthGuard]
             }

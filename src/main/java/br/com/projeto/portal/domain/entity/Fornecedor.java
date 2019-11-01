@@ -54,6 +54,7 @@ public class Fornecedor extends AbstractEntity
 
     private Pais pais;
 
+    //@Transient
     private CondicaoPagamento condicaoPagamento;
 
     //@Transient
@@ -64,9 +65,6 @@ public class Fornecedor extends AbstractEntity
 
     //@Transient
     private Integer paisId;
-
-    //@Transient
-    private Integer condicaoPagamentoId;
 
 
     /*-------------------------------------------------------------------

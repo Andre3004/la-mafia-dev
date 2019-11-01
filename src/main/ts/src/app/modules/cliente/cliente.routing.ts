@@ -12,8 +12,7 @@ const clienteRoutes: Routes = [
                 path: '',
                 component: ClienteListComponent,
                 data: {
-                    title: 'Clientes',
-                    onlyFranquiador: true
+                    title: 'Clientes'
                 },
                 canActivate: [AuthGuard]
             }

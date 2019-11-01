@@ -8,6 +8,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import br.com.projeto.portal.application.security.ContextHolder;
+import br.com.projeto.portal.domain.dao.FranquiaDAO;
 import br.com.projeto.portal.domain.dao.cidade.CidadeDAO;
 import br.com.projeto.portal.domain.dao.estado.EstadoDAO;
 import br.com.projeto.portal.domain.dao.pais.PaisDAO;
@@ -42,6 +44,8 @@ public class ClienteDAO
     @Autowired
     PaisDAO paisDAO;
 
+    @Autowired
+    FranquiaDAO franquiaDAO;
     
     public Cliente findClienteById(Long id)
     {
@@ -53,6 +57,7 @@ public class ClienteDAO
         cliente.setEstado( estadoDAO.findEstadoById(cliente.getEstadoId()) );
         cliente.setCidade( cidadeDAO.findCidadeById( cliente.getCidadeId()) );
         cliente.setPais( paisDAO.findPaisById( cliente.getPaisId()) );
+        cliente.setFranquia( franquiaDAO.findFranquiaById( cliente.getFranquiaId() ) );
 
         return cliente;
     }
@@ -74,7 +79,8 @@ public class ClienteDAO
                         "estado_id, " +
                         "pais_id, " +
                         "situacao, " +
-                        "created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "franquia_id, " +
+                        "created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 cliente.getCliente(),
                 cliente.getApelido(),
                 cliente.getCpf(),
@@ -87,6 +93,7 @@ public class ClienteDAO
                 cliente.getEstado().getCodigo(),
                 cliente.getPais().getCodigo(),
                 cliente.getSituacao(),
+                ContextHolder.getAuthenticatedUser().getFranquia().getCodigo(),
                 Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
     }
 
@@ -148,7 +155,7 @@ public class ClienteDAO
         String selectAndFrom = "SELECT * " +
                 "FROM cliente ";
 
-        String where =  "WHERE cliente LIKE  '%" + cliente + "%' ";
+        String where =  "WHERE franquia_id = "+ContextHolder.getAuthenticatedUser().getFranquia().getCodigo()+" AND cliente LIKE  '%" + cliente + "%' ";
 
 
         String pagination = "LIMIT " + pageable.getPageSize() + " " +

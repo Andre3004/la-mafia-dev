@@ -4,6 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FornecedorService, CidadeService, EstadoService, PaisService, CondicaoPagamentoService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
 import { TextMasks } from 'src/app/common/mask/text-masks';
+import { AutenticacaoService } from 'src/app/common/autenticacao/autenticacao.service';
 
 @Component({
   selector: 'app-fornecedor-form',
@@ -37,6 +38,7 @@ export class FornecedorFormComponent implements OnInit
 
   public condicoesPagamento: CondicaoPagamento[];
 
+  public isFranquiado = false;
 
   constructor(
     private fornecedorService: FornecedorService,
@@ -44,6 +46,7 @@ export class FornecedorFormComponent implements OnInit
     public dialogRef: MatDialogRef<FornecedorFormComponent>,
     private cidadeService: CidadeService,
     private condicaoPagamentoService: CondicaoPagamentoService,
+    private autenticacaoService: AutenticacaoService,
     @Inject(MAT_DIALOG_DATA) public data: any
   )
   {
@@ -57,13 +60,16 @@ export class FornecedorFormComponent implements OnInit
 
   }
 
-  ngOnInit()
+  async ngOnInit()
   {
-
     if (this.data.codigo)
       this.title = "Alterar fornecedor";
     else
       this.title = "Inserir fornecedor";
+
+      this.autenticacaoService.usuarioAutenticado().then( result => {
+        this.isFranquiado = this.autenticacaoService.isFranquiado;
+      });
   }
 
   /*-------------------------------------------------------------------
@@ -90,12 +96,6 @@ export class FornecedorFormComponent implements OnInit
 
     this.fornecedor.estado = this.fornecedor.cidade.estado;
     this.fornecedor.pais = this.fornecedor.cidade.estado.pais;
-
-    if (!this.fornecedor.condicaoPagamento)
-    {
-      this.openSnackBarService.openError('O campo condição de deve ser preenchido.');
-      return;
-    }
 
     if (!this.validaCNPJ(this.fornecedor.cnpj))
     {

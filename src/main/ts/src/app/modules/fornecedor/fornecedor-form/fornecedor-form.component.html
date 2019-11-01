@@ -125,6 +125,8 @@
       </mat-form-field>
 
       <auto-complete-with-redirect
+         *ngIf="isFranquiado"
+          [isList]="true" 
           fxFlex
           title="Condição de pagamento"
           link="condicao-pagamento"
