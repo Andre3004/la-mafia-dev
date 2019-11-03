@@ -62,11 +62,7 @@ public class EstadoService
     
     public void updateEstado( Estado estado )
     {
-
-
         Estado estadoSaved = this.estadoDao.findEstadoById( estado.getCodigo() );
-
-
 
         estado.setUpdated( LocalDateTime.now() );
 

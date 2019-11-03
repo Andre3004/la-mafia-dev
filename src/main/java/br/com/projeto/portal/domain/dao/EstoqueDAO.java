@@ -49,7 +49,7 @@ public class EstoqueDAO
 				estoque.getPrecoCusto(),
 				estoque.getPrecoVenda(),
 				estoque.getFornecedor() != null ? estoque.getFornecedor().getCodigo() : null,
-				estoque.getDataUltimaCompra(),
+				estoque.getDataUltimaCompra() != null ? Timestamp.valueOf(estoque.getDataUltimaCompra()) : null,
 				Timestamp.valueOf( LocalDateTime.now( this.fusoHorarioDeSaoPaulo ) ));
 	}
 
@@ -67,8 +67,8 @@ public class EstoqueDAO
 				estoque.getSaldo(),
 				estoque.getPrecoCusto(),
 				estoque.getPrecoVenda(),
-				estoque.getFornecedor().getCodigo(),
-				Timestamp.valueOf( estoque.getDataUltimaCompra() ),
+				estoque.getFornecedor() != null ? estoque.getFornecedor().getCodigo() : null,
+				estoque.getDataUltimaCompra() != null ? Timestamp.valueOf( estoque.getDataUltimaCompra() ) : null,
 				Timestamp.valueOf( LocalDateTime.now( this.fusoHorarioDeSaoPaulo ) ),
 				estoque.getFranquia().getCodigo(),
 				estoque.getProduto().getCodigo() );
@@ -97,10 +97,14 @@ public class EstoqueDAO
 				e.setFornecedorId(rs.getLong("fornecedor_id") != 0 ? rs.getLong("fornecedor_id") : null);
 				e.setDataUltimaCompra( rs.getTimestamp( "data_ultima_compra" ) != null ? rs.getTimestamp( "data_ultima_compra" ).toLocalDateTime() : null );
 				e.setSaldo(rs.getInt("saldo"));
-
+				e.setProdutoId(rs.getLong("produto_id"));
 				return e;
 			}
 		});
 		return estoques;
+	}
+
+	public void deleteEstoque(Long produtoId){
+		jdbcTemplate.update("DELETE from estoque WHERE produto_id = ? ", produtoId);
 	}
 }

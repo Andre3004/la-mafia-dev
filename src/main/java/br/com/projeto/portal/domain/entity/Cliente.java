@@ -3,6 +3,7 @@ package br.com.projeto.portal.domain.entity;
 import java.util.Arrays;
 
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
+import br.com.projeto.portal.domain.entity.pagamento.CondicaoPagamento;
 import br.com.projeto.portal.infrastructure.AbstractEntity.AbstractEntity;
 import org.directwebremoting.annotations.DataTransferObject;
 
@@ -50,6 +51,11 @@ public class Cliente extends AbstractEntity
     private Pais pais;
 
     private Long franquiaId;
+
+    private Long condicaoPagamentoId;
+
+    //@Transient
+    private CondicaoPagamento condicaoPagamento;
 
     //@Transient
     private Franquia franquia;

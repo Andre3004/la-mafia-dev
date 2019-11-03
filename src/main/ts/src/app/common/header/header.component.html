@@ -27,7 +27,14 @@
             <h2 *ngIf="!title" style="font-size: 20px !important;font-weight: bold;; color: white; margin-left: 10px !important;" >{{'produto' | uppercase}}</h2>
 
             <div fxFlex></div>
-            <button mat-button class="push-right-md" [matMenuTriggerFor]="menu">
+
+
+            <button mat-icon-button style="color: white; cursor: default !important;" >
+                <mat-icon>account_circle</mat-icon>
+            </button>
+            <h2 *ngIf="title" style="font-size: 20px !important;font-weight: bold;; color: white" >{{usuarioAutenticado?.usuario | uppercase}} ({{usuarioAutenticado?.perfilUsuario | uppercase}})</h2>
+
+            <button mat-button class="push-left-md push-right-md" [matMenuTriggerFor]="menu">
                     <mat-icon>exit_to_app</mat-icon>
             </button>
             <mat-menu #menu="matMenu" [overlapTrigger]="false">

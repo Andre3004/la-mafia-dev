@@ -22,6 +22,7 @@ import br.com.projeto.portal.domain.dao.venda.VendaDAO;
 import br.com.projeto.portal.domain.entity.compra.Compra;
 import br.com.projeto.portal.domain.entity.compra.ItemCompra;
 import br.com.projeto.portal.domain.entity.contasApagar.ContasAPagar;
+import br.com.projeto.portal.domain.entity.usuario.PerfilUsuario;
 import br.com.projeto.portal.domain.entity.venda.ContasAReceber;
 import br.com.projeto.portal.domain.entity.venda.ItemVenda;
 import br.com.projeto.portal.domain.entity.venda.Venda;
@@ -83,7 +84,8 @@ public class VendaService
 				itemVenda.setVenda( venda );
 				itemVenda.setFranquia( ContextHolder.getAuthenticatedUser().getFranquia() );
 
-				produtoDAO.setCurrentEstoque( itemVenda ); // atualiza o saldo
+				if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ))
+					produtoDAO.setCurrentEstoque( itemVenda ); // atualiza o saldo
 				itemVenda.getCurrentEstoque().setSaldo( itemVenda.getCurrentEstoque().getSaldo().intValue() -  itemVenda.getQuantidade().intValue() );
 
 				Assert.isTrue( itemVenda.getCurrentEstoque().getSaldo() >= 0, "Não foi possível realizar a venda pois o produto "+itemVenda.getProduto()+" não possui estoque suficiente." );

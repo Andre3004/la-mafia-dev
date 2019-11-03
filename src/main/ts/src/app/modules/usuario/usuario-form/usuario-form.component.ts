@@ -24,7 +24,7 @@ export class UsuarioFormComponent implements OnInit
 
   public maskCpf = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
 
-  public maskTelefone = ['+', /\d/, /\d/, /\d/, ' ', '(', /\d/, /\d/, ')', ' ', /\d/, ' ', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
+  public maskTelefone = ['(', /\d/, /\d/, ')', ' ', /\d/, ' ', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
 
   public confSenha = null;
 
@@ -77,10 +77,16 @@ export class UsuarioFormComponent implements OnInit
 
   }
 
+  public changeTipo(){
+    if(this.usuario.perfilUsuario == 'FRANQUIADOR'){
+      this.usuario.franquia = null;
+    }
+  }
+
   public onSubmit(): void
   {
 
-    if (!this.usuario.franquia || (this.usuario.franquia && !this.usuario.franquia.codigo))
+    if ( this.usuario.perfilUsuario == 'FRANQUIADO' && (!this.usuario.franquia || (this.usuario.franquia && !this.usuario.franquia.codigo)))
     {
       this.openSnackBarService.openError("O campo franquia deve ser preenchido.");
       return;
@@ -103,7 +109,7 @@ export class UsuarioFormComponent implements OnInit
       var numb = this.usuario.telefone.match(/\d/g);
       var numbString = numb.join("").toString();
 
-      if (numbString.length != 14)
+      if (numbString.length != 11)
       {
         this.openSnackBarService.openError('O campo telefone está inválido.');
         return;

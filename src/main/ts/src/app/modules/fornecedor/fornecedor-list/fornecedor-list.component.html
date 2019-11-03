@@ -5,7 +5,7 @@
 			<input uppercase matInput maxlength="144" [(ngModel)]="filters.razaoSocial">
 		</mat-form-field>
 		<span flex></span>
-		<button class="white-btn" color="primary" (click)="openForm()" mat-raised-button>ADICIONAR NOVO FORNECEDOR</button>
+		<button class="white-btn" color="primary" (click)="openForm()" *ngIf="!isFranquiado" mat-raised-button>ADICIONAR NOVO FORNECEDOR</button>
 	</mat-toolbar-row>
 
 	<mat-toolbar-row fxLayoutGap="30px">
@@ -69,12 +69,12 @@
 				<mat-icon class="edit-icon">edit</mat-icon>
 			</button>
 
-			<button *ngIf="!fornecedor.situacao" matTooltip="Ativar fornecedor"
+			<button *ngIf="!fornecedor.situacao && !isFranquiado" matTooltip="Ativar fornecedor"
 				(click)="$event.stopPropagation(); atualizarSituacaoFornecedor(fornecedor)" mat-icon-button>
 				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
 			</button>
 
-			<button *ngIf="fornecedor.situacao" matTooltip="Excluir/Desativar fornecedor"
+			<button *ngIf="fornecedor.situacao && !isFranquiado" matTooltip="Excluir/Desativar fornecedor"
 				(click)="$event.stopPropagation(); atualizarSituacaoFornecedor(fornecedor)" mat-icon-button>
 				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
 			</button>

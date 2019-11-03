@@ -60,7 +60,7 @@ public class FormaPagamentoDAO{
 		jdbcTemplate.update("UPDATE forma_pagamento " +
 						"SET " +
 						"forma_pagamento = ?, " +
-						"updated = ?, " +
+						"updated = ? " +
 						"WHERE codigo = ?",
 				formaPagamento.getFormaPagamento(),
 				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),

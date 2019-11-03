@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, ActivationStart } from '@angular/router';
 import { TdLoadingService } from '@covalent/core';
 import { OpenSnackBarService } from '../open-snackbar/open-snackbar.service';
 import { AutenticacaoService } from '../autenticacao/autenticacao.service';
+import { Usuario } from 'src/generated/entities';
 
 @Component({
   selector: 'header',
@@ -41,6 +42,8 @@ export class HeaderComponent implements OnInit
   
   public isFranquiado = false;
 
+  public usuarioAutenticado: Usuario = {};
+
   
   /*-------------------------------------------------------------------
   *                           CONSTRUCTOR
@@ -70,8 +73,10 @@ export class HeaderComponent implements OnInit
   ngOnInit()
   {
     this.autenticacaoService.usuarioAutenticado().then( result => {
+      this.usuarioAutenticado = this.autenticacaoService.usuario;
       this.isFranquiado = this.autenticacaoService.isFranquiado;
     });
+
   }
 
   logout(){

@@ -3,7 +3,7 @@
 
 <mat-dialog-content>
 
-  <mat-tab-group>
+  <mat-tab-group (selectedTabChange)="onClickContasAReceber($event)">
     <mat-tab label="INFORMAÇÕES">
       <form #informacoesForm="ngForm" fxLayout="column">
 
@@ -33,6 +33,7 @@
           <auto-complete-with-redirect
             fxFlex
             title="Cliente"
+            [classes]="required-class-cliente"
             key="codigo"
             link="cliente"
             [isDisable]="venda?.cliente?.codigo || isDetail || venda.condicaoPagamento.codigo"
@@ -89,6 +90,7 @@
         <auto-complete-with-redirect
             fxFlex
             title="Produto"
+            [classes]="required-class-produto"
             key="codigo"
             link="produto"
             [isDisable]="itemVenda?.codigo || isDetail || venda.condicaoPagamento.codigo"
@@ -170,6 +172,7 @@
         [isDisable]="venda?.condicaoPagamento?.codigo || isDetail || venda.condicaoPagamento.codigo"
         displayKey="condicaoPagamento"
         [displayId]="true"
+        [classes]="required-class-condicao-pagamento"
         [isDetail]="isDetail"
         [list]="{values: condicoesPagamentos}"
         [itemSelected]="{selected: venda.condicaoPagamento}"

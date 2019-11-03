@@ -7,6 +7,7 @@ import { PaginationService } from 'src/app/common/pagination/pagination.service'
 import { FornecedorService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
 import { Fornecedor } from 'src/generated/entities';
+import { AutenticacaoService } from 'src/app/common/autenticacao/autenticacao.service';
 
 
 @Component({
@@ -39,19 +40,27 @@ export class FornecedorListComponent implements OnInit
         { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 300 }
     ];
 
+    public isFranquiado = false;
+
     constructor(public dialog: MatDialog,
         private _dialogService: TdDialogService,
         private paginationService: PaginationService,
         private openSnackBarService: OpenSnackBarService,
+        private autenticacaoService: AutenticacaoService,
         private fornecedorService: FornecedorService) 
     {
         this.pageRequest = paginationService.pageRequest('titulo', 'ASC', 10);
     }
 
-    ngOnInit()
+    async ngOnInit()
     {
         this.onListFornecedores();
+
+        this.autenticacaoService.usuarioAutenticado().then( result => {
+            this.isFranquiado = this.autenticacaoService.isFranquiado;
+        });
     }
+
 
     public onListFornecedores(filters: Boolean = true): void
     {

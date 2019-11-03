@@ -94,6 +94,7 @@
           key="codigo"
           displayKey="cidade"
           [displayId]="true"
+          [classes]="'required-class-cidade'"
           [list]="{values: cidades}"
           [itemSelected]="{selected: franquia.cidade}"
           (onFilterChange)="onListCidades($event)"

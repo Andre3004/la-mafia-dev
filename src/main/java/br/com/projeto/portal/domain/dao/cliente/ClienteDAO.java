@@ -9,11 +9,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import br.com.projeto.portal.application.security.ContextHolder;
+import br.com.projeto.portal.domain.dao.CondicaoPagamentoDAO;
 import br.com.projeto.portal.domain.dao.FranquiaDAO;
 import br.com.projeto.portal.domain.dao.cidade.CidadeDAO;
 import br.com.projeto.portal.domain.dao.estado.EstadoDAO;
 import br.com.projeto.portal.domain.dao.pais.PaisDAO;
 import br.com.projeto.portal.domain.entity.Cliente;
+import br.com.projeto.portal.domain.entity.pagamento.CondicaoPagamento;
+import br.com.projeto.portal.domain.service.CondicaoPagamentoService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -46,6 +50,9 @@ public class ClienteDAO
 
     @Autowired
     FranquiaDAO franquiaDAO;
+
+    @Autowired
+    CondicaoPagamentoDAO condicaoPagamentoDAO;
     
     public Cliente findClienteById(Long id)
     {
@@ -58,6 +65,9 @@ public class ClienteDAO
         cliente.setCidade( cidadeDAO.findCidadeById( cliente.getCidadeId()) );
         cliente.setPais( paisDAO.findPaisById( cliente.getPaisId()) );
         cliente.setFranquia( franquiaDAO.findFranquiaById( cliente.getFranquiaId() ) );
+
+        if(cliente.getCondicaoPagamentoId() != null)
+            cliente.setCondicaoPagamento( condicaoPagamentoDAO.findCondicaoPagamentoById( cliente.getCondicaoPagamentoId() ) );
 
         return cliente;
     }
@@ -80,7 +90,8 @@ public class ClienteDAO
                         "pais_id, " +
                         "situacao, " +
                         "franquia_id, " +
-                        "created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "condicao_pagamento_id, " +
+                        "created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 cliente.getCliente(),
                 cliente.getApelido(),
                 cliente.getCpf(),
@@ -94,6 +105,7 @@ public class ClienteDAO
                 cliente.getPais().getCodigo(),
                 cliente.getSituacao(),
                 ContextHolder.getAuthenticatedUser().getFranquia().getCodigo(),
+                cliente.getCondicaoPagamento().getCodigo(),
                 Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
     }
 
@@ -113,6 +125,7 @@ public class ClienteDAO
                         "cidade_id = ?, " +
                         "estado_id = ?, " +
                         "pais_id = ?, " +
+                        "condicao_pagamento_id = ?, " +
                         "updated = ? " +
                         "WHERE codigo = ?",
                 cliente.getCliente(),
@@ -126,6 +139,7 @@ public class ClienteDAO
                 cliente.getCidade().getCodigo(),
                 cliente.getEstado().getCodigo(),
                 cliente.getPais().getCodigo(),
+                cliente.getCondicaoPagamento().getCodigo(),
                 Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
                 cliente.getCodigo());
     }
@@ -171,6 +185,8 @@ public class ClienteDAO
                 c.setCpf(rs.getString(4));
                 c.setCelular(rs.getString(7));
                 c.setSituacao( rs.getBoolean( "situacao" ) );
+                if(rs.getLong("condicao_pagamento_id") != 0)
+                    c.setCondicaoPagamento( condicaoPagamentoDAO.findCondicaoPagamentoById( rs.getLong("condicao_pagamento_id") ) );
 
                 return c;
             }

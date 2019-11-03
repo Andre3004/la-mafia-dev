@@ -1,20 +1,10 @@
 <mat-toolbar class="toolbar-default">
 	<mat-toolbar-row fxLayoutGap="30px">
 
-		<auto-complete-with-redirect
-			fxFlex
-			title="Fornecedor"
-			key="codigo"
-			link="fornecedor"
-			displayKey="razaoSocial"
-			[isList]="true"
-			[displayId]="true"
-			[list]="{values: fornecedores}"
-			[itemSelected]="{selected: filters.fornecedor}"
-			(onFilterChange)="onListFornecedores($event)"
-			(onSelect)="filters.fornecedor = $event"
-			(onDelete)="filters.fornecedor = null"
-		>
+		<auto-complete-with-redirect fxFlex title="Fornecedor" [isNotRequired]="true" key="codigo" link="fornecedor"
+			displayKey="razaoSocial" [isNotRequired]="true" [displayId]="true" [list]="{values: fornecedores}"
+			[itemSelected]="{selected: filters.fornecedor}" (onFilterChange)="onListFornecedores($event)"
+			(onSelect)="filters.fornecedor = $event" (onDelete)="filters.fornecedor = null">
 		</auto-complete-with-redirect>
 
 		<mat-form-field fxFlex="10" appearance="outline">
@@ -64,14 +54,33 @@
 			<mat-icon *ngIf="!compra?.situacao" matTooltip="Desativado" class="tc-red-700">block</mat-icon>
 		</ng-template>
 
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="modelo" let-compra="row">
+			<span class="text-truncate">
+				{{compra?.modelo}}
+			</span>
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="serie" let-compra="row">
+			<span class="text-truncate">
+				{{compra?.serie}}
+			</span>
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="numeroNota" let-compra="row">
+			<span class="text-truncate">
+				{{compra?.numeroNota}}
+			</span>
+		</ng-template>
+
+
 		<ng-template fxLayoutAlign="end" tdDataTableTemplate="fornecedor" let-compra="row">
 			{{compra?.fornecedor?.codigo}} - {{compra?.fornecedor?.razaoSocial}}
 		</ng-template>
 
 		<ng-template fxLayoutAlign="end" tdDataTableTemplate="opcoes" let-compra="row">
 
-			<button matTooltip="Visualizar compra" stopPropagation (click)="$event.stopPropagation(); openForm(compra, true)"
-				mat-icon-button>
+			<button matTooltip="Visualizar compra" stopPropagation
+				(click)="$event.stopPropagation(); openForm(compra, true)" mat-icon-button>
 				<mat-icon class="tc-grey-700 edit-button-hover">visibility</mat-icon>
 			</button>
 

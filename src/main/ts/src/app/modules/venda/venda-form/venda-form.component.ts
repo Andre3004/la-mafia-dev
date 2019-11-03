@@ -136,6 +136,13 @@ export class VendaFormComponent implements OnInit
       }, err => console.log(err))
   }
 
+  public onClickContasAReceber(tab){
+    if(tab.index == 2 && this.venda.cliente && this.venda.cliente.condicaoPagamento)
+    {
+      this.onSelectCondicaoPagamento(this.venda.cliente.condicaoPagamento);
+    }
+  }
+
   /////////////////MODEL
 
   public onListCondicaoPagamentos(filter)

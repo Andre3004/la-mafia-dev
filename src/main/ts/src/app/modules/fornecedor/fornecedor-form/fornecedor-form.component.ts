@@ -24,9 +24,9 @@ export class FornecedorFormComponent implements OnInit
 
   public maskCnpj = [/\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/];
 
-  public maskTelefone = ['+', /\d/, /\d/, /\d/, ' ', '(', /\d/, /\d/, ')', ' ', ' ', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
+  public maskTelefone = ['(', /\d/, /\d/, ')', ' ', ' ', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
 
-  public maskCelular = ['+', /\d/, /\d/, /\d/, ' ', '(', /\d/, /\d/, ')', ' ', /\d/, ' ', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
+  public maskCelular = ['(', /\d/, /\d/, ')', ' ', /\d/, ' ', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
 
   public title = "";
 
@@ -109,7 +109,7 @@ export class FornecedorFormComponent implements OnInit
       var numb = this.fornecedor.telefone.match(/\d/g);
       numb = numb.join("").toString();
 
-      if (numb.length != 13)
+      if (numb.length != 10)
       {
         this.openSnackBarService.openError('telefone inválido.');
         return;
@@ -121,7 +121,7 @@ export class FornecedorFormComponent implements OnInit
       var numb = this.fornecedor.celular.match(/\d/g);
       numb = numb.join("").toString();
 
-      if (numb.length != 14)
+      if (numb.length != 11)
       {
         this.openSnackBarService.openError('celular inválido.');
         return;

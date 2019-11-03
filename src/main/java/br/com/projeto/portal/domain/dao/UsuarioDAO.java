@@ -61,7 +61,9 @@ public class UsuarioDAO
 		Usuario usuario = (Usuario) jdbcTemplate.queryForObject(sql,
 				new Object[] { id }, new BeanPropertyRowMapper(Usuario.class));
 
-		usuario.setFranquia( franquiaDAO.findFranquiaById( usuario.getFranquiaId() ) );
+		if(usuario.getFranquiaId() != null)
+			usuario.setFranquia( franquiaDAO.findFranquiaById( usuario.getFranquiaId() ) );
+
 		return usuario;
 	}
 
@@ -86,7 +88,7 @@ public class UsuarioDAO
 				usuario.getCpf(),
 				usuario.getPerfilUsuario().ordinal(),
 				usuario.getSituacao(),
-				usuario.getFranquia().getCodigo(),
+				usuario.getFranquia() != null ? usuario.getFranquia().getCodigo() : null,
 				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 	}
 
@@ -112,7 +114,7 @@ public class UsuarioDAO
 				usuario.getCpf(),
 				usuario.getPerfilUsuario().ordinal(),
 				usuario.getSituacao(),
-				usuario.getFranquia().getCodigo(),
+				usuario.getFranquia() != null ? usuario.getFranquia().getCodigo() :  null,
 				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
 				usuario.getCodigo());
 	}
@@ -167,7 +169,8 @@ public class UsuarioDAO
 				e.setEmail(rs.getString("email"));
 				e.setSituacao(rs.getBoolean("situacao"));
 				e.setTelefone(rs.getString("telefone"));
-				e.setFranquia( franquiaDAO.findFranquiaById( rs.getLong( "franquia_id" ) ) );
+				if(rs.getLong( "franquia_id" ) != 0)
+					e.setFranquia( franquiaDAO.findFranquiaById( rs.getLong( "franquia_id" ) ) );
 				return e;
 			}
 		});

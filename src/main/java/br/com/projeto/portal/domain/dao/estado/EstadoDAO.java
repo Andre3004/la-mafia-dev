@@ -42,7 +42,7 @@ public class EstadoDAO
         Estado estado = (Estado) jdbcTemplate.queryForObject(sql,
                 new Object[] { id }, new BeanPropertyRowMapper(Estado.class));
 
-        estado.setPais( paisDAO.findPaisById( estado.getCodigo() ) );
+        estado.setPais( paisDAO.findPaisById( estado.getPaisId()) );
         return estado;
     }
 

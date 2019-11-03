@@ -22,6 +22,7 @@ import br.com.projeto.portal.domain.dao.CondicaoPagamentoDAO;
 import br.com.projeto.portal.domain.dao.ProdutoDAO;
 import br.com.projeto.portal.domain.dao.cliente.ClienteDAO;
 import br.com.projeto.portal.domain.entity.produto.Produto;
+import br.com.projeto.portal.domain.entity.usuario.PerfilUsuario;
 import br.com.projeto.portal.domain.entity.venda.ContasAReceber;
 import br.com.projeto.portal.domain.entity.venda.ItemVenda;
 import br.com.projeto.portal.domain.entity.venda.Venda;
@@ -154,7 +155,8 @@ public class VendaDAO
 			itemVenda.setProduto( produto.getProduto() );
 			itemVenda.setCodigo( produto.getCodigo() );
 			itemVenda.setUnidadeComercial( produto.getUnidadeComercial() );
-			itemVenda.setCurrentEstoque( produto.getCurrentEstoque() );
+			if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ))
+				itemVenda.setCurrentEstoque( produto.getCurrentEstoque() );
 		}
 		return itemVendas;
 	}

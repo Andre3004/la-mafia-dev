@@ -1,11 +1,14 @@
 package br.com.projeto.portal.domain.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.dao.EstoqueDAO;
 import br.com.projeto.portal.domain.dao.ProdutoDAO;
+import br.com.projeto.portal.domain.entity.produto.Estoque;
 import br.com.projeto.portal.domain.entity.produto.Produto;
+import br.com.projeto.portal.domain.entity.usuario.PerfilUsuario;
 import br.com.projeto.portal.infrastructure.arquivo.Arquivo;
 import br.com.projeto.portal.infrastructure.arquivo.ArquivoService;
 import br.com.projeto.portal.infrastructure.arquivo.IArquivoRepository;
@@ -79,14 +82,15 @@ public class ProdutoService
 		produto.getCurrentEstoque().setProduto( produto );
 		produto.getCurrentEstoque().setFranquia( ContextHolder.getAuthenticatedUser().getFranquia() );
 
-		if(produto.getCurrentEstoque().getCreated() == null)
-		{
-			this.estoqueDAO.insertEstoque( produto.getCurrentEstoque() );
-		}
-		else
-		{
-			this.estoqueDAO.updateEstoque( produto.getCurrentEstoque() );
-		}
+		if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ))
+			if(produto.getCurrentEstoque().getCreated() == null)
+			{
+				this.estoqueDAO.insertEstoque( produto.getCurrentEstoque() );
+			}
+			else
+			{
+				this.estoqueDAO.updateEstoque( produto.getCurrentEstoque() );
+			}
 	}
 
 	
@@ -95,10 +99,11 @@ public class ProdutoService
 		if(produto.getAnexoUuid() == null && produto.getAnexo() != null)
 			this.insertArquivo( produto );
 
-		if(produto.getCurrentEstoque().getCreated() == null)
-			this.estoqueDAO.insertEstoque( produto.getCurrentEstoque() );
-		else
-			this.estoqueDAO.updateEstoque( produto.getCurrentEstoque() );
+		if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ))
+			if(produto.getCurrentEstoque().getCreated() == null)
+				this.estoqueDAO.insertEstoque( produto.getCurrentEstoque() );
+			else
+				this.estoqueDAO.updateEstoque( produto.getCurrentEstoque() );
 
 		produto.setUpdated( LocalDateTime.now() );
 
@@ -116,6 +121,16 @@ public class ProdutoService
 	{
 		Produto produto = this.findProdutoById( id );
 		if(produto.getAnexoUuid() != null) this.removeArquivo( produto.getAnexoUuid() );
+
+		List<Estoque> estoques = this.estoqueDAO.listEstoquesByCodigoProduto( id );
+
+		if(estoques != null && estoques.size() > 0)
+		{
+			for ( Estoque estoque : estoques )
+			{
+				this.estoqueDAO.deleteEstoque( estoque.getProdutoId() );
+			}
+		}
 
 		this.produtoDao.deleteProduto( id );
 	}

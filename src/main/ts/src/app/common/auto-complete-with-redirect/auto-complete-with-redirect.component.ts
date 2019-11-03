@@ -58,7 +58,7 @@ export class AutoCompleteWithRedirectComponent<T> implements OnInit
     public list: listForRender<T> = { values: [] };
 
     @Input()
-    public isList = false;
+    public isNotRequired = false;
 
     @Input()
     public classes = "";
@@ -95,13 +95,15 @@ export class AutoCompleteWithRedirectComponent<T> implements OnInit
         var elementInput = document.getElementsByClassName(this.classes)[0];
         var elementLabel = document.getElementsByClassName(this.classes+"1")[0] as any;
         var classes = ["ng-pristine", "ng-invalid", "mat-form-field-invalid", "mat-form-field-hide-placeholder", "ng-touched"]
-        if(!this.itemSelected.selected){
+        if((!this.itemSelected.selected) || (this.itemSelected.selected && !this.itemSelected.selected[this.key]) ){
             classes.forEach( c => {if(elementInput) elementInput.classList.add(c)})
-            elementLabel.style.color = "#e53935";
+            if(!this.isNotRequired && elementInput)
+                elementLabel.style.color = "#e53935";
         }
         else{
             classes.forEach( c => {if(elementInput) elementInput.classList.remove(c)})
-            elementLabel.style.color = "rgba(0, 0, 0, 0.6)";
+            if(!this.isNotRequired && elementInput)
+                elementLabel.style.color = "rgba(0, 0, 0, 0.6)";
         }
     }
 

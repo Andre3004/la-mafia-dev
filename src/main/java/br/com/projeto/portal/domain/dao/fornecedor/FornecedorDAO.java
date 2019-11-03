@@ -14,6 +14,8 @@ import br.com.projeto.portal.domain.dao.estado.EstadoDAO;
 import br.com.projeto.portal.domain.dao.pais.PaisDAO;
 import br.com.projeto.portal.domain.entity.CondicaoPagamentoFornecedor;
 import br.com.projeto.portal.domain.entity.Fornecedor;
+import br.com.projeto.portal.domain.entity.usuario.PerfilUsuario;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -237,6 +239,11 @@ public class FornecedorDAO
                 f.setEndereco(rs.getString(6));
                 f.setSituacao( rs.getBoolean( "situacao" ) );
 
+                if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ))
+                {
+                    CondicaoPagamentoFornecedor condicaoPagamentoFornecedor = findCondicaoPagamentoFornecedorById( rs.getLong( 1 ), ContextHolder.getAuthenticatedUser().getFranquia().getCodigo() );
+                    f.setCondicaoPagamento( condicaoPagamentoFornecedor != null ? condicaoPagamentoFornecedor.getCondicaoPagamento() : null);
+                }
                 return f;
             }
         });

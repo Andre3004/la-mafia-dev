@@ -61,8 +61,6 @@ export class EstadoListComponent implements OnInit
      */
     public onListEstados(filters: Boolean = true): void
     {
-
-
         this.estadoService.listEstadosByFilters(
             this.filters.estado,
             this.pageRequest.pageable
@@ -82,7 +80,9 @@ export class EstadoListComponent implements OnInit
 
         dialogRef.afterClosed().subscribe(estadoSaved =>
         {
-            if (estadoSaved) this.onListEstados();
+            if (estadoSaved) {
+                this.onListEstados();
+            }
         });
     }
 

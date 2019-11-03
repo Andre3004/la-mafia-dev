@@ -42,7 +42,7 @@ public class CidadeDAO
         Cidade cidade = (Cidade) jdbcTemplate.queryForObject(sql,
                 new Object[] { id }, new BeanPropertyRowMapper(Cidade.class));
 
-        cidade.setEstado( estadoDAO.findEstadoById( cidade.getCodigo() ) );
+        cidade.setEstado( estadoDAO.findEstadoById( cidade.getEstadoId() ) );
 
         return cidade;
     }
@@ -121,7 +121,7 @@ public class CidadeDAO
                 e.setCidade(rs.getString(2));
                 e.setDdd(rs.getString(3));
                 e.setSituacao( rs.getBoolean( "situacao" ) );
-                e.setEstado( estadoDAO.findEstadoById( rs.getInt( "codigo" )  ));
+                e.setEstado( estadoDAO.findEstadoById( rs.getInt( "estado_id" )  ));
                 return e;
             }
         });

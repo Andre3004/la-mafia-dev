@@ -2,7 +2,7 @@
 
     <mat-form-field fxFlex appearance="outline" class="{{classes}}">
         <mat-label class="{{classes}}1">{{title}}</mat-label>
-        <input uppercase [required]="!isList" #inputFilter type="text" matInput  [matAutocomplete]="auto"
+        <input uppercase [required]="!isNotRequired" #inputFilter type="text" matInput  [matAutocomplete]="auto"
             [disabled]="(itemSelected.selected && itemSelected.selected[key]) || isDetail"
             [value]="displayFn(itemSelected.selected)" name="seleted" (keyup)="filterChange(inputFilter.value);"
             (blur)="addRequired()">

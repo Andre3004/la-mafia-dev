@@ -13,7 +13,7 @@
 
       <mat-form-field fxFlex appearance="outline" class="push-left-md">
         <mat-label>Perfil do usuário</mat-label>
-        <mat-select [(ngModel)]="usuario.perfilUsuario" name="perfilUsuario">
+        <mat-select [(ngModel)]="usuario.perfilUsuario" name="perfilUsuario" (ngModelChange)="changeTipo()">
           <mat-option [value]="'FRANQUIADOR'">Franquiador</mat-option>
           <mat-option [value]="'FRANQUIADO'">Franquiado</mat-option>
         </mat-select>
@@ -25,6 +25,7 @@
     <div fxLayout="row" *ngIf="usuario.perfilUsuario == 'FRANQUIADO'">
       <auto-complete-with-redirect fxFlex title="Franquia" key="codigo" link="franquia" displayKey="franquia"
         [displayId]="true" [list]="{values: franquias}" [itemSelected]="{selected: usuario.franquia}"
+        [classes]="required-class-franquia"
         (onFilterChange)="franquiaFilter = $event; onListFranquias()" (onSelect)="usuario.franquia = $event"
         (onDelete)="usuario.franquia = {}">
       </auto-complete-with-redirect>

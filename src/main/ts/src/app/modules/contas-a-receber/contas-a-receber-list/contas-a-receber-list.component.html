@@ -1,19 +1,10 @@
 <mat-toolbar class="toolbar-default">
 	<mat-toolbar-row fxLayoutGap="30px">
 
-		<auto-complete-with-redirect
-			fxFlex
-			title="Cliente"
-			key="codigo"
-			link="cliente"
-			displayKey="cliente"
-			[displayId]="true"
-			[list]="{values: clientes}"
-			[itemSelected]="{selected: filters.cliente}"
-			(onFilterChange)="onListClientes($event)"
-			(onSelect)="filters.cliente = $event"
-			(onDelete)="filters.cliente = null"
-		>
+		<auto-complete-with-redirect fxFlex title="Cliente" key="codigo" link="cliente" [isNotRequired]="true"
+			displayKey="cliente" [displayId]="true" [list]="{values: clientes}"
+			[itemSelected]="{selected: filters.cliente}" (onFilterChange)="onListClientes($event)"
+			(onSelect)="filters.cliente = $event" (onDelete)="filters.cliente = null">
 		</auto-complete-with-redirect>
 
 		<mat-form-field fxFlex="10" appearance="outline">
@@ -49,6 +40,24 @@
 
 	<td-data-table #dataTable [data]="pageRequest.content" [columns]="tableColumns" [clickable]="true">
 
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="modelo" let-contasAReceber="row">
+			<span class="text-truncate">
+				{{contasAReceber?.modelo}}
+			</span>
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="serie" let-contasAReceber="row">
+			<span class="text-truncate">
+				{{contasAReceber?.serie}}
+			</span>
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="numeroNota" let-contasAReceber="row">
+			<span class="text-truncate">
+				{{contasAReceber?.numeroNota}}
+			</span>
+		</ng-template>
+
 		<ng-template fxLayoutAlign="end" tdDataTableTemplate="situacao" let-contasAReceber="row">
 			<mat-icon *ngIf="contasAReceber?.situacao" class="tc-green-700" matTooltip="Ativado">check_circle</mat-icon>
 			<mat-icon *ngIf="!contasAReceber?.situacao" matTooltip="Desativado" class="tc-red-700">block</mat-icon>
@@ -63,28 +72,32 @@
 			<span *ngIf="!contasAReceber.situacaoLiquidez">Pendente</span>
 		</ng-template>
 
-		
+
 		<ng-template fxLayoutAlign="end" tdDataTableTemplate="opcoes" let-contaAReceber="row">
 
-			<button *ngIf="contaAReceber.situacaoLiquidez" matTooltip="Visualizar conta á receber" stopPropagation  (click)="$event.stopPropagation(); openForm(contaAReceber)"
-				mat-icon-button>
+			<button *ngIf="contaAReceber.situacaoLiquidez" matTooltip="Visualizar conta á receber" stopPropagation
+				(click)="$event.stopPropagation(); openForm(contaAReceber)" mat-icon-button>
 				<mat-icon class="tc-grey-700 edit-button-hover">visibility</mat-icon>
 			</button>
 
-			<button *ngIf="!contaAReceber.situacaoLiquidez" matTooltip="Editar contas á receber" (click)="$event.stopPropagation(); openForm(contaAReceber)" mat-icon-button>
+			<button *ngIf="!contaAReceber.situacaoLiquidez" matTooltip="Editar contas á receber"
+				(click)="$event.stopPropagation(); openForm(contaAReceber)" mat-icon-button>
 				<mat-icon class="tc-grey-700 edit-button-hover">edit</mat-icon>
 			</button>
-			
-			<button *ngIf="!contaAReceber.situacaoLiquidez && contaAReceber.situacao" matTooltip="Realizar recebimento" (click)="$event.stopPropagation(); openFormRecebimento(contaAReceber)" mat-icon-button>
+
+			<button *ngIf="!contaAReceber.situacaoLiquidez && contaAReceber.situacao" matTooltip="Realizar recebimento"
+				(click)="$event.stopPropagation(); openFormRecebimento(contaAReceber)" mat-icon-button>
 				<mat-icon class="tc-grey-700 edit-button-hover">attach_money</mat-icon>
 			</button>
-			
-			<button *ngIf="!contaAReceber.situacao && !contaAReceber.situacaoLiquidez && contaAReceber.isAvulso" matTooltip="Ativar contas á receber"
+
+			<button *ngIf="!contaAReceber.situacao && !contaAReceber.situacaoLiquidez && contaAReceber.isAvulso"
+				matTooltip="Ativar contas á receber"
 				(click)="$event.stopPropagation(); atualizarSituacaoContasAReceber(contaAReceber)" mat-icon-button>
 				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
 			</button>
 
-			<button *ngIf="contaAReceber.situacao && !contaAReceber.situacaoLiquidez && contaAReceber.isAvulso" matTooltip="Desativar contas á receber"
+			<button *ngIf="contaAReceber.situacao && !contaAReceber.situacaoLiquidez && contaAReceber.isAvulso"
+				matTooltip="Desativar contas á receber"
 				(click)="$event.stopPropagation(); atualizarSituacaoContasAReceber(contaAReceber)" mat-icon-button>
 				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
 			</button>

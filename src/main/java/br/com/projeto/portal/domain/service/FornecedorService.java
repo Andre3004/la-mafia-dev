@@ -46,8 +46,12 @@ public class FornecedorService
     public Fornecedor findFornecedorById( Long id )
     {
         Fornecedor fornecedor = this.fornecedorDao.findFornecedorById( id );
-        CondicaoPagamentoFornecedor condicaoPagamentoFornecedor = this.fornecedorDao.findCondicaoPagamentoFornecedorById( id, ContextHolder.getAuthenticatedUser().getFranquia().getCodigo() );
-        fornecedor.setCondicaoPagamento( condicaoPagamentoFornecedor != null ? condicaoPagamentoFornecedor.getCondicaoPagamento() : null );
+
+        if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ) )
+        {
+            CondicaoPagamentoFornecedor condicaoPagamentoFornecedor = this.fornecedorDao.findCondicaoPagamentoFornecedorById( id, ContextHolder.getAuthenticatedUser().getFranquia().getCodigo() );
+            fornecedor.setCondicaoPagamento( condicaoPagamentoFornecedor != null ? condicaoPagamentoFornecedor.getCondicaoPagamento() : null );
+        }
 
         return fornecedor;
     }

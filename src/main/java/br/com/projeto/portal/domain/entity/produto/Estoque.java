@@ -27,7 +27,7 @@ public class Estoque implements Serializable
 
 	private Double precoVenda = new Double(0);
 
-	private Integer saldo;
+	private Integer saldo = 0;
 
 	private Fornecedor fornecedor;
 

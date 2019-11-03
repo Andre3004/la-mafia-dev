@@ -56,12 +56,12 @@ CREATE TABLE usuario(
     email varchar(144) NOT NULL,
     senha varchar(144) NOT NULL,
     telefone varchar(144) NOT NULL,
-    cpf varchar(144) NOT NULL,
+    cpf varchar(144) NOT NULL UNIQUE,
     perfil_usuario int NOT NULL,
     situacao boolean NOT NULL,
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
-    franquia_id bigint REFERENCES franquia
+    franquia_id bigint REFERENCES franquia,
 );
 
 CREATE TABLE arquivo (
@@ -283,13 +283,34 @@ CREATE TABLE estoque(
     PRIMARY KEY (franquia_id, produto_id)
 );
 
+CREATE TABLE cliente(
+    codigo serial NOT NULL PRIMARY KEY,
+    cliente varchar(144) NOT NULL,
+    apelido varchar(144),
+    cpf varchar(144) NOT NULL,
+    sexo varchar(144) NOT NULL,
+    telefone varchar(144),
+    celular varchar(144) NOT NULL,
+    email varchar(144),
+    endereco varchar(144),
+    cidade_id bigint REFERENCES cidade NOT NULL,
+    estado_id bigint REFERENCES estado NOT NULL,
+    pais_id bigint REFERENCES pais NOT NULL,
+    created TIMESTAMP,
+    updated TIMESTAMP,
+    situacao boolean NOT NULL,
+    franquia_id bigint REFERENCES franquia NOT NULL,
+    condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
+    UNIQUE(cpf, franquia_id)
+);
+
 CREATE TABLE venda(
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
     modelo character varying(144) NOT NULL,
     serie character varying(144) NOT NULL,
     numero_nota character varying(144) NOT NULL,
-    cliente_id bigint REFERENCES fornecedor NOT NULL,
+    cliente_id bigint REFERENCES cliente NOT NULL,
     franquia_id bigint REFERENCES franquia NOT NULL,
     data_emissao TIMESTAMP NOT NULL,
     usuario_id bigint REFERENCES usuario,
@@ -311,7 +332,7 @@ CREATE TABLE item_venda(
     serie character varying(144) NOT NULL,
     numero_nota character varying(144) NOT NULL,
     produto_id bigint REFERENCES produto NOT NULL,
-    cliente_id bigint REFERENCES fornecedor NOT NULL,
+    cliente_id bigint REFERENCES cliente NOT NULL,
     franquia_id bigint REFERENCES franquia NOT NULL,
     quantidade decimal NOT NULL,
     valor_venda decimal NOT NULL,
@@ -333,7 +354,7 @@ CREATE TABLE contas_a_receber(
     serie character varying(144) NOT NULL,
     numero_nota character varying(144) NOT NULL,
     numero_parcela int NOT NULL,
-    cliente_id bigint REFERENCES fornecedor NOT NULL,
+    cliente_id bigint REFERENCES cliente NOT NULL,
     franquia_id bigint REFERENCES franquia NOT NULL,
     data_emissao TIMESTAMP NOT NULL,
     situacao_liquidez boolean,
@@ -357,25 +378,8 @@ CREATE TABLE contas_a_receber(
     )
 );
 
-CREATE TABLE cliente(
-    codigo serial NOT NULL PRIMARY KEY,
-    cliente varchar(144) NOT NULL,
-    apelido varchar(144),
-    cpf varchar(144) NOT NULL,
-    sexo varchar(144) NOT NULL,
-    telefone varchar(144),
-    celular varchar(144) NOT NULL,
-    email varchar(144),
-    endereco varchar(144),
-    cidade_id bigint REFERENCES cidade NOT NULL,
-    estado_id bigint REFERENCES estado NOT NULL,
-    pais_id bigint REFERENCES pais NOT NULL,
-    created TIMESTAMP,
-    updated TIMESTAMP,
-    situacao boolean NOT NULL,
-    franquia_id bigint REFERENCES franquia NOT NULL,
-    UNIQUE(cpf, franquia_id)
-);
+
+INSERT INTO "usuario" (CREATED, usuario, cpf, senha, email, telefone, perfil_usuario, situacao) VALUES (now(), 'Administrador', 08883875982, '$2a$10$W5p8crxHsHRQKa1slfZi5OR8hXNsyhr0UoUhPTw.kjqqTfHxbYnCW','admin@admin.com', 99999999999, 0, true);
 
 SET
     search_path = public,

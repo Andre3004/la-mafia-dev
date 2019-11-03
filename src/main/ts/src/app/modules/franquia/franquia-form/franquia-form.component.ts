@@ -24,7 +24,7 @@ export class FranquiaFormComponent implements OnInit
 
   public maskCnpj = [/\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/];
 
-  public maskTelefone = ['+', /\d/, /\d/, /\d/, ' ', '(', /\d/, /\d/, ')', ' ', /\d/, ' ', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
+  public maskTelefone = ['(', /\d/, /\d/, ')', ' ', /\d/, ' ', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/];
 
   public fotoImage: any;
 
@@ -93,7 +93,7 @@ export class FranquiaFormComponent implements OnInit
         var numb = this.franquia.telefone.match(/\d/g);
         var numbString = numb.join("").toString();
 
-        if(numbString.length != 14)
+        if(numbString.length != 11)
         {
           this.openSnackBarService.openError('O campo telefone está inválido.');
           return;

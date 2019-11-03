@@ -3,7 +3,7 @@
 
 <mat-dialog-content>
 
-  <mat-tab-group>
+  <mat-tab-group (selectedTabChange)="onClickContasAPagar($event)">
     <mat-tab label="INFORMAÇÕES">
       <form #informacoesForm="ngForm" fxLayout="column">
 
@@ -43,7 +43,7 @@
             [list]="{values: fornecedores}"
             [itemSelected]="{selected: compra.fornecedor}"
             (onFilterChange)="onListFornecedores($event)"
-            (onSelect)="compra.fornecedor = $event"
+            (onSelect)="onSelectFornecedor($event)"
             (onDelete)="compra.fornecedor = null"
           >
           </auto-complete-with-redirect>
@@ -52,7 +52,7 @@
             <mat-label>Data emissão *</mat-label>
             <input matInput required [max]="dataHoje" [matDatepicker]="dataEmissao" [(ngModel)]="compra.dataEmissao" name="dataEmissao" disabled>
             <mat-datepicker-toggle  [ngStyle]="{'color': !compra.dataEmissao ? 'red' : 'black' }" matSuffix [for]="dataEmissao" [disabled]="isDetail || compra.condicaoPagamento.codigo" ></mat-datepicker-toggle>
-            <button *ngIf="compra.dataEmissao && !isDetail" matSuffix mat-icon-button (click)="compra.dataEmissao = null; compra.dataChegada = null" matTooltip="Remover data de emissão">
+            <button *ngIf="(compra.dataEmissao && !isDetail) && !compra?.condicaoPagamento?.codigo" matSuffix mat-icon-button (click)="compra.dataEmissao = null; compra.dataChegada = null" matTooltip="Remover data de emissão">
               <mat-icon>clear</mat-icon>
             </button>
             <mat-datepicker #dataEmissao disabled="false"></mat-datepicker>
@@ -62,7 +62,7 @@
             <mat-label>Data Chegada *</mat-label>
             <input matInput required [min]="compra.dataEmissao"  disabled [matDatepicker]="startDate" [(ngModel)]="compra.dataChegada"   name="dataChegada">
             <mat-datepicker-toggle matSuffix [for]="startDate" [ngStyle]="{'color': !compra.dataChegada ? 'red' : 'black' }" [disabled]="isDetail || compra.condicaoPagamento.codigo || !compra.dataEmissao"></mat-datepicker-toggle>
-            <button *ngIf="compra.dataChegada && !isDetail" matSuffix mat-icon-button (click)="compra.dataChegada = null" matTooltip="Remover data de chegada">
+            <button *ngIf="(compra.dataChegada && !isDetail) && !compra?.condicaoPagamento?.codigo" matSuffix mat-icon-button (click)="compra.dataChegada = null" matTooltip="Remover data de chegada">
               <mat-icon>clear</mat-icon>
             </button>
             <mat-datepicker #startDate  disabled="false"></mat-datepicker>
@@ -152,6 +152,7 @@
 
         <auto-complete-with-redirect
             fxFlex
+            [classes]="required-class-produto"
             title="Produto"
             key="codigo"
             link="produto"
@@ -223,13 +224,15 @@
 
     </mat-tab>
 
-    <mat-tab [disabled]="informacoesForm?.invalid || !compra.itensCompra.length" label="CONTAS Á PAGAR">
+    <mat-tab [disabled]="informacoesForm?.invalid || !compra.itensCompra.length"  label="CONTAS Á PAGAR">
 
 
       <auto-complete-with-redirect
         fxFlex
+        [classes]="required-class-condicao-pagamento"
         title="Condição de pagamento"
         key="codigo"
+        [classes]="required-class-condicao-pagamento"
         link="condicao-pagamento"
         [isDisable]="compra?.condicaoPagamento?.codigo || isDetail || compra.condicaoPagamento.codigo"
         displayKey="condicaoPagamento"

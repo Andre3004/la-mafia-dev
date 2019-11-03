@@ -16,6 +16,7 @@ import br.com.projeto.portal.domain.entity.compra.Compra;
 import br.com.projeto.portal.domain.entity.compra.ItemCompra;
 import br.com.projeto.portal.domain.entity.contasApagar.ContasAPagar;
 import br.com.projeto.portal.domain.entity.produto.Produto;
+import br.com.projeto.portal.domain.entity.usuario.PerfilUsuario;
 import br.com.projeto.portal.domain.entity.venda.ItemVenda;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,7 +174,8 @@ public class CompraDAO {
 			itemCompra.setProduto( produto.getProduto() );
 			itemCompra.setCodigo( produto.getCodigo() );
 			itemCompra.setUnidadeComercial( produto.getUnidadeComercial() );
-			itemCompra.setCurrentEstoque( produto.getCurrentEstoque() );
+			if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ))
+				itemCompra.setCurrentEstoque( produto.getCurrentEstoque() );
 		}
 		return itemCompras;
 	}
@@ -226,7 +228,7 @@ public class CompraDAO {
 	{
 		jdbcTemplate.update(
 				"UPDATE item_compra SET " +
-						"situacao = ?, "+
+						"situacao = ? "+
 						"WHERE modelo = ? AND " +
 						"serie = ? AND " +
 						"numero_nota = ? AND " +
@@ -237,8 +239,8 @@ public class CompraDAO {
 				itemCompra.getModelo(),
 				itemCompra.getSerie(),
 				itemCompra.getNumeroNota(),
-				itemCompra.getFranquia().getCodigo(),
-				itemCompra.getFornecedor().getCodigo());
+				itemCompra.getFranquiaId(),
+				itemCompra.getFornecedorId());
 	}
 
 }

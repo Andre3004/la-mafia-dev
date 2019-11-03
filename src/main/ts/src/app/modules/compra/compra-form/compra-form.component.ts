@@ -162,10 +162,22 @@ export class CompraFormComponent implements OnInit
     return condicaoPagamento ? condicaoPagamento.codigo : undefined;
   }
 
+  public onSelectFornecedor(fornecedor: Fornecedor){
+    this.compra.fornecedor = fornecedor;
+  }
+
+  public onClickContasAPagar(tab){
+    if(tab.index == 2 && this.compra.fornecedor && this.compra.fornecedor.condicaoPagamento)
+    {
+      this.onSelectCondicaoPagamento(this.compra.fornecedor.condicaoPagamento);
+    }
+  }
+
   public onSelectCondicaoPagamento(condicaoPagamento: CondicaoPagamento)
   {
     this.compra.condicaoPagamento = condicaoPagamento;
     this.onListCondicaoPagamentos('');
+    
 
     if (this.compra.condicaoPagamento.parcelas)
     {

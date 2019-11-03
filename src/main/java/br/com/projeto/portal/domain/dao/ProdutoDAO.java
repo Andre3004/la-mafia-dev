@@ -10,12 +10,15 @@ import br.com.projeto.portal.application.security.ContextHolder;
 import br.com.projeto.portal.domain.dao.fornecedor.FornecedorDAO;
 import br.com.projeto.portal.domain.entity.produto.Estoque;
 import br.com.projeto.portal.domain.entity.produto.Produto;
+import br.com.projeto.portal.domain.entity.usuario.PerfilUsuario;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+
 import java.time.ZoneId;
 import java.util.stream.Collectors;
 
@@ -50,7 +53,10 @@ public class ProdutoDAO
 
 		produto.setGrupoProduto( grupoProdutoDAO.findGrupoProdutoById( produto.getGrupoProdutoId() ) );
 
-		setCurrentEstoque( produto );
+		if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ) )
+		{
+			setCurrentEstoque( produto );
+		}
 
 		return produto;
 	}
@@ -59,11 +65,12 @@ public class ProdutoDAO
 	{
 		String sqlId = "SELECT max(codigo) FROM produto";
 		Long returnQuery = jdbcTemplate.queryForObject( sqlId, Long.class );
-		Long id = returnQuery == null ? 1 : returnQuery+1;
+		Long id = returnQuery == null ? 1 : returnQuery + 1;
 
 		jdbcTemplate.update(
 				"INSERT INTO produto " +
-						"(produto, " +
+						"(codigo, " +
+						"produto, " +
 						"descricao, " +
 						"ano, " +
 						"situacao, " +
@@ -73,6 +80,7 @@ public class ProdutoDAO
 						"codigo_barras, " +
 						"unidade_comercial, " +
 						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				id,
 				produto.getProduto(),
 				produto.getDescricao(),
 				produto.getAno(),
@@ -127,11 +135,16 @@ public class ProdutoDAO
 
 	public Page<Produto> listProdutosByFilters( String nome, Long codigo, PageRequest pageable )
 	{
-		if ( pageable == null ) pageable = new PageRequest( 0, 10 );
+		if ( pageable == null )
+		{
+			pageable = new PageRequest( 0, 10 );
+		}
 
-		if(nome != null)
+		if ( nome != null )
+		{
 			nome = nome.replaceAll( "'", "''" );
-			
+		}
+
 		String rowCountSql = "SELECT count(1) AS row_count FROM produto ";
 
 		int total =
@@ -161,7 +174,11 @@ public class ProdutoDAO
 				e.setProduto( rs.getString( "produto" ) );
 				e.setSituacao( rs.getBoolean( "situacao" ) );
 				e.setUnidadeComercial( rs.getString( "unidade_comercial" ) );
-				setCurrentEstoque( e );
+
+				if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ) )
+				{
+					setCurrentEstoque( e );
+				}
 
 				return e;
 			}
@@ -176,8 +193,7 @@ public class ProdutoDAO
 
 		List<Estoque> estoquesFiltered = estoqueDAO.listEstoquesByCodigoProduto( produto.getCodigo() )
 				.stream()
-				.filter( estoque1 -> estoque1.getFranquia().getCodigo() == ContextHolder.getAuthenticatedUser()
-						.getFranquia().getCodigo() )
+				.filter( estoque1 -> estoque1.getFranquia().getCodigo().equals( ContextHolder.getAuthenticatedUser().getFranquia().getCodigo() ) )
 				.collect( Collectors.toList() );
 
 		if ( estoquesFiltered.size() > 0 )
@@ -185,27 +201,42 @@ public class ProdutoDAO
 			Estoque estoqueFiltered = estoquesFiltered.get( 0 );
 			estoqueFiltered.setProduto( produto );
 			if ( estoqueFiltered.getFornecedorId() != null )
+			{
 				estoqueFiltered.setFornecedor( fornecedorDAO.findFornecedorById( estoqueFiltered.getFornecedorId() ) );
+			}
 
-			produto.setCurrentEstoque( estoqueFiltered );
+			if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ) )
+			{
+				produto.setCurrentEstoque( estoqueFiltered );
+			}
 		}
 		else
 		{
 			currentEstoque.setFranquia( ContextHolder.getAuthenticatedUser().getFranquia() );
 			currentEstoque.setProduto( produto );
 			if ( currentEstoque.getFornecedorId() != null )
+			{
 				currentEstoque.setFornecedor( fornecedorDAO.findFornecedorById( currentEstoque.getFornecedorId() ) );
+			}
 
-			produto.setCurrentEstoque( currentEstoque );
+			if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ) )
+			{
+				produto.setCurrentEstoque( currentEstoque );
+			}
 		}
 	}
 
 	public Page<Produto> listProdutosByFiltersToAssociation( String nome, Long codigo, PageRequest pageable )
 	{
-		if ( pageable == null ) pageable = new PageRequest( 0, 10 );
+		if ( pageable == null )
+		{
+			pageable = new PageRequest( 0, 10 );
+		}
 
-		if(nome != null)
+		if ( nome != null )
+		{
 			nome = nome.replaceAll( "'", "''" );
+		}
 
 		String rowCountSql = "SELECT count(1) AS row_count FROM produto ";
 
@@ -218,7 +249,7 @@ public class ProdutoDAO
 		String selectAndFrom = "SELECT produto.codigo, produto.produto, produto.situacao, produto.unidade_comercial " +
 				"FROM produto, estoque ";
 
-		String where = "WHERE estoque.produto_id = produto.codigo AND estoque.franquia_id = "+ ContextHolder.getAuthenticatedUser().getFranquia().getCodigo();
+		String where = "WHERE estoque.produto_id = produto.codigo AND estoque.franquia_id = " + ContextHolder.getAuthenticatedUser().getFranquia().getCodigo();
 
 		where += " AND produto LIKE  '%" + nome + "%' ";
 
@@ -238,7 +269,11 @@ public class ProdutoDAO
 				e.setProduto( rs.getString( "produto" ) );
 				e.setSituacao( rs.getBoolean( "situacao" ) );
 				e.setUnidadeComercial( rs.getString( "unidade_comercial" ) );
-				setCurrentEstoque( e );
+
+				if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ) )
+				{
+					setCurrentEstoque( e );
+				}
 
 				return e;
 			}

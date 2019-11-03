@@ -62,14 +62,6 @@ public class ClienteService
     
     public void updateCliente( Cliente cliente )
     {
-
-
-        Cliente clienteSaved = this.clienteDao.findClienteById( cliente.getCodigo() );
-
-
-
-        cliente.setUpdated( LocalDateTime.now() );
-
         this.clienteDao.updateCliente( cliente );
     }
 

@@ -9,6 +9,7 @@
 
 		<auto-complete-with-redirect fxFlex title="Ambiente" link="ambiente" key="codigo" displayKey="ambiente"
 			[displayId]="true" [list]="{values: ambientes}" [itemSelected]="{selected: filters.ambiente}"
+			[isNotRequired]="true" 
 			(onFilterChange)="ambienteFilter = $event; onListAmbientes($event)" (onSelect)="filters.ambiente = $event"
 			(onDelete)="filters.ambiente = null">
 		</auto-complete-with-redirect>

@@ -45,6 +45,7 @@
         [isDetail]="contaAPagar.created"
         [isDisable]="contaAPagar?.fornecedor?.codigo"
         displayKey="razaoSocial"
+        [classes]="'required-class-fornecedor'"
         [displayId]="true"
         [list]="{values: fornecedores}"
         [itemSelected]="{selected: contaAPagar.fornecedor}"
@@ -135,6 +136,7 @@
         <auto-complete-with-redirect
           fxFlex
           title="Forma de pagamento"
+          [classes]="'required-class-forma-pagamento'"
           link="forma-pagamento"
           [isDisable]="contaAPagar?.formaPagamento?.codigo"
           displayKey="formaPagamento"
@@ -181,7 +183,7 @@
   </div>
 
   <div>
-    <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+    <button *ngIf="!contaAPagar?.created || (contaAPagar?.situacao && !contaAPagar.situacaoLiquidez)" [disabled]="qualificadorForm.invalid || !contaAPagar?.formaPagamento?.codigo" (click)="onSubmit()" mat-raised-button class="white-btn"
       color="primary">
       SALVAR
     </button>

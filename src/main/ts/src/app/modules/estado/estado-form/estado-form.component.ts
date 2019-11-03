@@ -79,6 +79,7 @@ export class EstadoFormComponent implements OnInit {
     {
       this.estadoService.insertEstado(this.estado).subscribe(estado =>
       {
+        this.openSnackBarService.openSuccess('Estado inserido com sucesso.');
         this.dialogRef.close(this.estado);
       }, err => this.openSnackBarService.openError(err.message))
     }
@@ -86,7 +87,7 @@ export class EstadoFormComponent implements OnInit {
     {
       this.estadoService.updateEstado(this.estado).subscribe(estado =>
       {
-        this.openSnackBarService.openSuccess("Estado atualizado.");
+        this.openSnackBarService.openSuccess("Estado atualizado com sucesso.");
         this.dialogRef.close(this.estado);
       }, err => this.openSnackBarService.openError(err.message))
     }

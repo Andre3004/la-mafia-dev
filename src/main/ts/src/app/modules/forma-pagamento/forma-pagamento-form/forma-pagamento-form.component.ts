@@ -62,6 +62,7 @@ export class FormaPagamentoFormComponent implements OnInit {
     {
       this.formaPagamentoService.insertFormaPagamento(this.formaPagamento).subscribe(formaPagamento =>
       {
+        this.openSnackBarService.openSuccess("Forma de pagamento inserida.");
         this.dialogRef.close(this.formaPagamento);
       }, err => this.openSnackBarService.openError(err.message))
     }

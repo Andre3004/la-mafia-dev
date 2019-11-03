@@ -1,19 +1,10 @@
 <mat-toolbar class="toolbar-default">
 	<mat-toolbar-row fxLayoutGap="30px">
 
-		<auto-complete-with-redirect
-			fxFlex
-			title="Cliente"
-			key="codigo"
-			link="cliente"
-			displayKey="cliente"
-			[displayId]="true"
-			[list]="{values: clientes}"
-			[itemSelected]="{selected: filters.cliente}"
-			(onFilterChange)="onListClientes($event)"
-			(onSelect)="filters.cliente = $event"
-			(onDelete)="filters.cliente = null"
-		>
+		<auto-complete-with-redirect fxFlex title="Cliente" key="codigo" link="cliente" displayKey="cliente"
+			[displayId]="true" [list]="{values: clientes}" [isNotRequired]="true"
+			[itemSelected]="{selected: filters.cliente}" (onFilterChange)="onListClientes($event)"
+			(onSelect)="filters.cliente = $event" (onDelete)="filters.cliente = null">
 		</auto-complete-with-redirect>
 
 		<mat-form-field fxFlex="10" appearance="outline">
@@ -50,6 +41,24 @@
 
 	<td-data-table #dataTable [data]="pageRequest.content" [columns]="tableColumns" [clickable]="true">
 
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="modelo" let-venda="row">
+			<span class="text-truncate">
+				{{venda?.modelo}}
+			</span>
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="serie" let-venda="row">
+			<span class="text-truncate">
+				{{venda?.serie}}
+			</span>
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="numeroNota" let-venda="row">
+			<span class="text-truncate">
+				{{venda?.numeroNota}}
+			</span>
+		</ng-template>
+
 		<ng-template fxLayoutAlign="end" tdDataTableTemplate="situacao" let-venda="row">
 			<mat-icon *ngIf="venda?.situacao" class="tc-green-700" matTooltip="Ativado">check_circle</mat-icon>
 			<mat-icon *ngIf="!venda?.situacao" matTooltip="Desativado" class="tc-red-700">block</mat-icon>
@@ -61,8 +70,8 @@
 
 		<ng-template fxLayoutAlign="end" tdDataTableTemplate="opcoes" let-venda="row">
 
-			<button matTooltip="Visualizar venda" stopPropagation (click)="$event.stopPropagation(); openForm(venda, true)"
-				mat-icon-button>
+			<button matTooltip="Visualizar venda" stopPropagation
+				(click)="$event.stopPropagation(); openForm(venda, true)" mat-icon-button>
 				<mat-icon class="tc-grey-700 edit-button-hover">visibility</mat-icon>
 			</button>
 
