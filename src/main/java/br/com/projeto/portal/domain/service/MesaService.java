@@ -3,6 +3,7 @@ package br.com.projeto.portal.domain.service;
 import java.util.List;
 
 import br.com.projeto.portal.domain.dao.MesaDAO;
+import br.com.projeto.portal.domain.entity.Ambiente.Ambiente;
 import br.com.projeto.portal.domain.entity.mesa.Mesa;
 import org.directwebremoting.annotations.RemoteProxy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 
 @Service
 @RemoteProxy
@@ -46,6 +48,8 @@ public class MesaService
 	{
 		mesa.setSituacao( true );
 
+		List<Mesa> mesas = this.findMesaByAmbienteId( mesa.getAmbiente().getCodigo() );
+		Assert.isTrue( mesas.size() < mesa.getAmbiente().getCapacidadeMesas(), "O ambiente não comporta mais mesas." );
 		this.mesaDao.insertMesa( mesa );
 	}
 

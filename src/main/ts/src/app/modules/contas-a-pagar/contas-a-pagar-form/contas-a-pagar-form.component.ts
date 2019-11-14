@@ -71,8 +71,37 @@ export class ContasAPagarFormComponent implements OnInit
 
   }
 
-  public onSubmit(): void
+  public onSubmit(form): void
   {
+    if(form.invalid || !this.contaAPagar.dataEmissao || !this.contaAPagar.dataVencimento || !this.contaAPagar.fornecedor || !this.contaAPagar.formaPagamento){
+      this.openSnackBarService.openError("Todos com campos com * devem ser preenchidos.");
+      return;
+    }
+
+    if (! (this.data.contasAPagar && !this.data.contasAPagar.situacaoLiquidez))
+      if(this.contaAPagar.dataVencimento < this.contaAPagar.dataEmissao){
+        this.openSnackBarService.openError("O campo data de vencimento deve ser maior ou igual a data de emissão.");
+        return;
+      }
+
+    if (this.contaAPagar.juros && this.contaAPagar.juros > 100)
+    {
+      this.openSnackBarService.openError("O campo juros não pode ser maior que 100%.");
+      return;
+    }
+
+    if (this.contaAPagar.desconto && this.contaAPagar.desconto > 100)
+    {
+      this.openSnackBarService.openError("O campo desconto não pode ser maior que 100%.");
+      return;
+    }
+
+    if (this.contaAPagar.multa && this.contaAPagar.multa > 100)
+    {
+      this.openSnackBarService.openError("O campo multa não pode ser maior que 100%.");
+      return;
+    }
+
     if(!this.contaAPagar.created)
     {
       this.contasAPagarService.insertContaAPagar(this.contaAPagar).subscribe( result => {

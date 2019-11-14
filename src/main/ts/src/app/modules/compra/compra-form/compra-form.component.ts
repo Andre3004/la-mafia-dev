@@ -84,8 +84,14 @@ export class CompraFormComponent implements OnInit
   *-------------------------------------------------------------------*/
 
 
-  public onSubmit(): void
+  public onSubmit(form): void
   {
+    
+
+    var valid = this.validForm(form);
+
+    if(!valid) return;
+
     this.compra.serie = this.compra.serie.trim(); 
     this.compra.numeroNota = this.compra.numeroNota.trim(); 
     this.compra.modelo = this.compra.modelo.trim(); 
@@ -117,7 +123,23 @@ export class CompraFormComponent implements OnInit
 
   public validForm(form)
   {
-    return !form.invalid && this.compra.itensCompra.length && this.compra.contasAPagar.length;
+    if(form.invalid || !this.compra.dataEmissao || !this.compra.dataChegada || !this.compra.fornecedor)
+    {
+      this.openSnackBarService.openError("Todos os campos com * devem ser preenchidos.");
+      return false;
+    } 
+    else if ( !this.compra.itensCompra.length )
+    {
+      this.openSnackBarService.openError("É necessário adicionar ao menos um item na compra.");
+      return false;
+    }
+    else if ( !this.compra.contasAPagar.length )
+    {
+      this.openSnackBarService.openError("É necessário adicionar ao menos um conta á pagar.");
+      return false;
+    }
+    
+    return true;
   }
 
   public addItemCompra()
@@ -194,7 +216,12 @@ export class CompraFormComponent implements OnInit
 
 
         var dataVencimento = dateNow.setDate(dateNow.getDate() + parcela.dias);
-        this.compra.contasAPagar.push({ dataVencimento, formaPagamento: parcela.formaPagamento } as any) 
+        this.compra.contasAPagar.push({ 
+            dataVencimento, 
+            formaPagamento: parcela.formaPagamento,
+            juros: this.compra.condicaoPagamento.juros,
+            multa: this.compra.condicaoPagamento.multa,
+            desconto: this.compra.condicaoPagamento.desconto } as any) 
       }
 
       for (let i = 0; i < this.compra.contasAPagar.length - 1; i++)

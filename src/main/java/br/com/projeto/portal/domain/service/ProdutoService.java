@@ -82,7 +82,7 @@ public class ProdutoService
 		produto.getCurrentEstoque().setProduto( produto );
 		produto.getCurrentEstoque().setFranquia( ContextHolder.getAuthenticatedUser().getFranquia() );
 
-		if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ))
+		if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUEADO ))
 			if(produto.getCurrentEstoque().getCreated() == null)
 			{
 				this.estoqueDAO.insertEstoque( produto.getCurrentEstoque() );
@@ -99,7 +99,7 @@ public class ProdutoService
 		if(produto.getAnexoUuid() == null && produto.getAnexo() != null)
 			this.insertArquivo( produto );
 
-		if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ))
+		if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUEADO ))
 			if(produto.getCurrentEstoque().getCreated() == null)
 				this.estoqueDAO.insertEstoque( produto.getCurrentEstoque() );
 			else

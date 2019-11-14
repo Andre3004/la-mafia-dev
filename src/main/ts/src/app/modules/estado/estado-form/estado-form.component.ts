@@ -67,8 +67,14 @@ export class EstadoFormComponent implements OnInit {
 
   }
 
- public onSubmit(): void
+ public onSubmit(form): void
   {
+
+    if(form.invalid){
+      this.openSnackBarService.openError(`Todos os campos com * devem ser preenchidos.`);
+      return;
+    }
+
     if(!this.estado.pais || (this.estado.pais && !this.estado.pais.codigo))
     {
       this.openSnackBarService.openError("O campo país deve ser preenchido.");

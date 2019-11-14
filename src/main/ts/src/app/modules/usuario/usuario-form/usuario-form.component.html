@@ -14,19 +14,20 @@
       <mat-form-field fxFlex appearance="outline" class="push-left-md">
         <mat-label>Perfil do usuário</mat-label>
         <mat-select [(ngModel)]="usuario.perfilUsuario" name="perfilUsuario" (ngModelChange)="changeTipo()">
-          <mat-option [value]="'FRANQUIADOR'">Franquiador</mat-option>
-          <mat-option [value]="'FRANQUIADO'">Franquiado</mat-option>
+          <mat-option [value]="'FRANQUEADOR'">Franqueador</mat-option>
+          <mat-option [value]="'FRANQUEADO'">Franqueado</mat-option>
         </mat-select>
       </mat-form-field>
 
     </div>
 
 
-    <div fxLayout="row" *ngIf="usuario.perfilUsuario == 'FRANQUIADO'">
+    <div fxLayout="row" *ngIf="usuario.perfilUsuario == 'FRANQUEADO'">
       <auto-complete-with-redirect fxFlex title="Franquia" key="codigo" link="franquia" displayKey="franquia"
         [displayId]="true" [list]="{values: franquias}" [itemSelected]="{selected: usuario.franquia}"
         [classes]="required-class-franquia"
-        (onFilterChange)="franquiaFilter = $event; onListFranquias()" (onSelect)="usuario.franquia = $event"
+        (onFilterChange)="onListFranquias($event)" 
+        (onSelect)="usuario.franquia = $event"
         (onDelete)="usuario.franquia = {}">
       </auto-complete-with-redirect>
     </div>
@@ -94,7 +95,7 @@
   </div>
 
   <div>
-    <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+    <button (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
       color="primary">
       SALVAR
     </button>

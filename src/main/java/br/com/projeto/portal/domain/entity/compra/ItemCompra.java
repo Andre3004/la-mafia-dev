@@ -65,8 +65,8 @@ public class ItemCompra extends Produto
 	public void setCompra( Compra compra )
 	{
 		this.modelo = compra.getModelo();
-		this.serie = compra.getModelo();
-		this.numeroNota = compra.getModelo();
+		this.serie = compra.getSerie();
+		this.numeroNota = compra.getNumeroNota();
 		this.fornecedor = compra.getFornecedor();
 	}
 

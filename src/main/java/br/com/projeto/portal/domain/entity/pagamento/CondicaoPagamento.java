@@ -30,8 +30,6 @@ public class CondicaoPagamento extends AbstractEntity
 
 	private Boolean situacao;
 
-	private Boolean prazo;
-
 	private Long franquiaId;
 
 	//@Transient

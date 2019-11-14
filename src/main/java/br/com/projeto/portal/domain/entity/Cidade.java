@@ -12,7 +12,7 @@ import org.directwebremoting.annotations.DataTransferObject;
 @Data
 @EqualsAndHashCode
 @DataTransferObject(javascript = "Cidade")
-public class Cidade extends AbstractEntity
+public class Cidade extends CondicaoPagamentoFornecedor
 {
 
     /*-------------------------------------------------------------------

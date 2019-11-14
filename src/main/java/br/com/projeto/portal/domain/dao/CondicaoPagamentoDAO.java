@@ -61,16 +61,14 @@ public class CondicaoPagamentoDAO
 						"multa, " +
 						"desconto, " +
 						"situacao, " +
-						"prazo, " +
 						"franquia_id, " +
-						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+						"created) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
 				id,
 				condicaoPagamento.getCondicaoPagamento(),
 				condicaoPagamento.getJuros(),
 				condicaoPagamento.getMulta(),
 				condicaoPagamento.getDesconto(),
 				condicaoPagamento.getSituacao(),
-				condicaoPagamento.getPrazo(),
 				condicaoPagamento.getFranquia().getCodigo(),
 				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)) );
 
@@ -87,7 +85,6 @@ public class CondicaoPagamentoDAO
 						"multa = ?, " +
 						"desconto = ?, " +
 						"situacao = ?, " +
-						"prazo = ?, " +
 						"updated = ? " +
 						"WHERE codigo = ?",
 				condicaoPagamento.getJuros(),
@@ -95,7 +92,6 @@ public class CondicaoPagamentoDAO
 				condicaoPagamento.getMulta(),
 				condicaoPagamento.getDesconto(),
 				condicaoPagamento.getSituacao(),
-				condicaoPagamento.getPrazo(),
 				Timestamp.valueOf(LocalDateTime.now(this.fusoHorarioDeSaoPaulo)),
 				condicaoPagamento.getCodigo());
 	}

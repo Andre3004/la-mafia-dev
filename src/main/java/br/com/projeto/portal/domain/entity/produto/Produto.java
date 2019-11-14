@@ -53,9 +53,6 @@ public class Produto extends AbstractEntity
 	private Long grupoProdutoId;
 
 	//@Transient
-	private List<Estoque> estoques = new ArrayList<Estoque>(  );
-
-	//@Transient
 	private Estoque currentEstoque;
 
 	/*-------------------------------------------------------------------

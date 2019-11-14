@@ -53,7 +53,7 @@ public class ProdutoDAO
 
 		produto.setGrupoProduto( grupoProdutoDAO.findGrupoProdutoById( produto.getGrupoProdutoId() ) );
 
-		if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ) )
+		if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUEADO ) )
 		{
 			setCurrentEstoque( produto );
 		}
@@ -175,7 +175,7 @@ public class ProdutoDAO
 				e.setSituacao( rs.getBoolean( "situacao" ) );
 				e.setUnidadeComercial( rs.getString( "unidade_comercial" ) );
 
-				if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ) )
+				if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUEADO ) )
 				{
 					setCurrentEstoque( e );
 				}
@@ -205,7 +205,7 @@ public class ProdutoDAO
 				estoqueFiltered.setFornecedor( fornecedorDAO.findFornecedorById( estoqueFiltered.getFornecedorId() ) );
 			}
 
-			if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ) )
+			if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUEADO ) )
 			{
 				produto.setCurrentEstoque( estoqueFiltered );
 			}
@@ -219,7 +219,7 @@ public class ProdutoDAO
 				currentEstoque.setFornecedor( fornecedorDAO.findFornecedorById( currentEstoque.getFornecedorId() ) );
 			}
 
-			if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ) )
+			if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUEADO ) )
 			{
 				produto.setCurrentEstoque( currentEstoque );
 			}
@@ -270,7 +270,7 @@ public class ProdutoDAO
 				e.setSituacao( rs.getBoolean( "situacao" ) );
 				e.setUnidadeComercial( rs.getString( "unidade_comercial" ) );
 
-				if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ) )
+				if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUEADO ) )
 				{
 					setCurrentEstoque( e );
 				}

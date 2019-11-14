@@ -5,6 +5,6 @@ import org.directwebremoting.annotations.DataTransferObject;
 @DataTransferObject(type = "enum")
 public enum PerfilUsuario
 {
-	FRANQUIADOR,
-	FRANQUIADO;
+	FRANQUEADOR,
+	FRANQUEADO;
 }

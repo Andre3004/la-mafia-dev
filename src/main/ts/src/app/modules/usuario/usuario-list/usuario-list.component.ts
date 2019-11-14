@@ -133,24 +133,26 @@ export class UsuarioListComponent implements OnInit
                         this.openSnackBarService.openSuccess('Usuario excluído com sucesso.');
                         this.onListUsuarios();
                     }, err => {
-
-
-                        this._dialogService.openConfirm({
-                            message: "Não foi possível excluir este usuario pois o mesmo está relacionado a outro registro. Deseja desativar ?",
-                            title: "Desativar usuario",
-                            cancelButton: 'CANCELAR',
-                            acceptButton: 'CONFIRMAR',
-                            width: '500px'
-                        }).afterClosed().subscribe((accept: boolean) =>
-                        {
-                            if (accept)
+                        if(err.exception.javaClassName == 'java.lang.IllegalArgumentException'){
+                            this.openSnackBarService.openError(err.message)
+                        }
+                        else
+                            this._dialogService.openConfirm({
+                                message: "Não foi possível excluir este usuario pois o mesmo está relacionado a outro registro. Deseja desativar ?",
+                                title: "Desativar usuario",
+                                cancelButton: 'CANCELAR',
+                                acceptButton: 'CONFIRMAR',
+                                width: '500px'
+                            }).afterClosed().subscribe((accept: boolean) =>
                             {
-                                this.usuarioService.updateSituacaoUsuario(usuario.codigo, !usuario.situacao).subscribe( result => {
-                                    this.openSnackBarService.openSuccess('Usuario desativado com sucesso.');
-                                    this.onListUsuarios();
-                                }, err => this.openSnackBarService.openError(err.message))
-                            }
-                        });
+                                if (accept)
+                                {
+                                    this.usuarioService.updateSituacaoUsuario(usuario.codigo, !usuario.situacao).subscribe( result => {
+                                        this.openSnackBarService.openSuccess('Usuario desativado com sucesso.');
+                                        this.onListUsuarios();
+                                    }, err => this.openSnackBarService.openError(err.message))
+                                }
+                            });
                     })
                 }
             });

@@ -39,8 +39,8 @@ export class AuthGuard implements CanActivate
 
         map((usuario: Usuario) =>
         {
-          if (( next.data.onlyFranquiador && !(usuario.perfilUsuario == 'FRANQUIADO') || 
-               !next.data.onlyFranquiador && usuario.perfilUsuario == 'FRANQUIADO') || 
+          if (( next.data.onlyFranquiador && !(usuario.perfilUsuario == 'FRANQUEADO') || 
+               !next.data.onlyFranquiador && usuario.perfilUsuario == 'FRANQUEADO') || 
                next.data.ambos)
           {
             return true;

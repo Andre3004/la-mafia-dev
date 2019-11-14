@@ -64,8 +64,13 @@ export class MesaFormComponent implements OnInit
 
   }
 
-  public onSubmit(): void
+  public onSubmit(form): void
   {
+
+    if(form.invalid){
+      this.openSnackBarService.openError(`Todos os campos com * devem ser preenchidos.`);
+      return;
+    }
 
     if(!this.mesa.ambiente || (this.mesa.ambiente && !this.mesa.ambiente.codigo))
     {

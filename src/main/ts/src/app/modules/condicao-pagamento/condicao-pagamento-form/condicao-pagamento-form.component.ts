@@ -18,7 +18,7 @@ export class CondicaoPagamentoFormComponent implements OnInit
 
   public title = "";
 
-  public condicaoPagamento: CondicaoPagamento = { codigo: 0, prazo: false, parcelas: [] };
+  public condicaoPagamento: CondicaoPagamento = { codigo: 0, parcelas: [] };
 
   public condicaoPagamentoParcelasToRemoved = [];
 
@@ -67,15 +67,36 @@ export class CondicaoPagamentoFormComponent implements OnInit
 
   }
 
-  public onSubmit(): void
+  public onSubmit(form): void
   {
 
-    if(this.condicaoPagamento.prazo && !this.condicaoPagamento.parcelas.length)
+    if(form.invalid){
+      this.openSnackBarService.openError("Todos os campos com * devem ser preenchidos.");
+      return;
+    }
+
+    if(this.condicaoPagamento.juros && this.condicaoPagamento.juros > 100 ){
+      this.openSnackBarService.openError("O campo juros não pode ser maior que 100.");
+      return;
+    }
+
+    if(this.condicaoPagamento.desconto && this.condicaoPagamento.desconto > 100 ){
+      this.openSnackBarService.openError("O campo desconto não pode ser maior que 100.");
+      return;
+    }
+
+    if(this.condicaoPagamento.multa && this.condicaoPagamento.multa > 100 ){
+      this.openSnackBarService.openError("O campo multa não pode ser maior que 100.");
+      return;
+    }
+
+    if(!this.condicaoPagamento.parcelas.length)
     {
       this.openSnackBarService.openError("Nenhuma parcela adicionada.");
       return;
     }
-    
+
+
     if (this.condicaoPagamento.parcelas && this.condicaoPagamento.parcelas.length > 0)
     {
       var found = false;
@@ -115,7 +136,7 @@ export class CondicaoPagamentoFormComponent implements OnInit
       for (let j = i+1; j < this.condicaoPagamento.parcelas.length; j++) {
 
         const proxParcela = this.condicaoPagamento.parcelas[j];
-        
+
         if(parseInt(parcela.dias as any) > parseInt(proxParcela.dias as any))
         {
           found = true;
@@ -130,7 +151,7 @@ export class CondicaoPagamentoFormComponent implements OnInit
       return;
     }
 
-    
+
 
     if (!this.condicaoPagamento.codigo)
     {

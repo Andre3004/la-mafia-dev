@@ -11,17 +11,17 @@
 
           <mat-form-field fxFlex="20" appearance="outline">
             <mat-label>Modelo</mat-label>
-            <input matInput required [(ngModel)]="compra.modelo" name="modelo" maxlength="144" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
+            <input matInput uppercase required [(ngModel)]="compra.modelo" name="modelo" maxlength="144" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
           </mat-form-field>
 
           <mat-form-field fxFlex="25" appearance="outline">
             <mat-label>Serie</mat-label>
-            <input matInput required [(ngModel)]="compra.serie" name="serie" maxlength="144" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
+            <input matInput uppercase required [(ngModel)]="compra.serie" name="serie" maxlength="144" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
           </mat-form-field>
 
           <mat-form-field fxFlex appearance="outline">
             <mat-label>Número da nota</mat-label>
-            <input matInput required [(ngModel)]="compra.numeroNota" name="numeroNota" maxlength="144" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
+            <input matInput uppercase required [(ngModel)]="compra.numeroNota" name="numeroNota" maxlength="144" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
           </mat-form-field>
 
         </div>
@@ -126,7 +126,7 @@
       </form>
     </mat-tab>
 
-    <mat-tab label="ITENS DA COMPRA" [disabled]="informacoesForm?.invalid || !compra.dataEmissao || !compra.dataChegada">
+    <mat-tab label="ITENS DA COMPRA" [disabled]="informacoesForm?.invalid || !compra.dataEmissao || !compra.dataChegada || !compra.fornecedor">
 
       <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="30px" class="pad-sm push-bottom-sm">
 
@@ -229,10 +229,8 @@
 
       <auto-complete-with-redirect
         fxFlex
-        [classes]="required-class-condicao-pagamento"
         title="Condição de pagamento"
         key="codigo"
-        [classes]="required-class-condicao-pagamento"
         link="condicao-pagamento"
         [isDisable]="compra?.condicaoPagamento?.codigo || isDetail || compra.condicaoPagamento.codigo"
         displayKey="condicaoPagamento"
@@ -310,7 +308,7 @@
 
   <div>
 
-    <button *ngIf="!isDetail" [disabled]="!validForm(informacoesForm)" (click)="onSubmit(informacoesForm)" mat-raised-button
+    <button *ngIf="!isDetail"  (click)="onSubmit(informacoesForm)" mat-raised-button
       class="white-btn" color="primary">
       SALVAR
     </button>

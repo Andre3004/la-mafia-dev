@@ -14,7 +14,14 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>DDD</mat-label>
-        <input required [(ngModel)]="cidade.ddd" [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}" maxlength="4" name="ddd" matInput maxlength="50">
+        <input required [(ngModel)]="cidade.ddd" maxlength="4" name="ddd" matInput currencyMask [options]="{
+          align: 'left',
+          prefix: '',
+          thousands: '',
+          decimal: ',',
+          precision: 0,
+          allowNegative: false
+        }">
       </mat-form-field>
 
 
@@ -73,7 +80,7 @@
 
     <div>
   
-  <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+  <button  (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
     color="primary">
     SALVAR
   </button>

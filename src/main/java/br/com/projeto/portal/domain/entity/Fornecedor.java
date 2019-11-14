@@ -34,13 +34,14 @@ public class Fornecedor extends AbstractEntity
 
     private String celular;
 
+    private String email;
+
     private String endereco;
 
     private String numero;
 
     private String bairro;
 
-    private String email;
 
     private String inscricaoEstadual;
 

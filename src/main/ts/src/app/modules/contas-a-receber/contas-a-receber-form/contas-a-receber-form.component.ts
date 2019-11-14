@@ -19,7 +19,7 @@ export class ContasAReceberFormComponent implements OnInit
 
   public title = "";
 
-  public contaAReceber: ContasAReceber = {isAvulso: true};
+  public contaAReceber: ContasAReceber = { isAvulso: true };
 
   public clientes: Cliente[] = [];
 
@@ -73,15 +73,37 @@ export class ContasAReceberFormComponent implements OnInit
 
   public onSubmit(): void
   {
-    if(!this.contaAReceber.created)
+
+    if (this.contaAReceber.juros && this.contaAReceber.juros > 100)
     {
-      this.contasAReceberService.insertContaAReceber(this.contaAReceber).subscribe( result => {
+      this.openSnackBarService.openError("O campo juros não pode ser maior que 100%.");
+      return;
+    }
+
+    if (this.contaAReceber.desconto && this.contaAReceber.desconto > 100)
+    {
+      this.openSnackBarService.openError("O campo desconto não pode ser maior que 100%.");
+      return;
+    }
+
+    if (this.contaAReceber.multa && this.contaAReceber.multa > 100)
+    {
+      this.openSnackBarService.openError("O campo multa não pode ser maior que 100%.");
+      return;
+    }
+  
+    if (!this.contaAReceber.created)
+    {
+      this.contasAReceberService.insertContaAReceber(this.contaAReceber).subscribe(result =>
+      {
         this.openSnackBarService.openSuccess("Conta á receber salva com sucesso.");
         this.dialogRef.close(this.contaAReceber);
       }, err => this.openSnackBarService.openError(err.message));
     }
-    else{
-      this.contasAReceberService.updateContaAReceber(this.contaAReceber).subscribe( result => {
+    else
+    {
+      this.contasAReceberService.updateContaAReceber(this.contaAReceber).subscribe(result =>
+      {
         this.openSnackBarService.openSuccess("Conta á receber atualizada com sucesso.");
         this.dialogRef.close(this.contaAReceber);
       }, err => this.openSnackBarService.openError(err.message));
@@ -113,3 +135,4 @@ export class ContasAReceberFormComponent implements OnInit
     return cliente ? cliente.cliente : undefined;
   }
 }
+

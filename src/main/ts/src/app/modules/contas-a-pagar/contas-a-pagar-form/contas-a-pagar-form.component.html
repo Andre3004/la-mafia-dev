@@ -8,17 +8,17 @@
 
       <mat-form-field fxFlex="20" appearance="outline">
         <mat-label>Modelo</mat-label>
-        <input matInput required [(ngModel)]="contaAPagar.modelo" name="modelo" maxlength="144" [disabled]="contaAPagar.created" >
+        <input matInput required uppercase [(ngModel)]="contaAPagar.modelo" name="modelo" maxlength="144" [disabled]="contaAPagar.created" >
       </mat-form-field>
 
       <mat-form-field fxFlex="25" appearance="outline">
         <mat-label>Serie</mat-label>
-        <input matInput required [(ngModel)]="contaAPagar.serie" name="serie" maxlength="144" [disabled]="contaAPagar.created">
+        <input matInput required uppercase [(ngModel)]="contaAPagar.serie" name="serie" maxlength="144" [disabled]="contaAPagar.created">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Número da nota</mat-label>
-        <input matInput required [(ngModel)]="contaAPagar.numeroNota" name="numeroNota" maxlength="144" [disabled]="contaAPagar.created">
+        <input matInput required uppercase [(ngModel)]="contaAPagar.numeroNota" name="numeroNota" maxlength="144" [disabled]="contaAPagar.created">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
@@ -82,39 +82,39 @@
     <div fxLayout="row" fxLayoutGap="30px">
 
       <mat-form-field fxFlex appearance="outline">
-        <mat-label>Desconto</mat-label>
+        <mat-label>Desconto %</mat-label>
         <input matInput [disabled]="contaAPagar.situacaoLiquidez" [(ngModel)]="contaAPagar.desconto" name="desconto" currencyMask [options]="{
           align: 'left',
           prefix: '',
           thousands: '.',
           decimal: ',',
-          precision: 2,
+          precision: 0,
           allowNegative: false
-        }" maxlength="9" >
+        }" maxlength="3" >
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
-        <mat-label>Juros</mat-label>
+        <mat-label>Juros %</mat-label>
         <input matInput [disabled]="contaAPagar.situacaoLiquidez" [(ngModel)]="contaAPagar.juros" name="juros" currencyMask [options]="{
           align: 'left',
           prefix: '',
           thousands: '.',
           decimal: ',',
-          precision: 2,
+          precision: 0,
           allowNegative: false
-        }" maxlength="9" >
+        }" maxlength="3" >
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
-        <mat-label>Multa</mat-label>
+        <mat-label>Multa %</mat-label>
         <input matInput [disabled]="contaAPagar.situacaoLiquidez" [(ngModel)]="contaAPagar.multa" name="multa" currencyMask [options]="{
           align: 'left',
           prefix: '',
           thousands: '.',
           decimal: ',',
-          precision: 2,
+          precision: 0,
           allowNegative: false
-        }" maxlength="9" >
+        }" maxlength="3" >
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline" *ngIf="contaAPagar.situacaoLiquidez">
@@ -183,7 +183,7 @@
   </div>
 
   <div>
-    <button *ngIf="!contaAPagar?.created || (contaAPagar?.situacao && !contaAPagar.situacaoLiquidez)" [disabled]="qualificadorForm.invalid || !contaAPagar?.formaPagamento?.codigo" (click)="onSubmit()" mat-raised-button class="white-btn"
+    <button *ngIf="!contaAPagar?.created || (contaAPagar?.situacao && !contaAPagar.situacaoLiquidez)" (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
       color="primary">
       SALVAR
     </button>

@@ -85,8 +85,13 @@ export class FornecedorFormComponent implements OnInit
 
   }
 
-  public onSubmit(): void
+  public onSubmit(form): void
   {
+
+    if(form.invalid){
+      this.openSnackBarService.openError(`Todos os campos com * devem ser preenchidos.`);
+      return;
+    }
 
     if (!this.fornecedor.cidade)
     {

@@ -78,28 +78,42 @@ public class ClienteDAO
         jdbcTemplate.update(
                 "INSERT INTO cliente " +
                         "(cliente  , " +
-                        "apelido, " +
                         "cpf, " +
                         "sexo, " +
                         "telefone, " +
                         "celular, " +
                         "email, " +
                         "endereco, " +
+
+                        "bairro, " +
+                        "numero, " +
+                        "complemento, " +
+                        "data_nascimento, " +
+                        "is_estrangeiro, " +
+
+
+
                         "cidade_id, " +
                         "estado_id, " +
                         "pais_id, " +
                         "situacao, " +
                         "franquia_id, " +
                         "condicao_pagamento_id, " +
-                        "created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?)",
                 cliente.getCliente(),
-                cliente.getApelido(),
                 cliente.getCpf(),
                 cliente.getSexo(),
                 cliente.getTelefone(),
                 cliente.getCelular(),
                 cliente.getEmail(),
                 cliente.getEndereco(),
+
+                cliente.getBairro(),
+                cliente.getNumero(),
+                cliente.getComplemento(),
+                cliente.getDataNascimento() != null ? Timestamp.valueOf(cliente.getDataNascimento().atTime( 0,0,0 )) : null,
+                cliente.getIsEstrangeiro(),
+
                 cliente.getCidade().getCodigo(),
                 cliente.getEstado().getCodigo(),
                 cliente.getPais().getCodigo(),
@@ -115,13 +129,21 @@ public class ClienteDAO
         jdbcTemplate.update("UPDATE cliente " +
                         "SET " +
                         "cliente= ?, " +
-                        "apelido= ?, " +
                         "cpf= ?," +
                         "sexo= ?, " +
                         "telefone= ?, " +
                         "celular= ?, " +
                         "email= ?, " +
                         "endereco= ?, " +
+
+                        "bairro= ?, " +
+                        "numero= ?, " +
+                        "complemento= ?, " +
+                        "data_nascimento= ?, " +
+                        "is_estrangeiro= ?, " +
+
+
+
                         "cidade_id = ?, " +
                         "estado_id = ?, " +
                         "pais_id = ?, " +
@@ -129,13 +151,19 @@ public class ClienteDAO
                         "updated = ? " +
                         "WHERE codigo = ?",
                 cliente.getCliente(),
-                cliente.getApelido(),
                 cliente.getCpf(),
                 cliente.getSexo(),
                 cliente.getTelefone(),
                 cliente.getCelular(),
                 cliente.getEmail(),
                 cliente.getEndereco(),
+
+                cliente.getBairro(),
+                cliente.getNumero(),
+                cliente.getComplemento(),
+                cliente.getDataNascimento() != null ? Timestamp.valueOf(cliente.getDataNascimento().atTime( 0,0,0 )) : null,
+                cliente.getIsEstrangeiro(),
+
                 cliente.getCidade().getCodigo(),
                 cliente.getEstado().getCodigo(),
                 cliente.getPais().getCodigo(),
@@ -180,10 +208,10 @@ public class ClienteDAO
         List<Cliente> clientes = jdbcTemplate.query(querySql,new RowMapper<Cliente>(){
             public Cliente mapRow( ResultSet rs, int row) throws SQLException {
                 Cliente c=new Cliente();
-                c.setCodigo(rs.getLong(1));
-                c.setCliente(rs.getString(2));
-                c.setCpf(rs.getString(4));
-                c.setCelular(rs.getString(7));
+                c.setCodigo(rs.getLong("codigo" ));
+                c.setCliente(rs.getString("cliente" ));
+                c.setCpf(rs.getString("cpf" ));
+                c.setCelular(rs.getString("celular" ));
                 c.setSituacao( rs.getBoolean( "situacao" ) );
                 if(rs.getLong("condicao_pagamento_id") != 0)
                     c.setCondicaoPagamento( condicaoPagamentoDAO.findCondicaoPagamentoById( rs.getLong("condicao_pagamento_id") ) );

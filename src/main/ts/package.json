@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json --poll=1000",
-    "build": "ng build projeto --prod --no-aot --build-optimizer=false --base-href=/projeto/",
+    "build": "ng build projeto",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

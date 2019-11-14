@@ -53,7 +53,7 @@ CREATE TABLE franquia (
 CREATE TABLE usuario(
     codigo serial NOT NULL PRIMARY KEY,
     usuario varchar(144) NOT NULL,
-    email varchar(144) NOT NULL,
+    email varchar(144) NOT NULL UNIQUE,
     senha varchar(144) NOT NULL,
     telefone varchar(144) NOT NULL,
     cpf varchar(144) NOT NULL UNIQUE,
@@ -61,7 +61,7 @@ CREATE TABLE usuario(
     situacao boolean NOT NULL,
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
-    franquia_id bigint REFERENCES franquia,
+    franquia_id bigint REFERENCES franquia
 );
 
 CREATE TABLE arquivo (
@@ -89,10 +89,11 @@ CREATE TABLE ambiente (
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
     franquia_id bigint REFERENCES franquia NOT NULL,
-    ambiente character varying(144) UNIQUE NOT NULL,
+    ambiente character varying(144) NOT NULL,
     descricao character varying(144),
     capacidade_mesas int NOT NULL,
-    situacao boolean NOT NULL
+    situacao boolean NOT NULL,
+    UNIQUE(ambiente, franquia_id)
 );
 
 CREATE TABLE ambiente_imagem (
@@ -134,32 +135,20 @@ CREATE TABLE forma_pagamento (
     updated TIMESTAMP,
     situacao boolean NOT NULL,
     franquia_id bigint REFERENCES franquia NOT NULL,
-    forma_pagamento character varying(144) NOT NULL UNIQUE
-);
-
-CREATE TABLE condicao_pagamento (
-    codigo serial PRIMARY KEY,
-    condicao_pagamento character varying(144) NOT NULL UNIQUE,
-    franquia_id bigint REFERENCES franquia NOT NULL,
-    created TIMESTAMP NOT NULL,
-    updated TIMESTAMP,
-    juros decimal,
-    multa decimal,
-    desconto decimal,
-    situacao boolean NOT NULL,
-    prazo boolean NOT NULL
+    forma_pagamento character varying(144) NOT NULL,
+    UNIQUE (forma_pagamento, franquia_id)
 );
 
 CREATE TABLE fornecedor(
     codigo serial NOT NULL PRIMARY KEY,
     razaoSocial varchar(144) NOT NULL,
     cnpj varchar(144) NOT NULL unique,
-    telefone varchar(144) NOT NULL,
     celular varchar(144) NOT NULL,
-    endereco varchar(144) NOT NULL,
-    numero varchar(144) NOT NULL,
-    bairro varchar(144) NOT NULL,
+    telefone varchar(144),
     email varchar(144),
+    endereco varchar(144) NOT NULL,
+    numero varchar(144),
+    bairro varchar(144) NOT NULL,
     cidade_id bigint REFERENCES cidade NOT NULL,
     estado_id bigint REFERENCES estado NOT NULL,
     pais_id bigint REFERENCES pais NOT NULL,
@@ -170,13 +159,26 @@ CREATE TABLE fornecedor(
     inscricao_estadual varchar(144)
 );
 
-CREATE TABLE condicao_pagamento_fornecedor(
-    fornecedor_id bigint REFERENCES fornecedor NOT NULL,
-    condicao_pagamento_id bigint REFERENCES condicao_pagamento,
+CREATE TABLE condicao_pagamento (
+    codigo serial PRIMARY KEY,
+    condicao_pagamento character varying(144) NOT NULL,
     franquia_id bigint REFERENCES franquia NOT NULL,
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
-    primary key(fornecedor_id, franquia_id)
+    juros decimal,
+    multa decimal,
+    desconto decimal,
+    situacao boolean NOT NULL,
+    UNIQUE(condicao_pagamento, franquia_id)
+);
+
+CREATE TABLE condicao_pagamento_fornecedor(
+    fornecedor_id bigint REFERENCES fornecedor NOT NULL,
+    condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
+    franquia_id bigint REFERENCES franquia NOT NULL,
+    created TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+    primary key(fornecedor_id, condicao_pagamento_id, franquia_id)
 );
 
 CREATE TABLE condicao_pagamento_parcela (
@@ -191,81 +193,27 @@ CREATE TABLE condicao_pagamento_parcela (
 );
 
 CREATE TABLE compra(
-    created TIMESTAMP NOT NULL,
-    updated TIMESTAMP,
     modelo character varying(144) NOT NULL,
     serie character varying(144) NOT NULL,
     numero_nota character varying(144) NOT NULL,
     fornecedor_id bigint REFERENCES fornecedor NOT NULL,
     franquia_id bigint REFERENCES franquia NOT NULL,
-    usuario_id bigint REFERENCES usuario,
+    usuario_id bigint REFERENCES usuario ,
     condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
     data_chegada TIMESTAMP NOT NULL,
     tipo_frete character varying(144) NOT NULL,
-    frete character varying(144) NOT NULL,
-    seguro character varying(144) NOT NULL,
-    despesa character varying(144) NOT NULL,
+    frete decimal,
+    seguro decimal,
+    despesa decimal,
     situacao boolean NOT NULL,
     data_emissao TIMESTAMP NOT NULL,
-    PRIMARY KEY(
-        modelo,
-        serie,
-        numero_nota,
-        fornecedor_id,
-        franquia_id
-    )
-);
-
-CREATE TABLE contas_a_pagar(
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
-    modelo character varying(144) NOT NULL,
-    serie character varying(144) NOT NULL,
-    numero_nota character varying(144) NOT NULL,
-    numero_parcela int NOT NULL,
-    fornecedor_id bigint REFERENCES fornecedor NOT NULL,
-    franquia_id bigint REFERENCES franquia NOT NULL,
-    data_emissao TIMESTAMP NOT NULL,
-    --VERIFICAR ESTE CAMPO
-    situacao_liquidez boolean,
-    desconto decimal,
-    juros decimal,
-    multa decimal,
-    valor_pago decimal,
-    data_pagamento TIMESTAMP,
-    forma_pagamento_id bigint REFERENCES forma_pagamento,
-    data_vencimento TIMESTAMP NOT NULL,
-    valor_parcela decimal NOT NULL,
-    situacao boolean NOT NULL,
-    is_avulso boolean,
-    PRIMARY KEY(
-        modelo,
-        serie,
-        numero_nota,
-        numero_parcela,
-        fornecedor_id,
-        franquia_id
-    )
-);
-
-CREATE TABLE item_compra(
-    created TIMESTAMP NOT NULL,
-    updated TIMESTAMP,
-    modelo character varying(144) NOT NULL,
-    serie character varying(144) NOT NULL,
-    numero_nota character varying(144) NOT NULL,
-    fornecedor_id bigint REFERENCES fornecedor NOT NULL,
-    produto_id bigint REFERENCES produto NOT NULL,
-    franquia_id bigint REFERENCES franquia NOT NULL,
-    quantidade decimal NOT NULL,
-    valor_unitario decimal NOT NULL,
-    situacao boolean,
     PRIMARY KEY(
         modelo,
         serie,
         numero_nota,
         fornecedor_id,
-        produto_id,
         franquia_id
     )
 );
@@ -283,24 +231,54 @@ CREATE TABLE estoque(
     PRIMARY KEY (franquia_id, produto_id)
 );
 
+CREATE TABLE item_compra(
+    modelo character varying(144) NOT NULL,
+    serie character varying(144) NOT NULL,
+    numero_nota character varying(144) NOT NULL,
+    fornecedor_id bigint REFERENCES fornecedor NOT NULL,
+    franquia_id bigint REFERENCES franquia NOT NULL,
+    produto_id bigint REFERENCES produto NOT NULL,
+    quantidade decimal NOT NULL,
+    valor_unitario decimal NOT NULL,
+    situacao boolean,
+    created TIMESTAMP NOT NULL,
+    updated TIMESTAMP,
+    FOREIGN KEY  (modelo, serie, numero_nota, fornecedor_id, franquia_id)
+        REFERENCES compra (modelo, serie, numero_nota, fornecedor_id, franquia_id),
+    PRIMARY KEY(
+        modelo,
+        serie,
+        numero_nota,
+        fornecedor_id,
+        produto_id,
+        franquia_id
+    )
+);
+
 CREATE TABLE cliente(
-    codigo serial NOT NULL PRIMARY KEY,
+    codigo serial PRIMARY KEY,
     cliente varchar(144) NOT NULL,
-    apelido varchar(144),
-    cpf varchar(144) NOT NULL,
+    cpf varchar(30),
     sexo varchar(144) NOT NULL,
-    telefone varchar(144),
     celular varchar(144) NOT NULL,
+    telefone varchar(144),
     email varchar(144),
-    endereco varchar(144),
+    endereco varchar(144) NOT NULL,
+
+    bairro varchar(144) NOT NULL,
+    numero INTEGER NOT NULL,
+    complemento varchar(144),
+    data_nascimento TIMESTAMP NOT NULL,
+    is_estrangeiro boolean,
+
     cidade_id bigint REFERENCES cidade NOT NULL,
-    estado_id bigint REFERENCES estado NOT NULL,
-    pais_id bigint REFERENCES pais NOT NULL,
+    estado_id bigint REFERENCES estado,
+    pais_id bigint REFERENCES pais,
+    condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
     created TIMESTAMP,
     updated TIMESTAMP,
-    situacao boolean NOT NULL,
-    franquia_id bigint REFERENCES franquia NOT NULL,
-    condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
+    situacao boolean,
+    franquia_id bigint REFERENCES franquia,
     UNIQUE(cpf, franquia_id)
 );
 
@@ -310,11 +288,13 @@ CREATE TABLE venda(
     modelo character varying(144) NOT NULL,
     serie character varying(144) NOT NULL,
     numero_nota character varying(144) NOT NULL,
+
     cliente_id bigint REFERENCES cliente NOT NULL,
     franquia_id bigint REFERENCES franquia NOT NULL,
-    data_emissao TIMESTAMP NOT NULL,
     usuario_id bigint REFERENCES usuario,
     condicao_pagamento_id bigint REFERENCES condicao_pagamento NOT NULL,
+
+    data_emissao TIMESTAMP NOT NULL,
     situacao boolean NOT NULL,
     PRIMARY KEY(
         modelo,
@@ -337,6 +317,8 @@ CREATE TABLE item_venda(
     quantidade decimal NOT NULL,
     valor_venda decimal NOT NULL,
     situacao boolean,
+    FOREIGN KEY  (modelo, serie, numero_nota, cliente_id, franquia_id)
+        REFERENCES venda (modelo, serie, numero_nota, cliente_id, franquia_id),
     PRIMARY KEY(
         modelo,
         serie,
@@ -347,6 +329,44 @@ CREATE TABLE item_venda(
     )
 );
 
+INSERT INTO "usuario" (CREATED, usuario, cpf, senha, email, telefone, perfil_usuario, situacao) VALUES (now(), 'ADMINISTRADOR', 08883875982, '$2a$10$W5p8crxHsHRQKa1slfZi5OR8hXNsyhr0UoUhPTw.kjqqTfHxbYnCW','ADMIN@ADMIN.COM', 99999999999, 0, true);
+
+CREATE TABLE contas_a_pagar(
+    modelo character varying(144) NOT NULL,
+    serie character varying(144) NOT NULL,
+    numero_nota character varying(144) NOT NULL,
+    numero_parcela int NOT NULL,
+
+    fornecedor_id bigint REFERENCES fornecedor NOT NULL,
+    franquia_id bigint REFERENCES franquia NOT NULL,
+    forma_pagamento_id bigint REFERENCES forma_pagamento NOT NULL,
+
+
+    data_emissao TIMESTAMP NOT NULL,
+    data_vencimento TIMESTAMP NOT NULL,
+    --VERIFICAR ESTE CAMPO
+    situacao_liquidez boolean,
+    desconto decimal,
+    juros decimal,
+    multa decimal,
+    valor_pago decimal,
+    data_pagamento TIMESTAMP,
+    valor_parcela decimal NOT NULL,
+    situacao boolean NOT NULL,
+    is_avulso boolean,
+    PRIMARY KEY(
+        modelo,
+        serie,
+        numero_nota,
+        numero_parcela,
+        fornecedor_id,
+        franquia_id
+    ),
+    created TIMESTAMP NOT NULL,
+    updated TIMESTAMP
+);
+
+
 CREATE TABLE contas_a_receber(
     created TIMESTAMP NOT NULL,
     updated TIMESTAMP,
@@ -354,20 +374,24 @@ CREATE TABLE contas_a_receber(
     serie character varying(144) NOT NULL,
     numero_nota character varying(144) NOT NULL,
     numero_parcela int NOT NULL,
+
     cliente_id bigint REFERENCES cliente NOT NULL,
     franquia_id bigint REFERENCES franquia NOT NULL,
+    forma_pagamento_id bigint REFERENCES forma_pagamento,
+
+    data_vencimento TIMESTAMP NOT NULL,
     data_emissao TIMESTAMP NOT NULL,
+    data_recebimento TIMESTAMP,
     situacao_liquidez boolean,
     desconto decimal,
     juros decimal,
     multa decimal,
     valor_recebido decimal,
-    data_recebimento TIMESTAMP,
-    forma_pagamento_id bigint REFERENCES forma_pagamento,
-    data_vencimento TIMESTAMP NOT NULL,
     valor_parcela decimal NOT NULL,
     situacao boolean NOT NULL,
     is_avulso boolean,
+    FOREIGN KEY  (modelo, serie, numero_nota, cliente_id, franquia_id)
+        REFERENCES venda (modelo, serie, numero_nota, cliente_id, franquia_id),
     PRIMARY KEY(
         modelo,
         serie,
@@ -377,9 +401,6 @@ CREATE TABLE contas_a_receber(
         franquia_id
     )
 );
-
-
-INSERT INTO "usuario" (CREATED, usuario, cpf, senha, email, telefone, perfil_usuario, situacao) VALUES (now(), 'Administrador', 08883875982, '$2a$10$W5p8crxHsHRQKa1slfZi5OR8hXNsyhr0UoUhPTw.kjqqTfHxbYnCW','admin@admin.com', 99999999999, 0, true);
 
 SET
     search_path = public,

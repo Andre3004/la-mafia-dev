@@ -32,9 +32,7 @@
 		<ng-template fxLayoutAlign="end" tdDataTableTemplate="situacao" let-condicaoPagamento="row">
 			<mat-icon *ngIf="condicaoPagamento?.situacao" class="tc-green-700" matTooltip="Ativado">check_circle</mat-icon>
 			<mat-icon *ngIf="!condicaoPagamento?.situacao" matTooltip="Desativado" class="tc-red-700">block</mat-icon>
-		</ng-template>
-
-
+		</ng-template>		
 
 		<ng-template fxLayoutAlign="end" tdDataTableTemplate="opcoes" let-condicaoPagamento="row">
 
@@ -53,6 +51,13 @@
 			</button>
 
 		</ng-template>
+
+
+		<!-- <ng-template fxLayoutAlign="end" tdDataTableTemplate="condicaoPagamento" let-condicaoPagamento="row">
+			<span class="text-truncate">
+				{{condicaoPagamento?.condicaoPagamento}}
+			</span>
+		</ng-template> -->
 
 	</td-data-table>
 

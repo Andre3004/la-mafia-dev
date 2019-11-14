@@ -47,7 +47,6 @@ export const TextMasks = {
       allowNegative: allowNegative,
       prefix: '',
       includeThousandsSeparator: false,
-
     })
   },
 

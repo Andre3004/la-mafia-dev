@@ -33,11 +33,11 @@ export class AutenticacaoService
         if (!this._usuario)
             this.usuarioAutenticado().then((usuario) =>
             {
-                return usuario.perfilUsuario == 'FRANQUIADO'
+                return usuario.perfilUsuario == 'FRANQUEADO'
             })
         else
         {
-            return this._usuario.perfilUsuario == 'FRANQUIADO'
+            return this._usuario.perfilUsuario == 'FRANQUEADO'
         }
     }
 

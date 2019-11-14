@@ -160,7 +160,7 @@ export class CondicaoPagamentoListComponent implements OnInit
         }
 
         this.condicaoPagamentoService.listCondicaoPagamentosByFilters(
-            this.filters.codigo != null ? parseInt(this.filters.codigo) : null,
+            !isNaN(parseInt(this.filters.codigo)) ? parseInt(this.filters.codigo) : null,
             this.filters.condicaoPagamento,
             this.pageRequest.pageable
         ).subscribe((result) =>

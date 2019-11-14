@@ -35,7 +35,7 @@ public class ContextHolder
 //
 //		usuario.setCodigo( 11L );
 //		usuario.setUsuario( "André" );
-//		usuario.setPerfilUsuario( PerfilUsuario.FRANQUIADO );
+//		usuario.setPerfilUsuario( PerfilUsuario.FRANQUEADO );
 //		usuario.setFranquia( franquia );
 //
 //		return usuario;

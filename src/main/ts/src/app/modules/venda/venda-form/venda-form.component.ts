@@ -84,8 +84,12 @@ export class VendaFormComponent implements OnInit
   *-------------------------------------------------------------------*/
 
 
-  public onSubmit(): void
+  public onSubmit(form): void
   {
+    var valid = this.validForm(form);
+
+    if(!valid) return;
+
     this.venda.serie = this.venda.serie.trim(); 
     this.venda.numeroNota = this.venda.numeroNota.trim(); 
     this.venda.modelo = this.venda.modelo.trim(); 
@@ -112,7 +116,23 @@ export class VendaFormComponent implements OnInit
 
   public validForm(form)
   {
-    return !form.invalid && this.venda.itensVenda.length && this.venda.contasAReceber.length;
+    if(form.invalid || !this.venda.dataEmissao || !this.venda.cliente)
+    {
+      this.openSnackBarService.openError("Todos os campos com * devem ser preenchidos.");
+      return false;
+    } 
+    else if ( !this.venda.itensVenda.length )
+    {
+      this.openSnackBarService.openError("É necessário adicionar ao menos um item na venda.");
+      return false;
+    }
+    else if ( !this.venda.contasAReceber.length )
+    {
+      this.openSnackBarService.openError("É necessário adicionar ao menos um conta á receber.");
+      return false;
+    }
+    
+    return true;
   }
 
   public addItemVenda()
@@ -184,7 +204,15 @@ export class VendaFormComponent implements OnInit
 
 
         var dataVencimento = dateNow.setDate(dateNow.getDate() + parcela.dias);
-        this.venda.contasAReceber.push({ dataVencimento, formaPagamento: parcela.formaPagamento } as any) //completar isso com os atributos.
+
+        this.venda.contasAReceber.push({ 
+          dataVencimento, 
+          formaPagamento: parcela.formaPagamento,
+          juros: this.venda.condicaoPagamento.juros,
+          multa: this.venda.condicaoPagamento.multa,
+          desconto: this.venda.condicaoPagamento.desconto 
+        } as any) 
+
       }
 
       for (let i = 0; i < this.venda.contasAReceber.length - 1; i++)

@@ -9,17 +9,17 @@
 
 		<mat-form-field fxFlex="10" appearance="outline">
 			<mat-label>Modelo</mat-label>
-			<input matInput [(ngModel)]="filters.modelo" name="modelo" maxlength="144">
+			<input matInput uppercase [(ngModel)]="filters.modelo" name="modelo" maxlength="144">
 		</mat-form-field>
 
 		<mat-form-field fxFlex="10" appearance="outline">
 			<mat-label>Série</mat-label>
-			<input matInput [(ngModel)]="filters.serie" name="serie" maxlength="144">
+			<input matInput uppercase [(ngModel)]="filters.serie" name="serie" maxlength="144">
 		</mat-form-field>
 
 		<mat-form-field fxFlex="15" appearance="outline">
 			<mat-label>Número da nota</mat-label>
-			<input matInput [(ngModel)]="filters.numeroNota" name="numeroNota" maxlength="144">
+			<input matInput uppercase [(ngModel)]="filters.numeroNota" name="numeroNota" maxlength="144">
 		</mat-form-field>
 
 

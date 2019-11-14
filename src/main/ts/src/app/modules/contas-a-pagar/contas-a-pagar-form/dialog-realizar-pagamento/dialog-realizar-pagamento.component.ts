@@ -40,8 +40,38 @@ export class DialogRealizarPagamentoComponent implements OnInit
 
   async findContaAPagarById(contaAPagar: ContasAPagar){
     this.contaAPagar = await this.contasAPagarService.findContaAPagar(contaAPagar.modelo, contaAPagar.serie, contaAPagar.numeroNota, contaAPagar.fornecedor.codigo, contaAPagar.numeroParcela).toPromise();
+  
+  }
 
-    this.contaAPagar.valorPago = this.contaAPagar.valorParcela - this.contaAPagar.desconto + this.contaAPagar.juros + this.contaAPagar.multa;
+  get valorPago(){
+
+    if( this.contaAPagar.dataVencimento && this.contaAPagar.dataPagamento)
+    {
+      var desconto = this.contaAPagar.desconto ? this.contaAPagar.desconto : 0;
+      var juros = this.contaAPagar.juros ? this.contaAPagar.juros : 0;
+      var multa = this.contaAPagar.multa ? this.contaAPagar.multa : 0;
+  
+      var valorDesconto = this.contaAPagar.valorParcela * (desconto / 100);
+      var valorJuros = this.contaAPagar.valorParcela * (juros / 100);
+      var valorMulta = this.contaAPagar.valorParcela * (multa / 100);
+  
+      this.contaAPagar.dataPagamento.setHours(0, 0, 0, 0);
+      this.contaAPagar.dataVencimento.setHours(0, 0, 0, 0);
+  
+      this.contaAPagar.valorPago = 0;
+  
+      if (this.contaAPagar.dataPagamento < this.contaAPagar.dataVencimento)
+      {
+        this.contaAPagar.valorPago = this.contaAPagar.valorParcela - valorDesconto;
+      } else if (this.contaAPagar.dataPagamento > this.contaAPagar.dataVencimento)
+      {
+        this.contaAPagar.valorPago = this.contaAPagar.valorParcela + valorMulta + valorJuros;
+      }
+  
+      return this.contaAPagar.valorPago;
+    }
+
+    return 0;
   }
 
 }

@@ -39,7 +39,7 @@ public class UsuarioDAO
 	{
 		try
 		{
-			String sql = "SELECT * FROM usuario WHERE lower(email) = lower(?)";
+			String sql = "SELECT * FROM usuario WHERE lower(email) = lower(?) AND situacao = true";
 
 			Usuario usuario = (Usuario) jdbcTemplate.queryForObject(sql,
 					new Object[] { email }, new BeanPropertyRowMapper(Usuario.class));
@@ -67,7 +67,6 @@ public class UsuarioDAO
 		return usuario;
 	}
 
-	
 	public void insertUsuario( Usuario usuario )
 	{
 		jdbcTemplate.update(

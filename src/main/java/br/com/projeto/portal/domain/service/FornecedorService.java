@@ -47,7 +47,7 @@ public class FornecedorService
     {
         Fornecedor fornecedor = this.fornecedorDao.findFornecedorById( id );
 
-        if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ) )
+        if ( ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUEADO ) )
         {
             CondicaoPagamentoFornecedor condicaoPagamentoFornecedor = this.fornecedorDao.findCondicaoPagamentoFornecedorById( id, ContextHolder.getAuthenticatedUser().getFranquia().getCodigo() );
             fornecedor.setCondicaoPagamento( condicaoPagamentoFornecedor != null ? condicaoPagamentoFornecedor.getCondicaoPagamento() : null );
@@ -63,7 +63,7 @@ public class FornecedorService
         Long fornecedorId = this.fornecedorDao.insertFornecedor( fornecedor );
         fornecedor.setCodigo( fornecedorId );
 
-        if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ))
+        if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUEADO ))
             this.fornecedorDao.insertCondicaoPagamentoFornecedor( fornecedor );
     }
 
@@ -82,7 +82,7 @@ public class FornecedorService
 
         this.fornecedorDao.updateFornecedor( fornecedor );
 
-        if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ))
+        if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUEADO ))
         {
             CondicaoPagamentoFornecedor condicaoPagamentoFornecedor = this.fornecedorDao.findCondicaoPagamentoFornecedorById( fornecedor.getCodigo(), ContextHolder.getAuthenticatedUser().getFranquia().getCodigo() );
             if(condicaoPagamentoFornecedor != null)

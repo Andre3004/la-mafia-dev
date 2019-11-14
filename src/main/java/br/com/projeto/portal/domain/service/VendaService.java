@@ -84,7 +84,7 @@ public class VendaService
 				itemVenda.setVenda( venda );
 				itemVenda.setFranquia( ContextHolder.getAuthenticatedUser().getFranquia() );
 
-				if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ))
+				if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUEADO ))
 					produtoDAO.setCurrentEstoque( itemVenda ); // atualiza o saldo
 				itemVenda.getCurrentEstoque().setSaldo( itemVenda.getCurrentEstoque().getSaldo().intValue() -  itemVenda.getQuantidade().intValue() );
 

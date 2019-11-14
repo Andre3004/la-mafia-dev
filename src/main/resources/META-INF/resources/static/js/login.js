@@ -41,11 +41,23 @@ var afterInit = function() {
     };
 
     $("#submit").click(submit);
-    $('#email').keypress(function(e) {
-        if(e.which == 13) {
+    $('#email').keypress(function (e) {
+        if (e.which == 13) {
             submit();
         }
+
+        if ($('#email').val()) {
+            $('#email').val($('#email').val().toUpperCase());
+        }
+
     });
+
+    $('#email').blur(function (e) {
+        if ($('#email').val()) {
+            $('#email').val($('#email').val().toUpperCase());
+        }
+    });
+
     $('#password').keypress(function(e) {
         if(e.which == 13) {
             submit();

@@ -87,6 +87,13 @@
 
                     <input hidden type="file" #fotoInput (change)="setAmbienteImagemAnexo($event, i)">
                 </div>
+
+                <mat-card *ngIf="ambiente?.ambienteImagems?.length == 0" style="max-height: 350px;overflow: auto;">
+                    <div class="pad-md" fxLayoutAlign="center ">
+                        <label>Nenhum arquivo vinculada a este ambiente.</label>
+                    </div>
+                </mat-card>
+
             </div>
         </mat-tab>
 
@@ -132,7 +139,7 @@
     </div>
 
     <div>
-        <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+        <button  (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
             color="primary">
             SALVAR
         </button>

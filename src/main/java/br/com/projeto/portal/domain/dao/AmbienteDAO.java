@@ -142,6 +142,8 @@ public class AmbienteDAO
 				e.setAmbiente(rs.getString(5));
 				e.setFranquia( franquiaDAO.findFranquiaById( rs.getLong( 4 ) ) );
 				e.setSituacao( rs.getBoolean( 8 ) );
+				e.setCapacidadeMesas( rs.getInt( "capacidade_mesas" ) );
+
 				return e;
 			}
 		});

@@ -1,6 +1,6 @@
 <div fxLayoutAlign="space-between center">
     <h2 mat-dialog-title>{{title}}</h2>
-    <button *ngIf="condicaoPagamento.prazo" color="accent" style="right: 0;" class="white-btn push-top-sm"
+    <button color="accent" style="right: 0;" class="white-btn push-top-sm"
         (click)="addParcela()" mat-raised-button>ADICIONAR PARCELA</button>
 </div>
 
@@ -25,17 +25,17 @@
                     </mat-form-field>
 
                     <mat-form-field fxFlex appearance="outline">
-                        <mat-label>Juros</mat-label>
+                        <mat-label>Juros %</mat-label>
                         <input uppercase [(ngModel)]="condicaoPagamento.juros" name="juros" matInput
-                            [textMask]="{mask: masks.getDecimalNumberMask(8,2), guide: false}"
+                            [textMask]="{mask: masks.getDecimalNumberMask(3), guide: false}"
                             placeholder="Digite o juros">
                     </mat-form-field>
 
 
                     <mat-form-field fxFlex appearance="outline">
-                        <mat-label>Multa</mat-label>
+                        <mat-label>Multa %</mat-label>
                         <input uppercase [(ngModel)]="condicaoPagamento.multa" name="multa" matInput
-                            [textMask]="{mask: masks.getDecimalNumberMask(8,2), guide: false}"
+                            [textMask]="{mask: masks.getDecimalNumberMask(3), guide: false}"
                             placeholder="Digite a multa">
                     </mat-form-field>
 
@@ -49,20 +49,18 @@
                 <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign=" center">
 
                     <mat-form-field fxFlex appearance="outline">
-                        <mat-label>Descontos</mat-label>
+                        <mat-label>Descontos %</mat-label>
                         <input uppercase [(ngModel)]="condicaoPagamento.desconto" name="desconto" matInput
-                            [textMask]="{mask: masks.getDecimalNumberMask(8,2), guide: false}"
+                            [textMask]="{mask: masks.getDecimalNumberMask(3), guide: false}"
                             placeholder="Digite o desconto">
                     </mat-form-field>
-
-                    <mat-checkbox fxFlex [(ngModel)]="condicaoPagamento.prazo" name="prazo">parcelado ?</mat-checkbox>
 
                 </div>
 
             </form>
         </mat-tab>
 
-        <mat-tab *ngIf="condicaoPagamento.prazo" label="Parcelas" class="push-top-md">
+        <mat-tab label="Parcelas" class="push-top-md">
 
             <mat-card  *ngIf="condicaoPagamento?.parcelas?.length > 0" fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="30px" style="padding: 15px;">
 
@@ -108,10 +106,10 @@
                                 <mat-form-field fxFlex appearance="outline" class="push-left-md">
                                     <mat-label>Porcentagem (%)</mat-label>
                                     <input required uppercase [(ngModel)]="parcela.porcentagem" name="porcentagem{{i}}"
-                                        matInput [textMask]="{mask: masks.getDecimalNumberMask(8,2), guide: false}"
+                                        matInput [textMask]="{mask: masks.getDecimalNumberMask(3,2), guide: false}"
                                         placeholder="Digite a porcentagem">
                                 </mat-form-field>
-        
+
                                 <mat-form-field fxFlex appearance="outline" class="push-left-md">
                                     <mat-label>Forma de Pagamento</mat-label>
                                     <input required type="text" matInput [matAutocomplete]="auto" #inputFilter
@@ -175,7 +173,7 @@
     </div>
 
     <div>
-    <button [disabled]="qualificadorForm.invalid || !condicaoPagamento?.parcelas?.length" (click)="onSubmit()" mat-raised-button class="white-btn"
+    <button (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
         color="primary">
         SALVAR
     </button>

@@ -9,7 +9,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Código</mat-label>
-        <input uppercaserequired matInput [(ngModel)]="fornecedor.codigo" name="codigo" [disabled]="true">
+        <input uppercase matInput [(ngModel)]="fornecedor.codigo" name="codigo" [disabled]="true">
       </mat-form-field>
 
       <mat-form-field fxFlex appearance="outline">
@@ -40,7 +40,7 @@
 
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Telefone</mat-label>
-        <input uppercase required maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput name="telefone"
+        <input uppercase  maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput name="telefone"
           [(ngModel)]="fornecedor.telefone" [disabled]="isFranquiado">
       </mat-form-field>
 
@@ -71,7 +71,7 @@
     <div fxLayout="row" fxLayoutGap="30px">
       <mat-form-field fxFlex appearance="outline">
         <mat-label>Número</mat-label>
-        <input uppercase required matInput [textMask]="{mask: masks.getNumbersOnlyMask(5), guide: false}"
+        <input uppercase matInput [textMask]="{mask: masks.getNumbersOnlyMask(5), guide: false}"
           [(ngModel)]="fornecedor.numero" name="numero" [disabled]="isFranquiado">
       </mat-form-field>
       
@@ -161,7 +161,7 @@
   </div>
 
   <div>
-    <button [disabled]="qualificadorForm.invalid" (click)="onSubmit()" mat-raised-button class="white-btn"
+    <button (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
       color="primary">
       SALVAR
     </button>

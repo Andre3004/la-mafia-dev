@@ -186,7 +186,8 @@ public class ContasAPagarDAO
 
 		where += fornecedorId != null ?  "AND fornecedor_id = " + fornecedorId + " ": "";
 
-		String pagination = "LIMIT " + pageable.getPageSize() + " " +
+		String pagination = "ORDER BY created " +
+				"LIMIT " + pageable.getPageSize() + " " +
 				"OFFSET " + pageable.getOffset() + ";";
 
 		String querySql = selectAndFrom + where + pagination;

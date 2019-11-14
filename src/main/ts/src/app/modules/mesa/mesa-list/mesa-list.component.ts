@@ -196,7 +196,7 @@ export class MesaListComponent implements OnInit
         this.ambienteService.listAmbientesByFilters(this.ambienteFilter ? this.ambienteFilter : "", null)
             .subscribe( ambientePage => 
         {
-            this.ambientes = ambientePage.content; 
+            this.ambientes = ambientePage.content.filter( c => c.situacao);; 
         })
     }
 

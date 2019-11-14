@@ -3,6 +3,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ClienteService, CidadeService, EstadoService, PaisService, CondicaoPagamentoService } from 'src/generated/services';
 import { OpenSnackBarService } from 'src/app/common/open-snackbar/open-snackbar.service';
+import { TextMasks } from 'src/app/common/mask/text-masks';
 
 @Component({
   selector: 'app-cliente-form',
@@ -30,6 +31,11 @@ export class ClienteFormComponent implements OnInit
   public cidades: Cidade[];
 
   public condicoesPagamento: CondicaoPagamento[];
+
+  public dataHoje = new Date();
+
+  public masks = TextMasks;
+
 
   constructor(
     private clienteService: ClienteService,
@@ -72,7 +78,7 @@ export class ClienteFormComponent implements OnInit
 
   }
 
-  public onSubmit(): void
+  public onSubmit(form): void
   {
 
     if (!this.cliente.cidade)
@@ -87,66 +93,76 @@ export class ClienteFormComponent implements OnInit
       return;
     }
 
-    this.cliente.estado = this.cliente.cidade.estado;
-    this.cliente.pais = this.cliente.cidade.estado.pais;
-
-    if (typeof this.cliente.cpf == "string")
+    if (!form.invalid && this.cliente.dataNascimento)
     {
-      this.cliente.cpf = this.cliente.cpf.replace(/\.|-/gi, '');
 
-      if (!this.validaCPF(this.cliente.cpf))
+      this.cliente.estado = this.cliente.cidade.estado;
+      this.cliente.pais = this.cliente.cidade.estado.pais;
+
+      if (this.cliente.cpf && typeof this.cliente.cpf == "string")
       {
-        this.openSnackBarService.openError('CPF inválido.');
-        return;
+        this.cliente.cpf = this.cliente.cpf.replace(/\.|-/gi, '');
+
+        if (!this.validaCPF(this.cliente.cpf))
+        {
+          this.openSnackBarService.openError('CPF inválido.');
+          return;
+        }
       }
-    }
 
-    if (this.cliente.telefone)
-    {
-      var numb = this.cliente.telefone.match(/\d/g) as any;
-      numb = numb.join("").toString();
-
-      if (numb.length != 10)
+      if (this.cliente.telefone)
       {
-        this.openSnackBarService.openError('telefone inválido.');
-        return;
+        var numb = this.cliente.telefone.match(/\d/g) as any;
+        numb = numb.join("").toString();
+
+        if (numb.length != 10)
+        {
+          this.openSnackBarService.openError('telefone inválido.');
+          return;
+        }
       }
-    }
 
-    if (this.cliente.celular) 
-    {
-      var numb = this.cliente.celular.match(/\d/g) as any;
-      numb = numb.join("").toString();
-
-      if (numb.length != 11)
+      if (this.cliente.celular) 
       {
-        this.openSnackBarService.openError('celular inválido.');
-        return;
+        var numb = this.cliente.celular.match(/\d/g) as any;
+        numb = numb.join("").toString();
+
+        if (numb.length != 11)
+        {
+          this.openSnackBarService.openError('celular inválido.');
+          return;
+        }
       }
-    }
-    else
-    {
-      this.cliente.telefone = this.cliente.telefone.replace(/\.|-/gi, '');
-      this.cliente.celular = this.cliente.celular.replace(/\.|-/gi, '');
+      else
+      {
+        this.cliente.telefone = this.cliente.telefone.replace(/\.|-/gi, '');
+        this.cliente.celular = this.cliente.celular.replace(/\.|-/gi, '');
+
+      }
+
+      if (!this.cliente.codigo)
+      {
+        this.clienteService.insertCliente(this.cliente).subscribe(cliente =>
+        {
+          this.openSnackBarService.openSuccess("Cliente salvo");
+          this.dialogRef.close(this.cliente);
+        }, err => this.openSnackBarService.openError(err.message))
+      }
+      else
+      {
+        this.clienteService.updateCliente(this.cliente).subscribe(cliente =>
+        {
+          this.openSnackBarService.openSuccess("Cliente atualizado");
+          this.dialogRef.close(this.cliente);
+        }, err => this.openSnackBarService.openError(err.message))
+      }
 
     }
+    else{
+      this.openSnackBarService.openError(`Todos os campos com * devem ser preenchidos.`)
+    }
 
-    if (!this.cliente.codigo)
-    {
-      this.clienteService.insertCliente(this.cliente).subscribe(cliente =>
-      {
-        this.openSnackBarService.openSuccess("Cliente salvo");
-        this.dialogRef.close(this.cliente);
-      }, err => this.openSnackBarService.openError(err.message))
-    }
-    else
-    {
-      this.clienteService.updateCliente(this.cliente).subscribe(cliente =>
-      {
-        this.openSnackBarService.openSuccess("Cliente atualizado");
-        this.dialogRef.close(this.cliente);
-      }, err => this.openSnackBarService.openError(err.message))
-    }
+    
 
   }
 
@@ -210,7 +226,7 @@ export class ClienteFormComponent implements OnInit
     var codigo = null;
     var condicaoPagamento = "";
 
-    if(isNaN(parseInt(filter))) condicaoPagamento = filter ? filter : "";
+    if (isNaN(parseInt(filter))) condicaoPagamento = filter ? filter : "";
     else codigo = parseInt(filter)
 
     this.condicaoPagamentoService.listCondicaoPagamentosByFilters(codigo, condicaoPagamento, null).subscribe(page =>

@@ -174,7 +174,7 @@ public class CompraDAO {
 			itemCompra.setProduto( produto.getProduto() );
 			itemCompra.setCodigo( produto.getCodigo() );
 			itemCompra.setUnidadeComercial( produto.getUnidadeComercial() );
-			if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ))
+			if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUEADO ))
 				itemCompra.setCurrentEstoque( produto.getCurrentEstoque() );
 		}
 		return itemCompras;

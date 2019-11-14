@@ -39,7 +39,7 @@ export class VendaListComponent implements OnInit
         { name: 'modelo', label: 'MODELO', sortable: false },
         { name: 'serie', label: 'SERIE', sortable: false },
         { name: 'numeroNota', label: 'NUMERO DA NOTA', sortable: false },
-        { name: 'cliente', label: 'FORNECEDOR', sortable: false },
+        { name: 'cliente', label: 'CLIENTE', sortable: false },
         { name: 'situacao', label: 'SITUAÇÃO', sortable: false },
         { name: 'opcoes', label: 'OPÇÕES', tooltip: 'OPÇÕES', sortable: false, width: 150 }
     ];

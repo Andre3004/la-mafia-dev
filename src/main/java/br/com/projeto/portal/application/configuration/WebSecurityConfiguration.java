@@ -23,7 +23,7 @@ import br.com.projeto.portal.application.security.AuthenticationSuccessHandler;
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter
 {
 	/*-------------------------------------------------------------------
-     * 		 					ATTRIBUTES
+	 * 		 					ATTRIBUTES
 	 *-------------------------------------------------------------------*/
 	/**
 	 *
@@ -91,9 +91,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter
 	@Override
 	public void configure( WebSecurity web ) throws Exception
 	{
-		web.ignoring().antMatchers("/**/favicon.ico", "/static/**", "/modules/**", "/webjars/**", "/broker/**/*.js", "/bundles/**" );
+		web.ignoring().antMatchers( "/**/favicon.ico", "/home/**", "/static/**", "/modules/**", "/templates/**", "/webjars/**", "/broker/**/*.js", "/bundles/**" );
 	}
-	
+
 	/**
 	 * configure
 	 */

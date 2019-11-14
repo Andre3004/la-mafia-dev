@@ -55,14 +55,19 @@ export class PaisFormComponent implements OnInit {
 
   }
 
- public onSubmit(): void
+ public onSubmit(form): void
   {
 
+    if(form.invalid){
+      this.openSnackBarService.openError(`Todos os campos com * devem ser preenchidos.`);
+      return;
+    }
 
     if (!this.pais.codigo)
     {
       this.paisService.insertPais(this.pais).subscribe(pais =>
       {
+        this.openSnackBarService.openSuccess("País inserido com sucesso.");
         this.dialogRef.close(this.pais);
       }, err => this.openSnackBarService.openError(err.message))
     }
@@ -70,7 +75,7 @@ export class PaisFormComponent implements OnInit {
     {
       this.paisService.updatePais(this.pais).subscribe(pais =>
       {
-        this.openSnackBarService.openSuccess("País atualizado.");
+        this.openSnackBarService.openSuccess("País atualizado com sucesso.");
         this.dialogRef.close(this.pais);
       }, err => this.openSnackBarService.openError(err.message))
     }

@@ -239,7 +239,7 @@ public class FornecedorDAO
                 f.setEndereco(rs.getString(6));
                 f.setSituacao( rs.getBoolean( "situacao" ) );
 
-                if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ))
+                if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUEADO ))
                 {
                     CondicaoPagamentoFornecedor condicaoPagamentoFornecedor = findCondicaoPagamentoFornecedorById( rs.getLong( 1 ), ContextHolder.getAuthenticatedUser().getFranquia().getCodigo() );
                     f.setCondicaoPagamento( condicaoPagamentoFornecedor != null ? condicaoPagamentoFornecedor.getCondicaoPagamento() : null);

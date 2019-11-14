@@ -70,9 +70,14 @@ export class FranquiaFormComponent implements OnInit
 
   }
 
-  public onSubmit(): void
+  public onSubmit(form): void
   {
 
+    if(form.invalid){
+      this.openSnackBarService.openError(`Todos os campos com * devem ser preenchidos.`);
+      return;
+    }
+    
     if (this.franquia.cnpj && !this.validarCNPJ(this.franquia.cnpj))
     {
         this.openSnackBarService.openError('O campo CNPJ está inválido.')

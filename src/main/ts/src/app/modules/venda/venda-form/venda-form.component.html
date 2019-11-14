@@ -11,17 +11,17 @@
 
           <mat-form-field fxFlex="20" appearance="outline">
             <mat-label>Modelo</mat-label>
-            <input matInput required [(ngModel)]="venda.modelo" name="modelo" maxlength="144" [disabled]="isDetail || venda.condicaoPagamento.codigo" >
+            <input matInput required uppercase [(ngModel)]="venda.modelo" name="modelo" maxlength="144" [disabled]="isDetail || venda.condicaoPagamento.codigo" >
           </mat-form-field>
 
           <mat-form-field fxFlex="25" appearance="outline">
             <mat-label>Serie</mat-label>
-            <input matInput required [(ngModel)]="venda.serie" name="serie" maxlength="144" [disabled]="isDetail || venda.condicaoPagamento.codigo" >
+            <input matInput required uppercase [(ngModel)]="venda.serie" name="serie" maxlength="144" [disabled]="isDetail || venda.condicaoPagamento.codigo" >
           </mat-form-field>
 
           <mat-form-field fxFlex appearance="outline">
             <mat-label>Número da nota</mat-label>
-            <input matInput required [(ngModel)]="venda.numeroNota" name="numeroNota" maxlength="144" [disabled]="isDetail || venda.condicaoPagamento.codigo" >
+            <input matInput required uppercase [(ngModel)]="venda.numeroNota" name="numeroNota" maxlength="144" [disabled]="isDetail || venda.condicaoPagamento.codigo" >
           </mat-form-field>
 
         </div>
@@ -52,7 +52,7 @@
             <mat-label>Data emissão *</mat-label>
             <input matInput required [max]="dataHoje" [matDatepicker]="dataEmissao" [(ngModel)]="venda.dataEmissao" name="dataEmissao" disabled>
             <mat-datepicker-toggle  [ngStyle]="{'color': !venda.dataEmissao ? 'red' : 'black' }" matSuffix [for]="dataEmissao" [disabled]="isDetail || venda.condicaoPagamento.codigo" ></mat-datepicker-toggle>
-            <button *ngIf="venda.dataEmissao && !isDetail" matSuffix mat-icon-button (click)="venda.dataEmissao = null" matTooltip="Remover data de emissão">
+            <button *ngIf="(venda.dataEmissao && !isDetail) && !venda?.condicaoPagamento?.codigo" matSuffix mat-icon-button (click)="venda.dataEmissao = null" matTooltip="Remover data de emissão">
               <mat-icon>clear</mat-icon>
             </button>
             <mat-datepicker #dataEmissao disabled="false"></mat-datepicker>
@@ -63,7 +63,7 @@
       </form>
     </mat-tab>
 
-    <mat-tab label="ITENS DA VENDA" [disabled]="informacoesForm?.invalid || !venda.dataEmissao">
+    <mat-tab label="ITENS DA VENDA" [disabled]="informacoesForm?.invalid || !venda.dataEmissao || !venda.cliente">
 
       <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="30px" class="pad-sm push-bottom-sm">
 
@@ -172,7 +172,6 @@
         [isDisable]="venda?.condicaoPagamento?.codigo || isDetail || venda.condicaoPagamento.codigo"
         displayKey="condicaoPagamento"
         [displayId]="true"
-        [classes]="required-class-condicao-pagamento"
         [isDetail]="isDetail"
         [list]="{values: condicoesPagamentos}"
         [itemSelected]="{selected: venda.condicaoPagamento}"
@@ -246,7 +245,7 @@
 
   <div>
 
-    <button *ngIf="!isDetail" [disabled]="!validForm(informacoesForm)" (click)="onSubmit(informacoesForm)" mat-raised-button
+    <button *ngIf="!isDetail" (click)="onSubmit(informacoesForm)" mat-raised-button
       class="white-btn" color="primary">
       SALVAR
     </button>

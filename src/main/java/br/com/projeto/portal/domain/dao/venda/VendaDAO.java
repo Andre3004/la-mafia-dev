@@ -155,7 +155,7 @@ public class VendaDAO
 			itemVenda.setProduto( produto.getProduto() );
 			itemVenda.setCodigo( produto.getCodigo() );
 			itemVenda.setUnidadeComercial( produto.getUnidadeComercial() );
-			if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUIADO ))
+			if(ContextHolder.getAuthenticatedUser().getPerfilUsuario().equals( PerfilUsuario.FRANQUEADO ))
 				itemVenda.setCurrentEstoque( produto.getCurrentEstoque() );
 		}
 		return itemVendas;

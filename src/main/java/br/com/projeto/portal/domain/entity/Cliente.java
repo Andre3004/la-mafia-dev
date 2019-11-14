@@ -1,5 +1,6 @@
 package br.com.projeto.portal.domain.entity;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import br.com.projeto.portal.domain.entity.franquia.Franquia;
@@ -28,8 +29,6 @@ public class Cliente extends AbstractEntity
 
     private String cliente;
 
-    private String apelido;
-
     private String cpf;
 
     private String sexo;
@@ -42,7 +41,17 @@ public class Cliente extends AbstractEntity
 
     private String endereco;
 
+    private String bairro;
+
+    private Integer numero;
+
+    private String complemento;
+
+    private LocalDate dataNascimento;
+
     private Boolean situacao;
+
+    private Boolean isEstrangeiro;
 
     private Cidade cidade;
 
@@ -89,7 +98,6 @@ public class Cliente extends AbstractEntity
         return "Cliente{" +
                 "codigo=" + codigo +
                 ", cliente='" + cliente + '\'' +
-                ", apelido='" + apelido + '\'' +
                 ", cpf='" + cpf + '\'' +
                 ", sexo='" + sexo + '\'' +
                 ", telefone='" + telefone + '\'' +

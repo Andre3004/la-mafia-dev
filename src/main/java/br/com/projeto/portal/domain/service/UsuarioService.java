@@ -19,6 +19,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import br.com.projeto.portal.domain.entity.usuario.Usuario;
 
@@ -52,7 +55,6 @@ public class UsuarioService
 	/*-------------------------------------------------------------------
 	 *				 		     SERVICES
 	 *-------------------------------------------------------------------*/
-
 
 	public Page<Usuario> listUsuariosByFilters( String nome, Boolean situacao, String email, PageRequest pageable )
 	{
@@ -124,6 +126,8 @@ public class UsuarioService
 
 	public void deleteUsuario( long id )
 	{
+		Assert.isTrue( !ContextHolder.getAuthenticatedUser().getCodigo().equals( id ), "Não é possível excluir o seu usuário.");
+
 		Usuario usuario = this.findUsuarioById( id );
 		if ( usuario.getAnexoUuid() != null )
 		{

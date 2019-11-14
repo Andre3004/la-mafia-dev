@@ -188,7 +188,8 @@ public class ContasAReceberDAO
 
 		where += clienteId != null ?  "AND cliente_id = " + clienteId + " ": "";
 
-		String pagination = "LIMIT " + pageable.getPageSize() + " " +
+		String pagination = "ORDER BY created " +
+				"LIMIT " + pageable.getPageSize() + " " +
 				"OFFSET " + pageable.getOffset() + ";";
 
 		String querySql = selectAndFrom + where + pagination;

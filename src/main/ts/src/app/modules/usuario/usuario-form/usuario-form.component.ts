@@ -20,7 +20,7 @@ export class UsuarioFormComponent implements OnInit
 
   public title = "";
 
-  public usuario: Usuario = { franquia: {}, perfilUsuario: 'FRANQUIADO' };
+  public usuario: Usuario = { franquia: {}, perfilUsuario: 'FRANQUEADO' };
 
   public maskCpf = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/];
 
@@ -78,15 +78,20 @@ export class UsuarioFormComponent implements OnInit
   }
 
   public changeTipo(){
-    if(this.usuario.perfilUsuario == 'FRANQUIADOR'){
+    if(this.usuario.perfilUsuario == 'FRANQUEADOR'){
       this.usuario.franquia = null;
     }
   }
 
-  public onSubmit(): void
+  public onSubmit(form): void
   {
 
-    if ( this.usuario.perfilUsuario == 'FRANQUIADO' && (!this.usuario.franquia || (this.usuario.franquia && !this.usuario.franquia.codigo)))
+    if(form.invalid){
+      this.openSnackBarService.openError(`Todos os campos com * devem ser preenchidos.`);
+      return;
+    }
+
+    if ( this.usuario.perfilUsuario == 'FRANQUEADO' && (!this.usuario.franquia || (this.usuario.franquia && !this.usuario.franquia.codigo)))
     {
       this.openSnackBarService.openError("O campo franquia deve ser preenchido.");
       return;

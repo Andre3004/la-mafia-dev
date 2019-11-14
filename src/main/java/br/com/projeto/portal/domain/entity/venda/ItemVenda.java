@@ -27,9 +27,9 @@ public class ItemVenda extends Produto
 
 	private String numeroNota;
 
-	private Long produtoId;
-
 	private Long clienteId;
+
+	private Long produtoId;
 
 	private Long franquiaId;
 

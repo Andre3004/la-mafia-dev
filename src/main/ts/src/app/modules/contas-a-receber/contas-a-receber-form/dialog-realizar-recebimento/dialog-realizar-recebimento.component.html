@@ -18,7 +18,7 @@
 
     <mat-form-field fxFlex appearance="outline">
       <mat-label>Valor Recebido</mat-label>
-      <input matInput required [(ngModel)]="contaAReceber.valorRecebido" name="valorRecebido" currencyMask disabled [options]="{
+      <input matInput required [ngModel]="valorRecebido" name="valorRecebido" currencyMask disabled [options]="{
           align: 'left',
           prefix: '',
           thousands: '.',
@@ -29,6 +29,15 @@
     </mat-form-field>
 
   </form>
+
+  <div fxLayoutAlign=" center" fxLayoutGap="30px">
+    <detail-field label="Data de vencimento" [value]="this?.contaAReceber?.dataVencimento ? (this?.contaAReceber?.dataVencimento | date:'dd/MM/yyyy') : '-'"></detail-field>
+    <detail-field label="Juros" value="{{this?.contaAReceber?.juros}} %"></detail-field>
+    <detail-field label="Multa" value="{{this?.contaAReceber?.multa}} %"></detail-field>
+    <detail-field label="Desconto" value="{{this?.contaAReceber?.desconto}} %"></detail-field>
+    <detail-field label="Valor parcela" value="R$ {{this?.contaAReceber?.valorParcela}}"></detail-field>
+  </div>
+
 </mat-dialog-content>
 <mat-dialog-actions fxLayoutAlign="end end">
 
