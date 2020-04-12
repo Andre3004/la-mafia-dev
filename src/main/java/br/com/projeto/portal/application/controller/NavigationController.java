@@ -24,7 +24,7 @@ public class NavigationController
 	@RequestMapping(value = "/")
 	public ModelAndView home()
 	{
-		return new ModelAndView( "home/index" );
+		return new ModelAndView( "home" );
 	}
 
 	@RequestMapping(value = "/autenticacao")

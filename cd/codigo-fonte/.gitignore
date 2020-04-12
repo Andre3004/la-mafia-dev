@@ -1,0 +1,16 @@
+
+\.idea/
+
+\.settings/
+
+target/
+
+\.classpath
+
+\.factorypath
+
+\.project
+
+\.springBeans
+
+projeto\.iml

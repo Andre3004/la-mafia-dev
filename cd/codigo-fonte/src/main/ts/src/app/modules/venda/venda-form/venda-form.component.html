@@ -1,0 +1,257 @@
+<h2 mat-dialog-title>{{title}}</h2>
+
+
+<mat-dialog-content>
+
+  <mat-tab-group (selectedTabChange)="onClickContasAReceber($event)">
+    <mat-tab label="INFORMAÇÕES">
+      <form #informacoesForm="ngForm" fxLayout="column">
+
+        <div class="push-top-md" fxLayout="row" fxLayoutGap="30px">
+
+          <mat-form-field fxFlex="20" appearance="outline">
+            <mat-label>Modelo</mat-label>
+            <input matInput required uppercase [(ngModel)]="venda.modelo" name="modelo" maxlength="144" [disabled]="isDetail || venda.condicaoPagamento.codigo" >
+          </mat-form-field>
+
+          <mat-form-field fxFlex="25" appearance="outline">
+            <mat-label>Serie</mat-label>
+            <input matInput required uppercase [(ngModel)]="venda.serie" name="serie" maxlength="144" [disabled]="isDetail || venda.condicaoPagamento.codigo" >
+          </mat-form-field>
+
+          <mat-form-field fxFlex appearance="outline">
+            <mat-label>Número da nota</mat-label>
+            <input matInput required uppercase [(ngModel)]="venda.numeroNota" name="numeroNota" maxlength="144" [disabled]="isDetail || venda.condicaoPagamento.codigo" >
+          </mat-form-field>
+
+        </div>
+
+
+
+        <div fxLayout="row" fxLayoutGap="30px">
+
+          <auto-complete-with-redirect
+            fxFlex
+            title="Cliente"
+            [classes]="required-class-cliente"
+            key="codigo"
+            link="cliente"
+            [isDisable]="venda?.cliente?.codigo || isDetail || venda.condicaoPagamento.codigo"
+            displayKey="cliente"
+            [displayId]="true"
+            [isDetail]="isDetail || venda.condicaoPagamento.codigo"
+            [list]="{values: clientes}"
+            [itemSelected]="{selected: venda.cliente}"
+            (onFilterChange)="onListClientes($event)"
+            (onSelect)="venda.cliente = $event;"
+            (onDelete)="venda.cliente = null"
+          >
+          </auto-complete-with-redirect>
+
+          <mat-form-field appearance="outline" class="data-with-double-suffix">
+            <mat-label>Data emissão *</mat-label>
+            <input matInput required [max]="dataHoje" [matDatepicker]="dataEmissao" [(ngModel)]="venda.dataEmissao" name="dataEmissao" disabled>
+            <mat-datepicker-toggle  [ngStyle]="{'color': !venda.dataEmissao ? 'red' : 'black' }" matSuffix [for]="dataEmissao" [disabled]="isDetail || venda.condicaoPagamento.codigo" ></mat-datepicker-toggle>
+            <button *ngIf="(venda.dataEmissao && !isDetail) && !venda?.condicaoPagamento?.codigo" matSuffix mat-icon-button (click)="venda.dataEmissao = null" matTooltip="Remover data de emissão">
+              <mat-icon>clear</mat-icon>
+            </button>
+            <mat-datepicker #dataEmissao disabled="false"></mat-datepicker>
+          </mat-form-field>
+          
+        </div>
+
+      </form>
+    </mat-tab>
+
+    <mat-tab label="ITENS DA VENDA" [disabled]="informacoesForm?.invalid || !venda.dataEmissao || !venda.cliente">
+
+      <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="30px" class="pad-sm push-bottom-sm">
+
+        <div fxLayout="column">
+          <label class="bold">ITENS DA VENDA</label>
+        </div>
+
+        <div fxFlex></div>
+
+        <div fxLayout="column" fxLayoutAlign=" center">
+          <label class="bold">TOTAL DE ITENS</label>
+          <label>{{venda.itensVenda.length}}</label>
+        </div>
+
+        <div fxLayout="column" fxLayoutAlign=" center">
+          <label class="bold">TOTAL DA VENDA</label>
+          <label>R$ {{getValorTotalVenda | number:'.2':'pt'}}</label>
+        </div>
+
+      </div>
+
+      <div fxLayout="row wrap" fxLayoutGap="30px" fxLayoutAlign=" center" *ngIf="!isDetail || venda.condicaoPagamento.codigo">
+
+        <auto-complete-with-redirect
+            fxFlex
+            title="Produto"
+            [classes]="required-class-produto"
+            key="codigo"
+            link="produto"
+            [isDisable]="itemVenda?.codigo || isDetail || venda.condicaoPagamento.codigo"
+            displayKey="produto"
+            [displayId]="true"
+            [isDetail]="isDetail || venda.condicaoPagamento.codigo"
+            [list]="{values: produtos}"
+            [itemSelected]="{selected: itemVenda}"
+            (onFilterChange)="onListProdutos($event)"
+            (onSelect)="onSelectProduto($event)"
+            (onDelete)="itemVenda = {}"
+          >
+
+          </auto-complete-with-redirect>
+
+        <mat-form-field appearance="outline" fxFlex="15">
+          <mat-label>Unidade de medida</mat-label>
+          <input matInput [disabled]="true" [(ngModel)]="itemVenda.unidadeComercial" name="unidadeComercial">
+        </mat-form-field>
+
+
+
+        <mat-form-field appearance="outline" fxFlex="11">
+          <mat-label>Quantidade</mat-label>
+          <input matInput [(ngModel)]="itemVenda.quantidade" [disabled]="isDetail || venda.condicaoPagamento.codigo"  name="quantidade" required currencyMask [options]="{
+            align: 'left',
+            prefix: '',
+            thousands: '.',
+            precision: 0,
+            allowNegative: false
+          }" maxlength="4">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" fxFlex="12">
+          <mat-label>Valor de venda</mat-label>
+          <input matInput [(ngModel)]="itemVenda.valorVenda" [disabled]="true"  name="valorVenda" required currencyMask [options]="{
+            align: 'left',
+            prefix: '',
+            thousands: '.',
+            decimal: ',',
+            precision: 2,
+            allowNegative: false
+          }" maxlength="9">
+        </mat-form-field>
+
+        <button *ngIf="!isDetail || venda.condicaoPagamento.codigo" (click)="addItemVenda()" [disabled]="!itemVendaIsValid" mat-mini-fab color="warn"
+          matTooltip="Adicionar item na venda">
+          <mat-icon>
+            add
+          </mat-icon>
+        </button>
+
+      </div>
+
+      <div *ngFor="let item of venda.itensVenda; let i = index" class="push-md" fxLayout="row" fxLayoutGap="20px">
+        <detail-field label="Item" value="{{i+1}}"></detail-field>
+        <detail-field label="Produto" value="{{item?.produto}}"></detail-field>
+        <detail-field label="Unidade de medida" value="{{item?.unidadeComercial}}"></detail-field>
+        <detail-field label="Quantidade" value="{{item?.quantidade}}"></detail-field>
+        <detail-field label="Valor de venda" matTooltip="Valor com a rateio das despesas" value="{{item?.valorVenda | number:'.2':'pt'}} "></detail-field>
+        <detail-field label="Valor total" value="{{getValorTotal(item) | number:'.2':'pt'}}"></detail-field>
+
+        <button *ngIf="!isDetail && !venda.condicaoPagamento.codigo" (click)="removeItemVenda(i)" matTooltip="Remover item da venda" matSuffix mat-icon-button
+          class="tc-grey-700 delete-button-hover">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+
+    </mat-tab>
+
+    <mat-tab [disabled]="informacoesForm?.invalid || !venda.itensVenda.length" label="CONTAS Á PAGAR">
+
+
+      <auto-complete-with-redirect
+        fxFlex
+        title="Condição de pagamento"
+        key="codigo"
+        link="condicao-pagamento"
+        [isDisable]="venda?.condicaoPagamento?.codigo || isDetail || venda.condicaoPagamento.codigo"
+        displayKey="condicaoPagamento"
+        [displayId]="true"
+        [isDetail]="isDetail"
+        [list]="{values: condicoesPagamentos}"
+        [itemSelected]="{selected: venda.condicaoPagamento}"
+        (onFilterChange)="onListCondicaoPagamentos($event)"
+        (onSelect)="onSelectCondicaoPagamento($event)"
+        (onDelete)="venda.condicaoPagamento = {}; this.venda.contasAReceber = []"
+      >
+      </auto-complete-with-redirect>
+
+     
+        
+      <div fxLayout="row" fxLayoutAlign="space-between center" >
+        <label class="bold">CONTAS À PAGAR</label>
+
+        <div fxLayout="column">
+          <label class="bold">TOTAL DA NOTA</label>
+          <label>{{getValorTotalNota | number:'.2':'pt'}}</label>
+        </div>
+      </div>
+  
+
+      <mat-expansion-panel *ngFor="let contaAPagar of venda.contasAReceber; let i = index" class="push-sm">
+        <mat-expansion-panel-header>
+          <mat-panel-title fxLayoutGap="20px">
+            <div fxLayout="column">
+              <label class="bold">{{i+1}} -</label>
+            </div>
+
+            <div fxLayout="column">
+              <label class="bold">Parcela {{i+1}}</label>
+            </div>
+          </mat-panel-title>
+
+        </mat-expansion-panel-header>
+
+        <div fxLayout="row" fxLayoutGap="30px">
+          <mat-form-field appearance="outline">
+            <mat-label>Data de vencimento</mat-label>
+            <input matInput [disabled]="true" [value]="contaAPagar.dataVencimento | date:'dd/MM/yyyy'">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" fxFlex>
+            <mat-label>Número do documento</mat-label>
+            <input matInput [disabled]="true" [value]="getNumeroDocumento(i)">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Valor da parcela</mat-label>
+            <input matInput [disabled]="true" value="{{contaAPagar.valorParcela | number:'.2':'pt'}}">
+          </mat-form-field>
+
+        </div>
+      </mat-expansion-panel>
+
+    </mat-tab>
+
+
+
+  </mat-tab-group>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+  <div fxLayout="column">
+    <label> <label style="font-weight: bold">Data de criação:</label>
+      {{ venda?.created ? (venda?.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+      {{ venda?.updated ? (venda?.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+  </div>
+
+  <div>
+
+    <button *ngIf="!isDetail" (click)="onSubmit(informacoesForm)" mat-raised-button
+      class="white-btn" color="primary">
+      SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
+    push-left-md bgc-grey-800">
+      {{!isDetail ? 'CANCELAR' : 'FECHAR'}}
+    </button>
+  </div>
+</mat-dialog-actions>

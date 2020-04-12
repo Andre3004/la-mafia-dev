@@ -1,0 +1,20 @@
+1- Instaladores
+    Intellij IDEA: 2019.2
+    Visual studio code: 1.40
+    java version "1.8.0_201"
+    postgreSQL 9.6
+    npm 6.9.0
+2 - Banco de dados
+    Executar no postgres o arquivo src\main\resources\db\migration\v1.schema.sql
+3 - BACK-END
+    Abrir POM.xml no Intellij
+    Escolher a opção de abrir o projeto
+    Após abrir e carregar o projeto
+    Selecione com o botão direito o arquivo Application.java
+    Clique em run
+4 - FRONT-END
+    digite npm install na pasta ts
+    dps npm start para iniciar
+5- Sistema
+    autenticar na porta 8080 
+    o sistema do front end encontra-se na porta 4200

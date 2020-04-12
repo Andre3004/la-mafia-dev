@@ -1,0 +1,115 @@
+<mat-toolbar class="toolbar-default">
+	<mat-toolbar-row fxLayoutGap="30px">
+
+		<auto-complete-with-redirect fxFlex title="Fornecedor" [isNotRequired]="true" key="codigo" link="fornecedor"
+			displayKey="razaoSocial" [isNotRequired]="true" [displayId]="true" [list]="{values: fornecedores}"
+			[itemSelected]="{selected: filters.fornecedor}" (onFilterChange)="onListFornecedores($event)"
+			(onSelect)="filters.fornecedor = $event" (onDelete)="filters.fornecedor = null">
+		</auto-complete-with-redirect>
+
+		<mat-form-field fxFlex="10" appearance="outline">
+			<mat-label>Modelo</mat-label>
+			<input matInput uppercase [(ngModel)]="filters.modelo" name="modelo" maxlength="144">
+		</mat-form-field>
+
+		<mat-form-field fxFlex="10" appearance="outline">
+			<mat-label>Série</mat-label>
+			<input matInput uppercase [(ngModel)]="filters.serie" name="serie" maxlength="144">
+		</mat-form-field>
+
+		<mat-form-field fxFlex="15" appearance="outline">
+			<mat-label>Número da nota</mat-label>
+			<input matInput uppercase [(ngModel)]="filters.numeroNota" name="numeroNota" maxlength="144">
+		</mat-form-field>
+
+		<!-- <mat-form-field fxFlex="15" appearance="outline" [floatLabel]="'always'">
+			<mat-label>Data de emissão</mat-label>
+			<input matInput required [matDatepicker]="startDate">
+			<mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+			<mat-datepicker #startDate></mat-datepicker>
+		</mat-form-field> -->
+
+
+
+		<div fxFlex></div>
+
+		<button color="primary" class="white-btn" (click)="openForm()" mat-raised-button>ADICIONAR
+			NOVA COMPRA</button>
+	</mat-toolbar-row>
+
+	<mat-toolbar-row fxLayoutGap="30px">
+		<button color="primary" class="white-btn" (click)="onListComprasByFilters()" mat-raised-button
+			type="submit">CONSULTAR</button>
+		<button color="accent" class="white-btn" (click)="clearFilters()" mat-raised-button>LIMPAR FILTROS</button>
+	</mat-toolbar-row>
+</mat-toolbar>
+
+
+<mat-card>
+
+	<td-data-table #dataTable [data]="pageRequest.content" [columns]="tableColumns" [clickable]="true">
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="situacao" let-compra="row">
+			<mat-icon *ngIf="compra?.situacao" class="tc-green-700" matTooltip="Ativado">check_circle</mat-icon>
+			<mat-icon *ngIf="!compra?.situacao" matTooltip="Desativado" class="tc-red-700">block</mat-icon>
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="modelo" let-compra="row">
+			<span class="text-truncate">
+				{{compra?.modelo}}
+			</span>
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="serie" let-compra="row">
+			<span class="text-truncate">
+				{{compra?.serie}}
+			</span>
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="numeroNota" let-compra="row">
+			<span class="text-truncate">
+				{{compra?.numeroNota}}
+			</span>
+		</ng-template>
+
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="fornecedor" let-compra="row">
+			{{compra?.fornecedor?.codigo}} - {{compra?.fornecedor?.razaoSocial}}
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="opcoes" let-compra="row">
+
+			<button matTooltip="Visualizar compra" stopPropagation
+				(click)="$event.stopPropagation(); openForm(compra, true)" mat-icon-button>
+				<mat-icon class="tc-grey-700 edit-button-hover">visibility</mat-icon>
+			</button>
+
+			<!-- <button *ngIf="!compra.situacao" matTooltip="Restaurar compra"
+				(click)="$event.stopPropagation(); atualizarSituacaoCompra(compra)" stopPropagation mat-icon-button>
+				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
+			</button> -->
+
+			<button *ngIf="compra.situacao" matTooltip="Cancelar compra"
+				(click)="$event.stopPropagation(); atualizarSituacaoCompra(compra)" stopPropagation mat-icon-button>
+				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
+			</button>
+
+		</ng-template>
+
+	</td-data-table>
+
+	<td-paging-bar #pagingBar [pageSize]="pageRequest.pageable.size" [total]="pageRequest.totalElements"
+		(change)="page($event)" *ngIf="pageRequest.content != null && pageRequest.content.length">
+		<span td-paging-bar-label hide-xs>Registros por página:</span>
+		<mat-select [style.width.px]="50" [(ngModel)]="pageRequest.pageable.size">
+			<mat-option *ngFor="let size of [10,50,100]" [value]="size">
+				{{size}}
+			</mat-option>
+		</mat-select>
+		{{pagingBar.range}} <span hide-xs>de {{pagingBar.total}}</span>
+	</td-paging-bar>
+
+	<div *ngIf="pageRequest?.content?.length == 0" class="pad-md" fxLayoutAlign="center ">
+		<label>Nenhum registro encontrado.</label>
+	</div>
+</mat-card>

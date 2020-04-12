@@ -1,0 +1,151 @@
+<h2 mat-dialog-title>{{title}}</h2>
+
+
+<mat-dialog-content>
+
+    <mat-tab-group>
+        <mat-tab label="Informações">
+            <form #qualificadorForm="ngForm" fxLayout="column" class="push-top-md">
+
+                <div fxLayout="row" fxLayoutGap="30px">
+
+                    <mat-form-field fxFlex appearance="outline">
+                        <mat-label>Código</mat-label>
+                        <input uppercase matInput [(ngModel)]="ambiente.codigo" [disabled]="true" name="codigo">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex appearance="outline">
+                        <mat-label>Ambiente</mat-label>
+                        <input uppercase required [(ngModel)]="ambiente.ambiente" name="ambiente" matInput
+                            maxlength="144" placeholder="Digite o nome do ambiente">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex appearance="outline">
+                        <mat-label>Capacidade de mesas</mat-label>
+                        <input required [(ngModel)]="ambiente.capacidadeMesas"
+                            [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}" name="nome" matInput
+                            placeholder="Digite a capacidade de mesas">
+                    </mat-form-field>
+
+                </div>
+
+                <div fxLayout="row">
+                    <mat-form-field fxFlex appearance="outline">
+                        <mat-label>Descrição</mat-label>
+                        <textarea uppercase [(ngModel)]="ambiente.descricao" name="descricao" matInput maxlength="144"
+                            placeholder="Digite a descrição do ambiente"></textarea>
+                    </mat-form-field>
+
+                </div>
+
+            </form>
+
+        </mat-tab>
+
+        <mat-tab label="Fotos">
+
+            <div fxLayout="row" fxFlex>
+                <div fxFlex></div>
+                <button color="accent" style="right: 0;" class="white-btn push-top-sm" (click)="addImagemButton()"
+                    mat-raised-button>ADICIONAR ARQUIVO</button>
+            </div>
+
+            <div style="max-height: 350px;overflow: auto;">
+                <div *ngFor="let ambienteImagem of ambiente.ambienteImagems; let i = index">
+                    <div class="push-top-sm" fxFlex
+                        style="background-color: #b71c1c; color: white; font-weight: bold;border-radius: 30px;"
+                        fxLayoutAlign="space-between center">
+                        <label *ngIf="!fotoImage[i]?.base64 && !ambienteImagem.anexoUuid" style="max-width: 400px;"
+                            class="text-truncate push-left-md">
+                            Selecione o arquivo...
+                        </label>
+
+
+                        <label *ngIf="ambienteImagem?.nomeArquivo" style="max-width: 400px;"
+                            class="text-truncate push-left-md">
+                            {{ambienteImagem?.nomeArquivo}}
+                        </label>
+
+                        <div class="push-right-sm">
+                            <button (click)="removeAnexo(i)" matTooltip="Remover anexo" mat-icon-button>
+                                <mat-icon>delete</mat-icon>
+                            </button>
+
+                            <button (click)="fotoInput.click()"
+                                *ngIf="!fotoImage[i]?.base64 && !ambienteImagem?.anexoUuid" mat-icon-button
+                                matTooltip="Adicionar anexo">
+                                <mat-icon>attach_file</mat-icon>
+                            </button>
+
+                            <button *ngIf="ambienteImagem.anexoUuid" matTooltip="Download anexo"
+                                (click)="downloadFile(i)" mat-icon-button>
+                                <mat-icon>file_download</mat-icon>
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <input hidden type="file" #fotoInput (change)="setAmbienteImagemAnexo($event, i)">
+                </div>
+
+                <mat-card *ngIf="ambiente?.ambienteImagems?.length == 0" style="max-height: 350px;overflow: auto;">
+                    <div class="pad-md" fxLayoutAlign="center ">
+                        <label>Nenhum arquivo vinculada a este ambiente.</label>
+                    </div>
+                </mat-card>
+
+            </div>
+        </mat-tab>
+
+        <mat-tab label="Mesas">
+
+            <mat-card style="max-height: 350px;overflow: auto;">
+
+                <td-data-table *ngIf="ambiente?.mesas?.length > 0" #dataTable [data]="ambiente.mesas"
+                    [columns]="tableColumns" [clickable]="true">
+
+                    <ng-template tdDataTableTemplate="numeroMesa" let-mesa="row">
+                        <span class="text-truncate">
+                            {{ mesa?.numeroMesa}}
+                        </span>
+                    </ng-template>
+
+                    <ng-template fxLayoutAlign="end" tdDataTableTemplate="situacao" let-mesa="row">
+                        <mat-icon *ngIf="mesa?.situacao" class="tc-green-700" matTooltip="Ativado">check_circle
+                        </mat-icon>
+                        <mat-icon *ngIf="!mesa?.situacao" matTooltip="Desativado" class="tc-red-700">block</mat-icon>
+                    </ng-template>
+
+                </td-data-table>
+
+                <div *ngIf="ambiente?.mesas?.length == 0" class="pad-md" fxLayoutAlign="center ">
+                    <label>Nenhuma mesa vinculada a este ambiente.</label>
+                </div>
+            </mat-card>
+
+        </mat-tab>
+
+    </mat-tab-group>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+    <div fxLayout="column">
+        <label> <label style="font-weight: bold">Data de criação:</label>
+            {{ ambiente.created ? (ambiente.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+        <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+            {{ ambiente.updated ? (ambiente.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    </div>
+
+    <div>
+        <button  (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
+            color="primary">
+            SALVAR
+        </button>
+        <button mat-dialog-close mat-raised-button class="white-btn
+    push-left-md bgc-grey-800">
+            CANCELAR
+        </button>
+    </div>
+</mat-dialog-actions>

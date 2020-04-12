@@ -1,0 +1,85 @@
+<div fxLayoutAlign="space-between center">
+    <h2 mat-dialog-title>{{title}}</h2>
+</div>
+
+<mat-dialog-content>
+    <form #qualificadorForm="ngForm" fxLayout="column">
+
+        <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign=" center">
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Código</mat-label>
+                <input uppercase matInput [(ngModel)]="grupoProduto.codigo" [disabled]="true" name="codigo">
+            </mat-form-field>
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Grupo de produto</mat-label>
+                <input uppercase required [(ngModel)]="grupoProduto.grupoProduto" name="nome" matInput maxlength="144"
+                    placeholder="Digite o nome do grupo">
+            </mat-form-field>
+
+            <mat-checkbox fxFlex [(ngModel)]="grupoProduto.exigeAno" name="exigeAno">Exige ano ?</mat-checkbox>
+
+           
+
+        </div>
+
+
+        <div class="push-top-sm" fxFlex
+            style="background-color: #b71c1c; color: white; font-weight: bold;border-radius: 30px;"
+            fxLayoutAlign="space-between center">
+            <label *ngIf="!fotoImage && !grupoProduto.anexoUuid" style="max-width: 400px;"
+                class="text-truncate push-left-md">
+                Selecione o arquivo...
+            </label>
+
+
+            <label *ngIf="grupoProduto?.nomeArquivo" style="max-width: 400px;" class="text-truncate push-left-md">
+                {{grupoProduto?.nomeArquivo}}
+            </label>
+
+            <div class="push-right-sm">
+                <button (click)="fotoInput.click()" *ngIf="!fotoImage && !grupoProduto?.anexoUuid" mat-icon-button
+                    matTooltip="Adicionar anexo">
+                    <mat-icon>attach_file</mat-icon>
+                </button>
+
+                <button *ngIf="fotoImage || grupoProduto?.anexoUuid" (click)="removeAnexo()" matTooltip="Remover anexo"
+                    mat-icon-button>
+                    <mat-icon>delete</mat-icon>
+                </button>
+
+                <button *ngIf="grupoProduto.anexoUuid" matTooltip="Download anexo" (click)="downloadFile()"
+                    mat-icon-button>
+                    <mat-icon>file_download</mat-icon>
+                </button>
+
+            </div>
+
+            <input hidden type="file" #fotoInput (change)="setGrupoProdutoAnexo($event)">
+        </div>
+
+    </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+    <div fxLayout="column">
+        <label> <label style="font-weight: bold">Data de criação:</label>
+            {{ grupoProduto.created ? (grupoProduto.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+        <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+            {{ grupoProduto.updated ? (grupoProduto.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    </div>
+
+    <div>
+    <button (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
+        color="primary">
+        SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
+    push-left-md bgc-grey-800">
+        CANCELAR
+    </button>
+    </div>
+</mat-dialog-actions>

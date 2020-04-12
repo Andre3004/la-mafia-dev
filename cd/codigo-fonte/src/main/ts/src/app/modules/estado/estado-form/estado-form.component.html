@@ -1,0 +1,85 @@
+<mat-dialog-content>
+
+  <h2 mat-dialog-title>{{title}}</h2>
+
+
+  <form #qualificadorForm="ngForm" fxLayout="column">
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Código</mat-label>
+        <input required matInput [(ngModel)]="estado.codigo" name="codigo" [disabled]="true">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>UF</mat-label>
+        <input required uppercase [(ngModel)]="estado.uf" name="uf" matInput maxlength="2">
+      </mat-form-field>
+
+
+
+    </div>
+
+    <div fxLayout="row">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Estado</mat-label>
+        <input uppercase required [(ngModel)]="estado.estado" name="estado" matInput maxlength="144">
+      </mat-form-field>
+
+      <auto-complete-with-redirect
+          fxFlex
+          class="push-left-md"
+          title="País"
+          link="pais"
+          [classes]="required-class-pais"
+          key="codigo"
+          displayKey="pais"
+          [displayId]="true"
+          [list]="{values: paises}"
+          [itemSelected]="{selected: estado.pais}"
+          (onFilterChange)="onListPaises($event)"
+          (onSelect)="estado.pais = $event"
+          (onDelete)="estado.pais = {}"
+      >
+      </auto-complete-with-redirect>
+
+    </div>
+
+
+    <div>
+
+      <!-- SELECT-->
+
+    </div>
+
+
+
+
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+    <div fxLayout="column">
+        <label> <label style="font-weight: bold">Data de criação:</label>
+            {{ estado.created ? (estado.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+        <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+            {{ estado.updated ? (estado.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    </div>
+
+    <div>
+  <button  (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
+    color="primary">
+    SALVAR
+  </button>
+  <button mat-dialog-close mat-raised-button class="white-btn
+  push-left-md bgc-grey-800">
+    CANCELAR
+  </button>
+    </div>
+</mat-dialog-actions>

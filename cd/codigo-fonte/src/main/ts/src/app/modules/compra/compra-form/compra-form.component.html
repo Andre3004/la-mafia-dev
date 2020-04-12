@@ -1,0 +1,320 @@
+<h2 mat-dialog-title>{{title}}</h2>
+
+
+<mat-dialog-content>
+
+  <mat-tab-group (selectedTabChange)="onClickContasAPagar($event)">
+    <mat-tab label="INFORMAÇÕES">
+      <form #informacoesForm="ngForm" fxLayout="column">
+
+        <div class="push-top-md" fxLayout="row" fxLayoutGap="30px">
+
+          <mat-form-field fxFlex="20" appearance="outline">
+            <mat-label>Modelo</mat-label>
+            <input matInput uppercase required [(ngModel)]="compra.modelo" name="modelo" maxlength="144" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
+          </mat-form-field>
+
+          <mat-form-field fxFlex="25" appearance="outline">
+            <mat-label>Serie</mat-label>
+            <input matInput uppercase required [(ngModel)]="compra.serie" name="serie" maxlength="144" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
+          </mat-form-field>
+
+          <mat-form-field fxFlex appearance="outline">
+            <mat-label>Número da nota</mat-label>
+            <input matInput uppercase required [(ngModel)]="compra.numeroNota" name="numeroNota" maxlength="144" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
+          </mat-form-field>
+
+        </div>
+
+
+
+        <div fxLayout="row" fxLayoutGap="30px">
+
+          <auto-complete-with-redirect
+            [classes]="required-class-fornecedor"
+            fxFlex
+            title="Fornecedor"
+            key="codigo"
+            link="fornecedor"
+            [isDisable]="compra?.fornecedor?.codigo || isDetail || compra.condicaoPagamento.codigo"
+            displayKey="razaoSocial"
+            [displayId]="true"
+            [isDetail]="isDetail || compra.condicaoPagamento.codigo"
+            [list]="{values: fornecedores}"
+            [itemSelected]="{selected: compra.fornecedor}"
+            (onFilterChange)="onListFornecedores($event)"
+            (onSelect)="onSelectFornecedor($event)"
+            (onDelete)="compra.fornecedor = null"
+          >
+          </auto-complete-with-redirect>
+
+          <mat-form-field appearance="outline" class="data-with-double-suffix">
+            <mat-label>Data emissão *</mat-label>
+            <input matInput required [max]="dataHoje" [matDatepicker]="dataEmissao" [(ngModel)]="compra.dataEmissao" name="dataEmissao" disabled>
+            <mat-datepicker-toggle  [ngStyle]="{'color': !compra.dataEmissao ? 'red' : 'black' }" matSuffix [for]="dataEmissao" [disabled]="isDetail || compra.condicaoPagamento.codigo" ></mat-datepicker-toggle>
+            <button *ngIf="(compra.dataEmissao && !isDetail) && !compra?.condicaoPagamento?.codigo" matSuffix mat-icon-button (click)="compra.dataEmissao = null; compra.dataChegada = null" matTooltip="Remover data de emissão">
+              <mat-icon>clear</mat-icon>
+            </button>
+            <mat-datepicker #dataEmissao disabled="false"></mat-datepicker>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="data-with-double-suffix">
+            <mat-label>Data Chegada *</mat-label>
+            <input matInput required [min]="compra.dataEmissao"  disabled [matDatepicker]="startDate" [(ngModel)]="compra.dataChegada"   name="dataChegada">
+            <mat-datepicker-toggle matSuffix [for]="startDate" [ngStyle]="{'color': !compra.dataChegada ? 'red' : 'black' }" [disabled]="isDetail || compra.condicaoPagamento.codigo || !compra.dataEmissao"></mat-datepicker-toggle>
+            <button *ngIf="(compra.dataChegada && !isDetail) && !compra?.condicaoPagamento?.codigo" matSuffix mat-icon-button (click)="compra.dataChegada = null" matTooltip="Remover data de chegada">
+              <mat-icon>clear</mat-icon>
+            </button>
+            <mat-datepicker #startDate  disabled="false"></mat-datepicker>
+          </mat-form-field>
+
+        </div>
+
+        <div fxFlex fxLayout="row" fxLayoutGap="30px">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Tipo de frete</mat-label>
+            <mat-select required [(ngModel)]="compra.tipoFrete" (ngModelChange)="onChangeTipoFrete()" name="tipoFrete" [disabled]="isDetail || compra.condicaoPagamento.codigo" >
+              <mat-option [value]="'PAGO_PELO_DESTINATARIO'">
+                Pago pelo destinatário
+              </mat-option>
+              <mat-option [value]="'PAGO_PELO_FORNECEDOR'">
+                Pago pelo fornecedor
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+
+
+          <mat-form-field fxFlex appearance="outline">
+            <mat-label>Frete</mat-label>
+            <input matInput required [(ngModel)]="compra.frete" name="frete" currencyMask [options]="{
+              align: 'left',
+              prefix: '',
+              thousands: '.',
+              decimal: ',',
+              precision: 2,
+              allowNegative: false
+            }" maxlength="9" [disabled]="isDetail || compra.condicaoPagamento.codigo || compra?.tipoFrete == 'PAGO_PELO_FORNECEDOR'" >
+          </mat-form-field>
+
+          <mat-form-field fxFlex appearance="outline">
+            <mat-label>Seguro</mat-label>
+            <input matInput required [(ngModel)]="compra.seguro" name="seguro" currencyMask [options]="{
+              align: 'left',
+              prefix: '',
+              thousands: '.',
+              decimal: ',',
+              precision: 2,
+              allowNegative: false
+            }" maxlength="9" [disabled]="isDetail || compra.condicaoPagamento.codigo || compra?.tipoFrete == 'PAGO_PELO_FORNECEDOR'" >
+          </mat-form-field>
+
+          <mat-form-field fxFlex appearance="outline">
+            <mat-label>Despesa</mat-label>
+            <input matInput required [(ngModel)]="compra.despesa" name="despesa" currencyMask [options]="{
+              align: 'left',
+              prefix: '',
+              thousands: '.',
+              decimal: ',',
+              precision: 2,
+              allowNegative: false
+            }" maxlength="9" [disabled]="isDetail || compra.condicaoPagamento.codigo || compra?.tipoFrete == 'PAGO_PELO_FORNECEDOR'" >
+          </mat-form-field>
+        </div>
+
+      </form>
+    </mat-tab>
+
+    <mat-tab label="ITENS DA COMPRA" [disabled]="informacoesForm?.invalid || !compra.dataEmissao || !compra.dataChegada || !compra.fornecedor">
+
+      <div fxLayout="row" fxLayoutAlign=" center" fxLayoutGap="30px" class="pad-sm push-bottom-sm">
+
+        <div fxLayout="column">
+          <label class="bold">ITENS DA COMPRA</label>
+        </div>
+
+        <div fxFlex></div>
+
+        <div fxLayout="column" fxLayoutAlign=" center">
+          <label class="bold">TOTAL DE ITENS</label>
+          <label>{{compra.itensCompra.length}}</label>
+        </div>
+
+        <div fxLayout="column" fxLayoutAlign=" center">
+          <label class="bold">TOTAL DA COMPRA</label>
+          <label>R$ {{getValorTotalCompra | number:'.2':'pt'}}</label>
+        </div>
+
+      </div>
+
+      <div fxLayout="row wrap" fxLayoutGap="30px" fxLayoutAlign=" center" *ngIf="!isDetail || compra.condicaoPagamento.codigo">
+
+        <auto-complete-with-redirect
+            fxFlex
+            [classes]="required-class-produto"
+            title="Produto"
+            key="codigo"
+            link="produto"
+            [isDisable]="itemCompra?.codigo || isDetail || compra.condicaoPagamento.codigo"
+            displayKey="produto"
+            [displayId]="true"
+            [isDetail]="isDetail || compra.condicaoPagamento.codigo"
+            [list]="{values: produtos}"
+            [itemSelected]="{selected: itemCompra}"
+            (onFilterChange)="onListProdutos($event)"
+            (onSelect)="onSelectProduto($event)"
+            (onDelete)="itemCompra = {}"
+          >
+
+          </auto-complete-with-redirect>
+
+        <mat-form-field appearance="outline" fxFlex="15">
+          <mat-label>Unidade de medida</mat-label>
+          <input matInput [disabled]="true" [(ngModel)]="itemCompra.unidadeComercial" name="unidadeComercial">
+        </mat-form-field>
+
+
+
+        <mat-form-field appearance="outline" fxFlex="11">
+          <mat-label>Quantidade</mat-label>
+          <input matInput [(ngModel)]="itemCompra.quantidade" [disabled]="isDetail || compra.condicaoPagamento.codigo"  name="quantidade" required currencyMask [options]="{
+            align: 'left',
+            prefix: '',
+            thousands: '.',
+            precision: 0,
+            allowNegative: false
+          }" maxlength="4">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" fxFlex="12">
+          <mat-label>Valor unitário</mat-label>
+          <input matInput [(ngModel)]="itemCompra.valorUnitario" [disabled]="isDetail || compra.condicaoPagamento.codigo"  name="valorUnitario" required currencyMask [options]="{
+            align: 'left',
+            prefix: '',
+            thousands: '.',
+            decimal: ',',
+            precision: 2,
+            allowNegative: false
+          }" maxlength="9">
+        </mat-form-field>
+
+        <button *ngIf="!isDetail || compra.condicaoPagamento.codigo" (click)="addItemCompra()" [disabled]="!itemCompraIsValid" mat-mini-fab color="warn"
+          matTooltip="Adicionar item na compra">
+          <mat-icon>
+            add
+          </mat-icon>
+        </button>
+
+      </div>
+
+      <div *ngFor="let item of compra.itensCompra; let i = index" class="push-md" fxLayout="row" fxLayoutGap="20px">
+        <detail-field label="Item" value="{{i+1}}"></detail-field>
+        <detail-field label="Produto" value="{{item?.produto}}"></detail-field>
+        <detail-field label="Unidade de medida" value="{{item?.unidadeComercial}}"></detail-field>
+        <detail-field label="Quantidade" value="{{item?.quantidade}}"></detail-field>
+        <detail-field label="Valor unitário" matTooltip="Valor com a rateio das despesas" value="{{item?.valorUnitario | number:'.2':'pt'}} "></detail-field>
+        <detail-field label="Valor total" value="{{getValorTotal(item) | number:'.2':'pt'}}"></detail-field>
+
+        <button *ngIf="!isDetail && !compra.condicaoPagamento.codigo" (click)="removeItemCompra(i)" matTooltip="Remover item da compra" matSuffix mat-icon-button
+          class="tc-grey-700 delete-button-hover">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+
+    </mat-tab>
+
+    <mat-tab [disabled]="informacoesForm?.invalid || !compra.itensCompra.length"  label="CONTAS Á PAGAR">
+
+
+      <auto-complete-with-redirect
+        fxFlex
+        title="Condição de pagamento"
+        key="codigo"
+        link="condicao-pagamento"
+        [isDisable]="compra?.condicaoPagamento?.codigo || isDetail || compra.condicaoPagamento.codigo"
+        displayKey="condicaoPagamento"
+        [displayId]="true"
+        [isDetail]="isDetail"
+        [list]="{values: condicoesPagamentos}"
+        [itemSelected]="{selected: compra.condicaoPagamento}"
+        (onFilterChange)="onListCondicaoPagamentos($event)"
+        (onSelect)="onSelectCondicaoPagamento($event)"
+        (onDelete)="compra.condicaoPagamento = {}; this.compra.contasAPagar = []"
+      >
+      </auto-complete-with-redirect>
+
+     
+        
+      <div fxLayout="row" fxLayoutAlign="space-between center" >
+        <label class="bold">CONTAS À PAGAR</label>
+
+        <div fxLayout="column">
+          <label class="bold">TOTAL DA NOTA</label>
+          <label>{{getValorTotalNota | number:'.2':'pt'}}</label>
+        </div>
+      </div>
+  
+
+      <mat-expansion-panel *ngFor="let contaAPagar of compra.contasAPagar; let i = index" class="push-sm">
+        <mat-expansion-panel-header>
+          <mat-panel-title fxLayoutGap="20px">
+            <div fxLayout="column">
+              <label class="bold">{{i+1}} -</label>
+            </div>
+
+            <div fxLayout="column">
+              <label class="bold">Parcela {{i+1}}</label>
+            </div>
+          </mat-panel-title>
+
+        </mat-expansion-panel-header>
+
+        <div fxLayout="row" fxLayoutGap="30px">
+          <mat-form-field appearance="outline">
+            <mat-label>Data de vencimento</mat-label>
+            <input matInput [disabled]="true" [value]="contaAPagar.dataVencimento | date:'dd/MM/yyyy'">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" fxFlex>
+            <mat-label>Número do documento</mat-label>
+            <input matInput [disabled]="true" [value]="getNumeroDocumento(i)">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Valor da parcela</mat-label>
+            <input matInput [disabled]="true" value="{{contaAPagar.valorParcela | number:'.2':'pt'}}">
+          </mat-form-field>
+
+        </div>
+      </mat-expansion-panel>
+
+    </mat-tab>
+
+
+
+  </mat-tab-group>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+  <div fxLayout="column">
+    <label> <label style="font-weight: bold">Data de criação:</label>
+      {{ compra?.created ? (compra?.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+      {{ compra?.updated ? (compra?.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+  </div>
+
+  <div>
+
+    <button *ngIf="!isDetail"  (click)="onSubmit(informacoesForm)" mat-raised-button
+      class="white-btn" color="primary">
+      SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
+    push-left-md bgc-grey-800">
+      {{!isDetail ? 'CANCELAR' : 'FECHAR'}}
+    </button>
+  </div>
+</mat-dialog-actions>

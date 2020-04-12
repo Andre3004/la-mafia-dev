@@ -1,0 +1,107 @@
+<h2 mat-dialog-title>{{title}}</h2>
+
+<mat-dialog-content>
+
+  <form #qualificadorForm="ngForm" fxLayout="column">
+
+    <div fxLayout="row">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Código</mat-label>
+        <input uppercase matInput [(ngModel)]="usuario.codigo" [disabled]="true" name="codigo">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline" class="push-left-md">
+        <mat-label>Perfil do usuário</mat-label>
+        <mat-select [(ngModel)]="usuario.perfilUsuario" name="perfilUsuario" (ngModelChange)="changeTipo()">
+          <mat-option [value]="'FRANQUEADOR'">Franqueador</mat-option>
+          <mat-option [value]="'FRANQUEADO'">Franqueado</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+
+
+    <div fxLayout="row" *ngIf="usuario.perfilUsuario == 'FRANQUEADO'">
+      <auto-complete-with-redirect fxFlex title="Franquia" key="codigo" link="franquia" displayKey="franquia"
+        [displayId]="true" [list]="{values: franquias}" [itemSelected]="{selected: usuario.franquia}"
+        [classes]="required-class-franquia"
+        (onFilterChange)="onListFranquias($event)" 
+        (onSelect)="usuario.franquia = $event"
+        (onDelete)="usuario.franquia = {}">
+      </auto-complete-with-redirect>
+    </div>
+
+
+    <div fxLayout="row">
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Usuário</mat-label>
+        <input uppercase required [(ngModel)]="usuario.usuario" name="nome" matInput maxlength="144"
+          placeholder="Digite o nome do usuário">
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>CPF</mat-label>
+        <input uppercase required [textMask]="{mask: maskCpf, guide: false}" [(ngModel)]="usuario.cpf" name="cpf"
+          matInput maxlength="144" placeholder="Digite seu cpf">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Telefone</mat-label>
+        <input uppercase required maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput name="telefone"
+          [(ngModel)]="usuario.telefone" placeholder="Digite seu telefone">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>E-mail</mat-label>
+        <input uppercase required [(ngModel)]="usuario.email" email="true" name="email" type="email" matInput
+          maxlength="144" placeholder="Digite seu e-mail">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Senha</mat-label>
+        <input uppercase matInput type="password" [(ngModel)]="usuario.senha" maxlength="144" name="senha"
+          [required]="!usuario.codigo" placeholder="Digite sua senha">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Confirmação da senha</mat-label>
+        <input uppercase matInput type="password" maxlength="144" [(ngModel)]="confSenha" name="confSenha"
+          placeholder="Digite sua confirmação da senha">
+      </mat-form-field>
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+  <div fxLayout="column">
+    <label> <label style="font-weight: bold">Data de criação:</label>
+      {{ usuario.created ? (usuario.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+      {{ usuario.updated ? (usuario.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+  </div>
+
+  <div>
+    <button (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
+      color="primary">
+      SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
+    push-left-md bgc-grey-800">
+      CANCELAR
+    </button>
+  </div>
+</mat-dialog-actions>

@@ -1,0 +1,67 @@
+spring:
+  application.name: projeto
+  jmx.enabled: false
+
+jdbc:
+  driverClassName: org.postgresql.Driver
+  url: jdbc:postgresql://127.0.0.1:5432/projeto
+  username: projeto
+  password: projeto
+
+log4j:
+  logger:
+    org:
+      springframework:
+        jdbc:
+          core: TRACE
+#DATA SOURCE
+  datasource:
+    hikari.pool-name: ${spring.application.name}
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: org.postgresql.Driver
+    hikari.maximum-pool-size: 3
+    url: jdbc:postgresql://127.0.0.1:5432/projeto
+    username: projeto
+    password: projeto
+
+#STATIC RESOURCES
+  resources.static-locations: classpath:/META-INF/resources/
+  resources.chain:
+    cache: false
+    strategy.content.enabled: true
+    strategy.content.paths: /**
+      
+#THYMELEAF
+  thymeleaf:
+    mode: HTML
+    cache: false
+    prefix: classpath:/META-INF/resources/
+    suffix: .html
+
+      
+#LOGGING
+logging.level:
+  org.directwebremoting: INFO
+  org.springframework.web: INFO
+  org.springframework.context.support: INFO
+  org.springframework.security: INFO
+#  org.springframework.jdbc.core: TRACE
+  
+#DWR
+dwr:
+  debug: true
+  script-compressed: false
+
+#WEB CONTAINER
+server:
+  context-path:
+  compression.enabled: true
+  session.persistent: true
+  session.timeout: 999999999
+
+endpoints:
+  enabled: false
+  sensitive: true
+  health:
+    enabled: true
+    sensitive: false

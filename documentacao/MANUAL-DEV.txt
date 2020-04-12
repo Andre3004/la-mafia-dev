@@ -1,0 +1,14 @@
+1- Instaladores
+    Intellij IDEA: 2019.2
+    Visual studio code: 1.40
+    java version "1.8.0_201"
+    postgreSQL 9.6
+2 - Banco de dados
+    Executar no postgres o arquivo v1.schema.sql
+3 - BACK-END
+    Abrir POM.xml no Intellij
+    Escolher a opção de abrir o projeto
+    Após abrir e carregar o projeto
+    Selecione com o botão direito o arquivo Application.java
+    Clique em run
+4 - FRONT-END

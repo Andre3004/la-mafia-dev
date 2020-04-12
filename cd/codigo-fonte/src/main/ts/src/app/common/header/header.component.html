@@ -1,0 +1,48 @@
+<mat-sidenav-container class="header-container" autosize>
+
+    <mat-sidenav #sidenav mode="over">
+
+        <div style="background-color: #b71c1c;padding-bottom: 10px;"class="pad-left-md push-bottom-md" fxLayout="row" fxLayoutAlign="space-between center">
+            <h3 style="color: white">MENU</h3>
+
+            <img src="../../../assets/logo.png" style="width: 100px; margin-top: 10px; margin-right: 10px">
+        </div>
+        <p *ngFor="let menu of menus; last as last">
+            <button *ngIf="(menu.onlyFranquiador && !isFranquiado) || (!menu.onlyFranquiador && isFranquiado) || (menu.ambos)" (click)="sidenav.toggle()" routerLink="{{menu.router}}" fxLayoutAlign="start center" style="width: 100%; margin-bottom: 10px;" mat-button>
+                <mat-icon style="font-size: 20px !important;">{{menu.icon}}</mat-icon>
+                <label class="push-left-md" style="font-size: 20px !important;">{{menu.title}}</label>
+            </button>
+
+            <mat-divider *ngIf="!last && (menu.onlyFranquiador && !isFranquiado) || (!menu.onlyFranquiador && isFranquiado) || (menu.ambos)" ></mat-divider>
+        </p>
+    </mat-sidenav>
+
+    <td-layout-nav class="header-toolbar">
+        <div td-toolbar-content fxLayout="row" fxLayoutAlign="start center"
+            fxFlex>
+            <button mat-icon-button (click)="sidenav.toggle()">
+                <mat-icon>menu</mat-icon>
+            </button>
+            <h2 *ngIf="title" style="font-size: 20px !important;font-weight: bold;; color: white; margin-left: 10px !important;" >{{title | uppercase}}</h2>
+            <h2 *ngIf="!title" style="font-size: 20px !important;font-weight: bold;; color: white; margin-left: 10px !important;" >{{'produto' | uppercase}}</h2>
+
+            <div fxFlex></div>
+
+
+            <button mat-icon-button style="color: white; cursor: default !important;" >
+                <mat-icon>account_circle</mat-icon>
+            </button>
+            <h2 *ngIf="title" style="font-size: 20px !important;font-weight: bold;; color: white" >{{usuarioAutenticado?.usuario | uppercase}} ({{usuarioAutenticado?.perfilUsuario | uppercase}})</h2>
+
+            <button mat-button class="push-left-md push-right-md" [matMenuTriggerFor]="menu">
+                    <mat-icon>exit_to_app</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu" [overlapTrigger]="false">
+                <button (click)="logout()" class="pad-left-lg" mat-menu-item>
+                    <span class="tc-grey-800 mat-body-1">Sair</span>
+                </button>
+            </mat-menu>
+        </div>
+        <router-outlet></router-outlet>
+    </td-layout-nav>
+</mat-sidenav-container>

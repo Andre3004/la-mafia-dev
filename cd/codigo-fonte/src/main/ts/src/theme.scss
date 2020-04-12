@@ -1,0 +1,101 @@
+@import '~@angular/material/theming';
+@import '~@covalent/core/theming/all-theme';
+
+$typography: mat-typography-config(
+  $font-family: 'Roboto, monospace',
+  $headline: mat-typography-level(32px, 48px, 700)
+);
+
+@include mat-core($typography); // $typography is an **optional** argument for the mat-core
+
+$primary: mat-palette($mat-red, 900, 100, 900);
+$accent:  mat-palette($mat-grey, 900, 100, 900);
+
+$warn:    mat-palette($mat-red, 600, 100, 900);
+
+$theme: mat-light-theme($primary, $accent, $warn);
+
+@include angular-material-theme($theme);
+@include covalent-theme($theme, $typography); // $typography is an **optional** argument for the covalent-theme
+
+// mat-toolbar .mat-form-field
+// {
+//   zoom: 75%;
+// }
+
+mat-toolbar.toolbar-default
+{
+  padding-top: 25px;
+}
+
+.white-btn
+{
+  color: white !important;
+}
+
+.default-toolbar
+{
+  height: 80px;
+}
+
+ .delete-button-hover:hover
+ {
+   color: red !important;
+ }
+
+ .edit-button-hover:hover
+ {
+   color: #009688 !important;
+ }
+
+ .active-button-hover:hover
+ {
+    color: green !important;
+ }
+
+ td-dialog-actions
+{
+  display: flex;
+  flex-direction: row-reverse;
+}
+
+td-dialog-actions .mat-button
+{
+  background-color: #424242;
+  color: white;
+  font-weight: bold;
+}
+
+td-dialog-actions .mat-button.mat-accent
+{
+  font-weight: bold;
+  color: white;
+  background-color: #b71c1c;
+}
+
+.mat-toolbar.toolbar-default {
+  background: white !important;
+}
+
+.mat-toolbar, .mat-toolbar h1, .mat-toolbar h2, .mat-toolbar h3, .mat-toolbar h4, .mat-toolbar h5, .mat-toolbar h6
+{
+  font: 500 14px/25px Roboto, monospace;
+}
+
+.my-snack-bar button {
+  color: white;
+}
+
+mat-sidenav .button {
+  font-size: 50%;
+}
+
+.bold{
+  font-weight: bold;
+}
+
+
+.data-with-double-suffix .mat-form-field-suffix
+{    
+    display: flex !important;
+}

@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>Realizar pagamento</h2>
+<mat-dialog-content>
+
+  <form #qualificadorForm="ngForm" fxLayoutGap="30px">
+    <mat-form-field appearance="outline" class="data-with-double-suffix">
+      <mat-label>Data de pagamento *</mat-label>
+      <input matInput required [min]="dataHoje" [matDatepicker]="dataPagamento" [(ngModel)]="contaAPagar.dataPagamento"
+        name="dataPagamento" disabled>
+      <mat-datepicker-toggle [ngStyle]="{'color': !contaAPagar.dataPagamento ? 'red' : 'black' }" matSuffix
+        [for]="dataPagamento"></mat-datepicker-toggle>
+      <button *ngIf="contaAPagar.dataPagamento" matSuffix mat-icon-button (click)="contaAPagar.dataPagamento = null"
+        matTooltip="Remover data de pagamento">
+        <mat-icon>clear</mat-icon>
+      </button>
+      <mat-datepicker #dataPagamento disabled="false"></mat-datepicker>
+    </mat-form-field>
+
+
+    <mat-form-field fxFlex appearance="outline">
+      <mat-label>Valor Pago</mat-label>
+      <input matInput required [ngModel]="valorPago" name="valorPago" currencyMask disabled [options]="{
+          align: 'left',
+          prefix: '',
+          thousands: '.',
+          decimal: ',',
+          precision: 2,
+          allowNegative: false
+        }" maxlength="9">
+    </mat-form-field>  
+
+  </form>
+
+  <div fxLayoutAlign=" center" fxLayoutGap="30px">
+    <detail-field label="Data de vencimento" [value]="this?.contaAPagar?.dataVencimento ? (this?.contaAPagar?.dataVencimento | date:'dd/MM/yyyy') : '-'"></detail-field>
+    <detail-field label="Juros" value="{{this?.contaAPagar?.juros ? this?.contaAPagar?.juros : '-'}} %"></detail-field>
+    <detail-field label="Multa" value="{{this?.contaAPagar?.multa ? this?.contaAPagar?.multa : '-'}} %"></detail-field>
+    <detail-field label="Desconto" value="{{this?.contaAPagar?.desconto ? this?.contaAPagar?.desconto : '-'}} %"></detail-field>
+    <detail-field label="Valor parcela" value="R$ {{this?.contaAPagar?.valorParcela ? this?.contaAPagar?.valorParcela : '-'}}"></detail-field>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayoutAlign="end end">
+
+  <button [disabled]="!contaAPagar.dataPagamento" [mat-dialog-close]="contaAPagar" mat-raised-button class="white-btn" color="primary">
+      CONFIMAR PAGAMENTO
+  </button>
+  <button mat-dialog-close mat-raised-button class="white-btn push-left-md bgc-grey-800">
+    CANCELAR
+  </button>
+
+</mat-dialog-actions>

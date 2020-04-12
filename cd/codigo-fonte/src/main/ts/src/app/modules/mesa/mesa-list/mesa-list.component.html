@@ -1,0 +1,88 @@
+<mat-toolbar class="toolbar-default">
+	<mat-toolbar-row fxLayoutGap="30px">
+		<mat-form-field fxFlex="20" appearance="outline">
+			<mat-label>Número da mesa</mat-label>
+			<input matInput [textMask]="{mask: textMasks.getNumbersOnlyMask(3), guide: false}"
+				placeholder="Pesquisar por número da mesa" [(ngModel)]="filters.numeroMesa">
+		</mat-form-field>
+
+
+		<auto-complete-with-redirect fxFlex title="Ambiente" link="ambiente" key="codigo" displayKey="ambiente"
+			[displayId]="true" [list]="{values: ambientes}" [itemSelected]="{selected: filters.ambiente}"
+			[isNotRequired]="true" 
+			(onFilterChange)="ambienteFilter = $event; onListAmbientes($event)" (onSelect)="filters.ambiente = $event"
+			(onDelete)="filters.ambiente = null">
+		</auto-complete-with-redirect>
+
+		<div fxFlex></div>
+
+		<button color="primary" class="white-btn" (click)="openForm()" mat-raised-button>ADICIONAR
+			NOVA MESA</button>
+	</mat-toolbar-row>
+
+	<mat-toolbar-row fxLayoutGap="30px">
+		<button color="primary" class="white-btn" (click)="onListMesas()" mat-raised-button
+			type="submit">CONSULTAR</button>
+		<button color="accent" class="white-btn" (click)="clearFilters()" mat-raised-button>LIMPAR FILTROS</button>
+	</mat-toolbar-row>
+</mat-toolbar>
+
+
+<mat-card>
+
+	<td-data-table *ngIf="pageRequest?.content?.length > 0" #dataTable [data]="pageRequest.content"
+		[columns]="tableColumns" [clickable]="true">
+
+		<ng-template tdDataTableTemplate="numeroMesa" let-mesa="row">
+			<span class="text-truncate">
+				{{ mesa?.numeroMesa}}
+			</span>
+		</ng-template>
+
+		<ng-template tdDataTableTemplate="ambiente.nome" let-mesa="row">
+			<span class="text-truncate">
+				{{ mesa?.ambiente?.ambiente}}
+			</span>
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="situacao" let-mesa="row">
+			<mat-icon *ngIf="mesa?.situacao" class="tc-green-700" matTooltip="Ativado">check_circle</mat-icon>
+			<mat-icon *ngIf="!mesa?.situacao" matTooltip="Desativado" class="tc-red-700">block</mat-icon>
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="opcoes" let-mesa="row">
+
+			<button matTooltip="Editar mesa" stopPropagation (click)="$event.stopPropagation(); openForm(mesa)"
+				mat-icon-button>
+				<mat-icon class="tc-grey-700 edit-button-hover">edit</mat-icon>
+			</button>
+
+			<button *ngIf="!mesa.situacao" matTooltip="Ativar mesa"
+				(click)="$event.stopPropagation(); atualizarSituacaoMesa(mesa)" stopPropagation mat-icon-button>
+				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
+			</button>
+
+			<button *ngIf="mesa.situacao" matTooltip="Excluir/Desativar mesa"
+				(click)="$event.stopPropagation(); atualizarSituacaoMesa(mesa)" stopPropagation mat-icon-button>
+				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
+			</button>
+
+		</ng-template>
+
+	</td-data-table>
+
+	<td-paging-bar #pagingBar [pageSize]="pageRequest.pageable.size" [total]="pageRequest.totalElements"
+		(change)="page($event)" *ngIf="pageRequest.content != null && pageRequest.content.length">
+		<span td-paging-bar-label hide-xs>Registros por página:</span>
+		<mat-select [style.width.px]="50" [(ngModel)]="pageRequest.pageable.size">
+			<mat-option *ngFor="let size of [10,50,100]" [value]="size">
+				{{size}}
+			</mat-option>
+		</mat-select>
+		{{pagingBar.range}} <span hide-xs>de {{pagingBar.total}}</span>
+	</td-paging-bar>
+
+	<div *ngIf="pageRequest?.content?.length == 0" class="pad-md" fxLayoutAlign="center ">
+		<label>Nenhum registro encontrado.</label>
+	</div>
+</mat-card>

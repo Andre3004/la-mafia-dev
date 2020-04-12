@@ -1,0 +1,182 @@
+<mat-dialog-content>
+  <h2 mat-dialog-title>{{title}}</h2>
+
+
+  <form #qualificadorForm="ngForm" fxLayout="column">
+
+
+    <div fxLayout="row" fxLayoutGap="30px"  fxLayoutAlign=" center">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Código</mat-label>
+        <input uppercase matInput [(ngModel)]="cliente.codigo" name="codigo" [disabled]="true">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Cliente</mat-label>
+        <input uppercase uppercase required [(ngModel)]="cliente.cliente" name="cliente" matInput maxlength="144">
+      </mat-form-field>
+
+      <mat-radio-group required [(ngModel)]="cliente.sexo" name="sexo" aria-label="Sexo">
+        <mat-radio-button value="Masculino">Masculino</mat-radio-button>
+        <mat-radio-button value="Feminino" class="push-left-sm">Feminino</mat-radio-button>
+      </mat-radio-group>
+
+    </div>
+
+
+    <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign=" center">
+
+      <mat-checkbox  [(ngModel)]="cliente.isEstrangeiro" name="isEstrangeiro">Estrangeiro ?</mat-checkbox>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>CPF</mat-label>
+        <input uppercase uppercase [required]="!cliente.isEstrangeiro" [textMask]="{mask: maskCpf, guide: false}" [(ngModel)]="cliente.cpf"
+          name="cpf" matInput maxlength="144"
+          pattern="([0-9]{2}[\.]?[0-9]{3}[\.]?[0-9]{3}[\/]?[0-9]{4}[-]?[0-9]{2})|([0-9]{3}[\.]?[0-9]{3}[\.]?[0-9]{3}[-]?[0-9]{2})">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="data-with-double-suffix">
+        <mat-label>Data de nascimento *</mat-label>
+        <input matInput required [max]="dataHoje" [matDatepicker]="dataNascimento" [(ngModel)]="cliente.dataNascimento" name="dataNascimento" disabled>
+        <mat-datepicker-toggle matSuffix [for]="dataNascimento" ></mat-datepicker-toggle>
+        <button *ngIf="cliente.dataNascimento && !cliente.created"  matSuffix mat-icon-button (click)="cliente.dataNascimento = null; " matTooltip="Remover data de nascimento">
+          <mat-icon>clear</mat-icon>
+        </button>
+        <mat-datepicker #dataNascimento disabled="false"></mat-datepicker>
+      </mat-form-field>
+
+
+    </div>
+
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Celular</mat-label>
+        <input uppercase uppercase required [textMask]="{mask: maskCelular, guide: false}" [(ngModel)]="cliente.celular"
+          matInput name="celular">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Telefone</mat-label>
+        <input uppercase uppercase maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput
+          name="telefone" [(ngModel)]="cliente.telefone">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>E-mail</mat-label>
+        <input uppercase uppercase [(ngModel)]="cliente.email" email="true" name="email" type="email" matInput
+          maxlength="144">
+      </mat-form-field>
+
+    </div>
+
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Número</mat-label>
+        <input uppercase required matInput [textMask]="{mask: masks.getNumbersOnlyMask(5), guide: false}"
+          [(ngModel)]="cliente.numero" name="numero" >
+      </mat-form-field>
+      
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Bairro</mat-label>
+        <input uppercase required matInput [(ngModel)]="cliente.bairro" maxlength="144" name="bairro" >
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Endereço</mat-label>
+        <input uppercase uppercase [(ngModel)]="cliente.endereco" required  name="endereco" matInput maxlength="144">
+      </mat-form-field>
+
+
+    </div>
+
+    <div fxFlex>
+      
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Complemento</mat-label>
+        <input uppercase uppercase [(ngModel)]="cliente.complemento" name="complemento" matInput maxlength="144">
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign=" center">
+
+
+      <div *ngIf="cliente.cidade" fxLayoutAlign=" start" fxLayout="column">
+        <label style="margin-bottom: 5px;font-weight: bold;">País</label>
+        <label>{{cliente?.cidade?.estado?.pais?.pais}}</label>
+      </div>
+
+      <div *ngIf="cliente.cidade" fxLayoutAlign=" start" fxLayout="column" class="push-left-md push-right-md">
+        <label style="margin-bottom: 5px;font-weight: bold;">Estado</label>
+        <label>{{cliente?.cidade?.estado?.estado}}</label>
+      </div>
+
+      <auto-complete-with-redirect
+          fxFlex
+          title="Cidade"
+          key="codigo"
+          link="cidade"
+          displayKey="cidade"
+          [displayId]="true"
+          [list]="{values: cidades}"
+          [classes]="required-class-cidade"
+          [itemSelected]="{selected: cliente.cidade}"
+          (onFilterChange)="onListCidades($event)"
+          (onSelect)="cliente.cidade = $event"
+          (onDelete)="cliente.cidade = null"
+      >
+      </auto-complete-with-redirect>
+
+    </div>
+
+    <div fxLayout="row">
+      <auto-complete-with-redirect
+          fxFlex
+          title="Condição de pagamento"
+          link="condicao-pagamento"
+          [classes]="'required-class-condicao-pagamento'"
+          key="codigo"
+          displayKey="condicaoPagamento"
+          [displayId]="true"
+          [list]="{values: condicoesPagamento}"
+          [itemSelected]="{selected: cliente.condicaoPagamento}"
+          (onFilterChange)="onListCondicoesPagamento($event)"
+          (onSelect)="cliente.condicaoPagamento = $event"
+          (onDelete)="cliente.condicaoPagamento = null"
+      >
+      </auto-complete-with-redirect>
+    </div>
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+  <div fxLayout="column">
+    <label> <label style="font-weight: bold">Data de criação:</label>
+      {{ cliente.created ? (cliente.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+      {{ cliente.updated ? (cliente.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+  </div>
+
+  <div>
+    <button (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
+      color="primary">
+      SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
+  push-left-md bgc-grey-800">
+      CANCELAR
+    </button>
+  </div>
+</mat-dialog-actions>

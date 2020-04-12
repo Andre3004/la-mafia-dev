@@ -1,9 +1,9 @@
-import { FornecedorService, ArquivoService, ProdutoService, MesaService, ClienteService, FormaPagamentoService, EstadoService, AmbienteService, FranquiaService, UsuarioService, PaisService, ContasAReceberService, CondicaoPagamentoService, ContasAPagarService, CompraService, VendaService, CidadeService, GrupoProdutoService } from './services';
+import { EstadoService, PaisService, CondicaoPagamentoService, FormaPagamentoService, AmbienteService, ContasAReceberService, ProdutoService, VendaService, MesaService, FranquiaService, GrupoProdutoService, ArquivoService, CidadeService, ContasAPagarService, ClienteService, UsuarioService, FornecedorService, CompraService } from './services';
 import { NgModule } from '@angular/core';
 
 @NgModule({
     providers: [
-        FornecedorService, ArquivoService, ProdutoService, MesaService, ClienteService, FormaPagamentoService, EstadoService, AmbienteService, FranquiaService, UsuarioService, PaisService, ContasAReceberService, CondicaoPagamentoService, ContasAPagarService, CompraService, VendaService, CidadeService, GrupoProdutoService
+        EstadoService, PaisService, CondicaoPagamentoService, FormaPagamentoService, AmbienteService, ContasAReceberService, ProdutoService, VendaService, MesaService, FranquiaService, GrupoProdutoService, ArquivoService, CidadeService, ContasAPagarService, ClienteService, UsuarioService, FornecedorService, CompraService
     ]
 })
 export class GeneratedModule {

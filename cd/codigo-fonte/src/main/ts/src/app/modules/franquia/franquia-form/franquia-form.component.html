@@ -1,0 +1,169 @@
+<h2 mat-dialog-title>{{title}}</h2>
+
+
+<mat-dialog-content>
+  <form #qualificadorForm="ngForm" fxLayout="column">
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Código</mat-label>
+        <input uppercase matInput [(ngModel)]="franquia.codigo" [disabled]="true" name="codigo">
+      </mat-form-field>
+
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Telefone</mat-label>
+        <input uppercase maxlength="50" [textMask]="{mask: maskTelefone, guide:false}" matInput name="telefone"
+          [(ngModel)]="franquia.telefone" placeholder="Digite o telefone">
+      </mat-form-field>
+
+
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Franquia</mat-label>
+        <input uppercase required [(ngModel)]="franquia.franquia" name="franquia" matInput maxlength="144"
+          placeholder="Digite o nome da franquia">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>CNPJ</mat-label>
+        <input uppercase required [textMask]="{mask: maskCnpj, guide: false}" [(ngModel)]="franquia.cnpj" name="cnpj"
+          matInput maxlength="144" placeholder="Digite seu cnpj">
+      </mat-form-field>
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Endereço</mat-label>
+        <input uppercase required maxlength="144" matInput name="endereco" [(ngModel)]="franquia.endereco"
+          placeholder="Digite seu endereco">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Número</mat-label>
+        <input uppercase [textMask]="{mask: masks.getNumbersOnlyMask(5), guide: false}" matInput name="numero"
+          [(ngModel)]="franquia.numero" placeholder="Digite o número">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Complemento</mat-label>
+        <input uppercase maxlength="144" matInput name="complemento" [(ngModel)]="franquia.complemento"
+          placeholder="Digite o complemento">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Bairro</mat-label>
+        <input uppercase maxlength="144" matInput name="bairro" [(ngModel)]="franquia.bairro"
+          placeholder="Digite o bairro">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>CEP</mat-label>
+        <input uppercase [textMask]="{mask: masks.cep, guide: false}" matInput name="cep" [(ngModel)]="franquia.cep"
+          placeholder="Digite o cep">
+      </mat-form-field>
+
+    </div>
+
+    <div fxLayout="row" fxLayoutAlign=" center">
+
+
+      <div *ngIf="franquia.cidade" fxLayoutAlign=" start" fxLayout="column">
+        <label style="margin-bottom: 5px;font-weight: bold;">País</label>
+        <label>{{franquia?.cidade?.estado?.pais?.pais}}</label>
+      </div>
+
+      <div *ngIf="franquia.cidade" fxLayoutAlign=" start" fxLayout="column" class="push-left-md push-right-md">
+        <label style="margin-bottom: 5px;font-weight: bold;">Estado</label>
+        <label>{{franquia?.cidade?.estado?.estado}}</label>
+      </div>
+      
+      <auto-complete-with-redirect
+          fxFlex
+          title="Cidade"
+          link="cidade"
+          key="codigo"
+          displayKey="cidade"
+          [displayId]="true"
+          [classes]="'required-class-cidade'"
+          [list]="{values: cidades}"
+          [itemSelected]="{selected: franquia.cidade}"
+          (onFilterChange)="onListCidades($event)"
+          (onSelect)="franquia.cidade = $event"
+          (onDelete)="franquia.cidade = null"
+      >
+      </auto-complete-with-redirect>
+
+    </div>
+
+    <div>
+
+
+
+      <div fxFlex style="background-color: #b71c1c; color: white; font-weight: bold;border-radius: 30px;"
+        fxLayoutAlign="space-between center">
+        <label *ngIf="!fotoImage && !franquia.anexoUuid" style="max-width: 400px;" class="text-truncate push-left-md">
+          Selecione o arquivo...
+        </label>
+
+
+        <label *ngIf="franquia?.nomeArquivo" style="max-width: 400px;" class="text-truncate push-left-md">
+          {{franquia?.nomeArquivo}}
+        </label>
+
+        <div class="push-right-sm">
+          <button (click)="fotoInput.click()" *ngIf="!fotoImage && !franquia?.anexoUuid" mat-icon-button
+            matTooltip="Adicionar anexo">
+            <mat-icon>attach_file</mat-icon>
+          </button>
+
+          <button *ngIf="fotoImage || franquia?.anexoUuid" (click)="removeAnexo()" matTooltip="Remover anexo"
+            mat-icon-button>
+            <mat-icon>delete</mat-icon>
+          </button>
+
+          <button *ngIf="franquia.anexoUuid" matTooltip="Download anexo" (click)="downloadFile()" mat-icon-button>
+            <mat-icon>file_download</mat-icon>
+          </button>
+
+        </div>
+
+        <input uppercase hidden type="file" #fotoInput (change)="setFranquiaAnexo($event)">
+      </div>
+
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+  <div fxLayout="column">
+    <label> <label style="font-weight: bold">Data de criação:</label>
+      {{ franquia.created ? (franquia.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+      {{ franquia.updated ? (franquia.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+  </div>
+
+  <div>
+
+    <button (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
+      color="primary">
+      SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
+    push-left-md bgc-grey-800">
+      CANCELAR
+    </button>
+  </div>
+</mat-dialog-actions>

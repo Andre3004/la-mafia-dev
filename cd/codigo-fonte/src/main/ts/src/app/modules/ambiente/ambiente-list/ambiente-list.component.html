@@ -1,0 +1,72 @@
+<mat-toolbar class="toolbar-default">
+	<mat-toolbar-row fxLayoutGap="30px">
+		<mat-form-field fxFlex="20" appearance="outline">
+			<mat-label>Ambiente</mat-label>
+			<input uppercase matInput placeholder="Pesquisar por nome" maxlength="144" [(ngModel)]="filters.nome">
+		</mat-form-field>
+
+		<div fxFlex></div>
+
+		<button color="primary" class="white-btn" (click)="openForm()" mat-raised-button>ADICIONAR
+			NOVO AMBIENTE</button>
+	</mat-toolbar-row>
+
+	<mat-toolbar-row fxLayoutGap="30px">
+		<button color="primary" class="white-btn" (click)="onListAmbientes()" mat-raised-button
+			type="submit">CONSULTAR</button>
+		<button color="accent" class="white-btn" (click)="clearFilters()" mat-raised-button>LIMPAR FILTROS</button>
+	</mat-toolbar-row>
+</mat-toolbar>
+
+
+<mat-card>
+
+	<td-data-table *ngIf="pageRequest?.content?.length > 0" #dataTable [data]="pageRequest.content"
+		[columns]="tableColumns" [clickable]="true">
+
+		<ng-template tdDataTableTemplate="nome" let-ambiente="row">
+			<span class="text-truncate">
+				{{ ambiente?.ambiente}}
+			</span>
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="situacao" let-ambiente="row">
+			<mat-icon *ngIf="ambiente?.situacao" class="tc-green-700" matTooltip="Ativado">check_circle</mat-icon>
+			<mat-icon *ngIf="!ambiente?.situacao" matTooltip="Desativado" class="tc-red-700">block</mat-icon>
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="opcoes" let-ambiente="row">
+
+			<button matTooltip="Editar ambiente" (click)="$event.stopPropagation(); openForm(ambiente)" mat-icon-button>
+				<mat-icon class="tc-grey-700 edit-button-hover">edit</mat-icon>
+			</button>
+
+			<button *ngIf="!ambiente.situacao" matTooltip="Ativar ambiente"
+				(click)="$event.stopPropagation(); atualizarSituacaoAmbiente(ambiente)" mat-icon-button>
+				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
+			</button>
+
+			<button *ngIf="ambiente.situacao" matTooltip="Excluir/Desativar ambiente"
+				(click)="$event.stopPropagation(); atualizarSituacaoAmbiente(ambiente)" mat-icon-button>
+				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
+			</button>
+
+		</ng-template>
+
+	</td-data-table>
+
+	<td-paging-bar #pagingBar [pageSize]="pageRequest.pageable.size" [total]="pageRequest.totalElements"
+		(change)="page($event)" *ngIf="pageRequest.content != null && pageRequest.content.length">
+		<span td-paging-bar-label hide-xs>Registros por página:</span>
+		<mat-select [style.width.px]="50" [(ngModel)]="pageRequest.pageable.size">
+			<mat-option *ngFor="let size of [10,50,100]" [value]="size">
+				{{size}}
+			</mat-option>
+		</mat-select>
+		{{pagingBar.range}} <span hide-xs>de {{pagingBar.total}}</span>
+	</td-paging-bar>
+
+	<div *ngIf="pageRequest?.content?.length == 0" class="pad-md" fxLayoutAlign="center ">
+		<label>Nenhum registro encontrado.</label>
+	</div>
+</mat-card>

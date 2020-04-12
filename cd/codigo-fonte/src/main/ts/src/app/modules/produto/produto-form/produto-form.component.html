@@ -1,0 +1,171 @@
+<h2 mat-dialog-title>{{title}}</h2>
+
+
+<mat-dialog-content>
+    <form #qualificadorForm="ngForm" fxLayout="column">
+
+        <div fxLayout="row" fxLayoutGap="30px">
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Código</mat-label>
+                <input uppercase matInput [(ngModel)]="produto.codigo" [disabled]="true" name="codigo">
+            </mat-form-field>
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Produto</mat-label>
+                <input uppercase required [(ngModel)]="produto.produto" [disabled]="isFranquiado" name="nome" matInput maxlength="144"
+                    placeholder="Digite o nome do produto">
+            </mat-form-field>
+
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign=" center">
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Unidade comercial</mat-label>
+                <input uppercase  [(ngModel)]="produto.unidadeComercial" name="unidadeComercial" matInput
+                [disabled]="isFranquiado"
+                    required
+                    maxlength="50" placeholder="Digite a unidade comercial do produto">
+            </mat-form-field>
+
+            <auto-complete-with-redirect fxFlex 
+                style="margin-left: 30px"
+                title="Grupo de produto" 
+                [classes]="required-class-grupo-produto"
+                link="grupo-produto" 
+                key="codigo" 
+                displayKey="grupoProduto"
+                [displayId]="true" 
+                [isDetail]="isFranquiado"
+                [list]="{values: gruposProdutos}" 
+                [itemSelected]="{selected: produto.grupoProduto}"
+                (onFilterChange)="onListGrupoProdutos($event)" 
+                (onSelect)="produto.grupoProduto = $event"
+                (onDelete)="produto.grupoProduto = null">
+            </auto-complete-with-redirect>
+
+
+
+            <mat-form-field style="margin-left: 30px" *ngIf="produto?.grupoProduto?.exigeAno" fxFlex
+                appearance="outline">
+                <mat-label>Ano</mat-label>
+                <input [(ngModel)]="produto.ano" [disabled]="isFranquiado" name="ano" matInput
+                    [textMask]="{mask: textMasks.getNumbersOnlyMask(4), guide: false}"
+                    placeholder="Digite o ano do produto">
+            </mat-form-field>
+
+        </div>
+
+        <div fxLayout="row" fxLayoutGap="30px" fxLayoutAlign=" center" *ngIf="isFranquiado">
+            <mat-form-field fxFlex appearance="outline" >
+                <mat-label>Estoque</mat-label>
+                <input [value]="produto?.currentEstoque?.saldo || '-'" matInput [disabled]="true">
+            </mat-form-field>
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Preço de custo</mat-label>
+                <input [(ngModel)]="produto.currentEstoque.precoCusto" name="precoCusto" matInput required
+                    [textMask]="{mask: textMasks.getDecimalNumberMask(5, 4), guide: false}"
+                    [disabled]="true"
+                    placeholder="Digite o preço de custo do produto" >
+            </mat-form-field>
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Preço de venda</mat-label>
+                <input [(ngModel)]="produto.currentEstoque.precoVenda" name="precoVenda" matInput required
+                    [textMask]="{mask: textMasks.getDecimalNumberMask(5, 2), guide: false}"
+                    placeholder="Digite o preço de venda do produto">
+            </mat-form-field>
+        </div>
+
+
+        <div fxLayout="row">
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Código de barras</mat-label>
+                <input [disabled]="isFranquiado" uppercase [(ngModel)]="produto.codigoBarras" name="codigoBarras" matInput
+                    [textMask]="{mask: textMasks.getNumbersOnlyMask(100), guide: false}"
+                    placeholder="Digite o código de barras do produto">
+            </mat-form-field>
+        </div>
+
+        <div fxLayout="row">
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Descrição</mat-label>
+                <textarea [disabled]="isFranquiado" uppercase [(ngModel)]="produto.descricao" name="descricao" matInput maxlength="144"
+                    placeholder="Digite a descrição do produto"></textarea>
+            </mat-form-field>
+        </div>
+
+        <div fxLayout="row" fxLayoutGap="30px">
+
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Fornecedor da ultima compra</mat-label>
+                <input value="{{produto?.currentEstoque?.fornecedor?.codigo}} - {{produto?.currentEstoque?.fornecedor?.razaoSocial}}" matInput [disabled]="true">
+            </mat-form-field>
+           
+            <mat-form-field fxFlex appearance="outline">
+                <mat-label>Data da ultima compra</mat-label>
+                <input [value]="produto?.currentEstoque?.dataUltimaCompra | date:'dd/MM/yyyy hh:mm:ss'" matInput [disabled]="true">
+            </mat-form-field>
+
+        </div>
+
+        <div *ngIf="!isFranquiado" fxFlex style="background-color: #b71c1c; color: white; font-weight: bold;border-radius: 30px;"
+            fxLayoutAlign="space-between center">
+            <label *ngIf="!fotoImage && !produto.anexoUuid" style="max-width: 400px;"
+                class="text-truncate push-left-md">
+                Selecione o arquivo...
+            </label>
+
+
+            <label *ngIf="produto?.nomeArquivo" style="max-width: 400px;" class="text-truncate push-left-md">
+                {{produto?.nomeArquivo}}
+            </label>
+
+            <div class="push-right-sm">
+                <button (click)="fotoInput.click()" *ngIf="!fotoImage && !produto?.anexoUuid" mat-icon-button
+                    matTooltip="Adicionar anexo">
+                    <mat-icon>attach_file</mat-icon>
+                </button>
+
+                <button *ngIf="fotoImage || produto?.anexoUuid" (click)="removeAnexo()" matTooltip="Remover anexo"
+                    mat-icon-button>
+                    <mat-icon>delete</mat-icon>
+                </button>
+
+                <button *ngIf="produto.anexoUuid" matTooltip="Download anexo" (click)="downloadFile()" mat-icon-button>
+                    <mat-icon>file_download</mat-icon>
+                </button>
+
+            </div>
+
+            <input hidden type="file" #fotoInput (change)="setProdutoAnexo($event)">
+        </div>
+
+    </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+    <div fxLayout="column">
+        <label> <label style="font-weight: bold">Data de criação:</label>
+            {{ produto.created ? (produto.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+        <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+            {{ produto.updated ? (produto.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    </div>
+
+    <div>
+    <button (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
+        color="primary">
+        SALVAR
+    </button>
+    <button mat-dialog-close mat-raised-button class="white-btn
+    push-left-md bgc-grey-800">
+        CANCELAR
+    </button>
+    </div>
+</mat-dialog-actions>

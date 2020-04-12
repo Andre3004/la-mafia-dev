@@ -91,7 +91,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter
 	@Override
 	public void configure( WebSecurity web ) throws Exception
 	{
-		web.ignoring().antMatchers( "/**/favicon.ico", "/home/**", "/static/**", "/modules/**", "/templates/**", "/webjars/**", "/broker/**/*.js", "/bundles/**" );
+		web.ignoring().antMatchers( "/project/**","/**/favicon.ico", "/home/**", "/static/**", "/modules/**", "/templates/**", "/webjars/**", "/broker/**/*.js", "/bundles/**" );
 	}
 
 	/**

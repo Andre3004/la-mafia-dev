@@ -1,0 +1,31 @@
+{
+	"/": {
+		"target": "http://localhost:8080/",
+		"changeOrigin": true,
+		"secure": false,
+		"pathRewrite": {
+			"^/": ""
+		},
+		"logLevel": "debug"
+	},
+
+	"/broker": {
+		"target": "http://localhost:8080/broker",
+		"changeOrigin": true,
+		"secure": false,
+		"pathRewrite": {
+			"^/broker": ""
+		},
+		"logLevel": "debug"
+	},
+
+	"/static": {
+		"target": "http://localhost:8080/static",
+		"changeOrigin": true,
+		"secure": false,
+		"pathRewrite": {
+			"^/static": ""
+		},
+		"logLevel": "debug"
+	}
+}

@@ -1,0 +1,86 @@
+<mat-toolbar class="toolbar-default">
+	<mat-toolbar-row>
+		<mat-form-field [floatLabel]="'never'" style="width: 80vh; " appearance="outline">
+			<mat-label>CLIENTE</mat-label>
+			<input uppercase matInput maxlength="144" [(ngModel)]="filters.cliente">
+		</mat-form-field>
+		<span flex></span>
+		<button color="primary" (click)="openForm()" class="white-btn" mat-raised-button>ADICIONAR NOVO CLIENTE</button>
+	</mat-toolbar-row>
+
+	<mat-toolbar-row fxLayoutGap="30px">
+		<button color="primary" class="white-btn" (click)="onListClientes()" mat-raised-button
+			type="submit">CONSULTAR</button>
+		<button color="accent" class="white-btn" (click)="filters.cliente = ''; onListClientes()"
+			mat-raised-button>LIMPAR
+			FILTROS</button>
+	</mat-toolbar-row>
+</mat-toolbar>
+
+
+<mat-card>
+
+	<td-data-table *ngIf="pageRequest?.content?.length > 0" #dataTable [data]="pageRequest.content"
+		[columns]="tableColumns">
+
+		<ng-template tdDataTableTemplate="cliente" let-cliente="row">
+			<span class="text-truncate">
+				{{ cliente?.cliente}}
+			</span>
+		</ng-template>
+
+		<ng-template tdDataTableTemplate="celular" let-cliente="row">
+			<span class="text-truncate">
+				{{ cliente?.celular}}
+			</span>
+		</ng-template>
+
+		<ng-template tdDataTableTemplate="cpf" let-cliente="row">
+			<span class="text-truncate">
+				{{ cliente?.cpf}}
+			</span>
+		</ng-template>
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="situacao" let-cliente="row">
+			<mat-icon *ngIf="cliente?.situacao" class="tc-green-700" matTooltip="Ativado">check_circle</mat-icon>
+			<mat-icon *ngIf="!cliente?.situacao" matTooltip="Desativado" class="tc-red-700">block</mat-icon>
+		</ng-template>
+
+
+		<ng-template fxLayoutAlign="end" tdDataTableTemplate="opcoes" let-cliente="row">
+
+			<button matTooltip="Editar funcionário" stopPropagation
+			class="tc-grey-700 edit-button-hover"
+				(click)="$event.stopPropagation(); openForm(cliente)" mat-icon-button>
+				<mat-icon class="edit-icon">edit</mat-icon>
+			</button>
+
+			<button *ngIf="!cliente.situacao" matTooltip="Ativar cliente"
+				(click)="$event.stopPropagation(); atualizarSituacaoCliente(cliente)" mat-icon-button>
+				<mat-icon class="tc-grey-700 active-button-hover">check_circle_outline</mat-icon>
+			</button>
+
+			<button *ngIf="cliente.situacao" matTooltip="Excluir/Desativar cliente"
+				(click)="$event.stopPropagation(); atualizarSituacaoCliente(cliente)" mat-icon-button>
+				<mat-icon class="tc-grey-700 delete-button-hover">block</mat-icon>
+			</button>
+
+		</ng-template>
+
+	</td-data-table>
+
+	<td-paging-bar #pagingBar [pageSize]="pageRequest.pageable.size" [total]="pageRequest.totalElements"
+		(change)="page($event)" *ngIf="pageRequest.content != null && pageRequest.content.length">
+		<span td-paging-bar-label hide-xs>Registros por página:</span>
+		<mat-select [style.width.px]="50" [(ngModel)]="pageRequest.pageable.size">
+			<mat-option *ngFor="let size of [10,50,100]" [value]="size">
+				{{size}}
+			</mat-option>
+		</mat-select>
+		{{pagingBar.range}} <span hide-xs>de {{pagingBar.total}}</span>
+	</td-paging-bar>
+
+	<div *ngIf="pageRequest?.content?.length == 0" class="pad-md" fxLayoutAlign="center ">
+		<label>Nenhum registro encontrado.</label>
+	</div>
+</mat-card>

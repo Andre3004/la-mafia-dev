@@ -1,0 +1,47 @@
+<div fxLayoutAlign="space-between center">
+  <h2 mat-dialog-title>{{title}}</h2>
+</div>
+
+<mat-dialog-content>
+
+  <form #qualificadorForm="ngForm" fxLayout="column">
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+        <mat-form-field fxFlex appearance="outline">
+          <mat-label>Código</mat-label>
+          <input uppercase required [(ngModel)]="formaPagamento.codigo" [disabled]="true" name="codigo" matInput maxlength="144">
+        </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Forma de pagamento</mat-label>
+        <input uppercase required [(ngModel)]="formaPagamento.formaPagamento" name="formaPagamento" matInput maxlength="144">
+      </mat-form-field>
+
+    </div>
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+    <div fxLayout="column">
+        <label> <label style="font-weight: bold">Data de criação:</label>
+            {{ formaPagamento.created ? (formaPagamento.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+        <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+            {{ formaPagamento.updated ? (formaPagamento.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    </div>
+
+    <div>
+  <button  (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
+    color="primary">
+    SALVAR
+  </button>
+  <button mat-dialog-close mat-raised-button class="white-btn
+  push-left-md bgc-grey-800">
+    CANCELAR
+  </button>
+    </div>
+</mat-dialog-actions>

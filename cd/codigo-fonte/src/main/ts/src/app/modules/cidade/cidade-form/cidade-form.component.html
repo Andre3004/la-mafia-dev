@@ -1,0 +1,92 @@
+<mat-dialog-content>
+  <h2 mat-dialog-title>{{title}}</h2>
+
+
+  <form #qualificadorForm="ngForm" fxLayout="column">
+
+
+    <div fxLayout="row" fxLayoutGap="30px">
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Código</mat-label>
+        <input  uppercase matInput [(ngModel)]="cidade.codigo" name="codigo" [disabled]="true">
+      </mat-form-field>
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>DDD</mat-label>
+        <input required [(ngModel)]="cidade.ddd" maxlength="4" name="ddd" matInput currencyMask [options]="{
+          align: 'left',
+          prefix: '',
+          thousands: '',
+          decimal: ',',
+          precision: 0,
+          allowNegative: false
+        }">
+      </mat-form-field>
+
+
+
+    </div>
+
+    <div fxLayout="row" >
+
+      <mat-form-field fxFlex appearance="outline">
+        <mat-label>Cidade</mat-label>
+        <input required uppercase [(ngModel)]="cidade.cidade" name="cidade" matInput maxlength="144">
+      </mat-form-field>
+
+        <auto-complete-with-redirect
+            style="margin-left: 30px"
+            fxFlex
+            title="Estado"
+            key="codigo"
+            link="estado"
+            displayKey="estado"
+            [classes]="required-class-estado"
+            [displayId]="true"
+            [list]="{values: estados}"
+            [itemSelected]="{selected: cidade.estado}"
+            (onFilterChange)="onListEstados($event)"
+            (onSelect)="cidade.estado = $event"
+            (onDelete)="cidade.estado = {}"
+        >
+        </auto-complete-with-redirect>
+
+    </div>
+
+
+    <div>
+
+      <!-- SELECT-->
+
+    </div>
+
+
+
+
+
+  </form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions fxLayoutAlign="space-between end">
+
+    <div fxLayout="column">
+        <label> <label style="font-weight: bold">Data de criação:</label>
+            {{ cidade.created ? (cidade.created | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+        <label class="push-top-sm "><label style="font-weight: bold">Data de atualização :</label>
+            {{ cidade.updated ? (cidade.updated | date:'dd/MM/yyyy hh:mm:ss') : '-'}} </label>
+    </div>
+
+    <div>
+  
+  <button  (click)="onSubmit(qualificadorForm)" mat-raised-button class="white-btn"
+    color="primary">
+    SALVAR
+  </button>
+  <button mat-dialog-close mat-raised-button class="white-btn
+  push-left-md bgc-grey-800">
+    CANCELAR
+  </button>
+    </div>
+</mat-dialog-actions>
